@@ -20,4 +20,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Profiles\default-profile.json" />
+    <EmbeddedResource Include="Profiles\default-profile.json.sig" />
+  </ItemGroup>
+
 </Project>

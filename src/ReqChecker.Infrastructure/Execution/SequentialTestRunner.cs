@@ -4,6 +4,7 @@ using ReqChecker.Core.Enums;
 using ReqChecker.Infrastructure.Tests;
 using System.Diagnostics;
 using System.Reflection;
+using ProfileModel = ReqChecker.Core.Models.Profile;
 
 namespace ReqChecker.Infrastructure.Execution;
 

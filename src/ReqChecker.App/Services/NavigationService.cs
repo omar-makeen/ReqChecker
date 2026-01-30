@@ -26,7 +26,17 @@ public class NavigationService
     }
 
     /// <summary>
-    /// Navigates to the test list view.
+    /// Navigates to profile selector view.
+    /// </summary>
+    public void NavigateToProfileSelector()
+    {
+        var viewModel = _serviceProvider.GetRequiredService<ProfileSelectorViewModel>();
+        var view = new Views.ProfileSelectorView(viewModel);
+        _frame?.Navigate(view);
+    }
+
+    /// <summary>
+    /// Navigates to test list view.
     /// </summary>
     public void NavigateToTestList()
     {
@@ -36,7 +46,7 @@ public class NavigationService
     }
 
     /// <summary>
-    /// Navigates to the run progress view.
+    /// Navigates to run progress view.
     /// </summary>
     public void NavigateToRunProgress()
     {
@@ -46,7 +56,7 @@ public class NavigationService
     }
 
     /// <summary>
-    /// Navigates to the results view.
+    /// Navigates to results view.
     /// </summary>
     public void NavigateToResults()
     {
@@ -56,7 +66,7 @@ public class NavigationService
     }
 
     /// <summary>
-    /// Navigates back to the previous view.
+    /// Navigates back to previous view.
     /// </summary>
     public void GoBack()
     {

@@ -1,0 +1,121 @@
+{
+  "id": "default-profile-guid-0001",
+  "name": "Default Environment Readiness Profile",
+  "schemaVersion": 1,
+  "source": "Bundled",
+  "runSettings": {
+    "defaultTimeout": 30000,
+    "defaultRetryCount": 3,
+    "retryBackoff": "Exponential",
+    "adminBehavior": "SkipWithReason"
+  },
+  "tests": [
+    {
+      "id": "test-001",
+      "type": "Ping",
+      "displayName": "Check Network Connectivity",
+      "description": "Pings a well-known host to verify internet connectivity.",
+      "parameters": {
+        "host": "8.8.8.8",
+        "timeout": 5000,
+        "ttl": 64
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "timeout": "Editable",
+        "ttl": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "test-002",
+      "type": "HttpGet",
+      "displayName": "Check HTTP Endpoint",
+      "description": "Performs a GET request to verify HTTP connectivity.",
+      "parameters": {
+        "url": "https://www.example.com",
+        "expectedStatusCodes": [200],
+        "headers": {},
+        "validateSsl": true
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "expectedStatusCodes": "Editable",
+        "headers": "Editable",
+        "validateSsl": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "test-003",
+      "type": "FileExists",
+      "displayName": "Check Required File",
+      "description": "Verifies that a required configuration file exists.",
+      "parameters": {
+        "path": "C:\\Windows\\System32\\drivers\\etc\\hosts"
+      },
+      "fieldPolicy": {
+        "path": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "test-004",
+      "type": "DirectoryExists",
+      "displayName": "Check Required Directory",
+      "description": "Verifies that a required directory exists.",
+      "parameters": {
+        "path": "C:\\Program Files"
+      },
+      "fieldPolicy": {
+        "path": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "test-005",
+      "type": "ProcessList",
+      "displayName": "Check Running Processes",
+      "description": "Verifies that specific processes are running.",
+      "parameters": {
+        "processNames": ["explorer", "svchost"],
+        "matchAll": false
+      },
+      "fieldPolicy": {
+        "processNames": "Editable",
+        "matchAll": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "test-006",
+      "type": "RegistryRead",
+      "displayName": "Check Registry Key",
+      "description": "Verifies that a registry key exists and has the expected value.",
+      "parameters": {
+        "keyPath": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
+        "valueName": "ProductName",
+        "expectedValue": null
+      },
+      "fieldPolicy": {
+        "keyPath": "Editable",
+        "valueName": "Editable",
+        "expectedValue": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    }
+  ],
+  "signature": null
+}

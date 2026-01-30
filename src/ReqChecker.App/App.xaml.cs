@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Infrastructure.Tests;
 using ReqChecker.Infrastructure.Execution;
+using ReqChecker.Infrastructure.ProfileManagement;
+using ReqChecker.Infrastructure.ProfileManagement.Migrations;
 using ReqChecker.App.ViewModels;
 using System.Reflection;
 
@@ -26,6 +28,13 @@ public partial class App : System.Windows.Application
     private void ConfigureServices()
     {
         var services = new ServiceCollection();
+
+        // Register profile management services
+        services.AddSingleton<IProfileLoader, JsonProfileLoader>();
+        services.AddSingleton<IProfileValidator, FluentProfileValidator>();
+        services.AddSingleton<IProfileMigrator, ProfileMigrationPipeline>();
+        services.AddSingleton<V1ToV2Migration>();
+        // Note: HmacIntegrityVerifier is optional (null for user-provided profiles)
 
         // Register test implementations via attribute discovery
         var testAssembly = Assembly.GetAssembly(typeof(PingTest));
@@ -55,6 +64,7 @@ public partial class App : System.Windows.Application
 
         // Register ViewModels
         services.AddTransient<MainViewModel>();
+        services.AddTransient<ProfileSelectorViewModel>();
         services.AddTransient<TestListViewModel>();
         services.AddTransient<RunProgressViewModel>();
         services.AddTransient<ResultsViewModel>();

@@ -153,25 +153,25 @@ Based on plan.md layered architecture:
 
 ### Profile Loading Infrastructure
 
-- [ ] T072 [US2] Implement JsonProfileLoader in src/ReqChecker.Infrastructure/Profile/JsonProfileLoader.cs
-- [ ] T073 [US2] Implement FluentProfileValidator in src/ReqChecker.Infrastructure/Profile/FluentProfileValidator.cs
-- [ ] T074 [US2] Implement ProfileMigrationPipeline in src/ReqChecker.Infrastructure/Profile/ProfileMigrationPipeline.cs
-- [ ] T075 [US2] Create V1ToV2Migration placeholder in src/ReqChecker.Infrastructure/Profile/Migrations/V1ToV2Migration.cs
-- [ ] T076 [US2] Implement HmacIntegrityVerifier in src/ReqChecker.Infrastructure/Profile/HmacIntegrityVerifier.cs
+- [X] T072 [US2] Implement JsonProfileLoader in src/ReqChecker.Infrastructure/Profile/JsonProfileLoader.cs
+- [X] T073 [US2] Implement FluentProfileValidator in src/ReqChecker.Infrastructure/Profile/FluentProfileValidator.cs
+- [X] T074 [US2] Implement ProfileMigrationPipeline in src/ReqChecker.Infrastructure/Profile/ProfileMigrationPipeline.cs
+- [X] T075 [US2] Create V1ToV2Migration placeholder in src/ReqChecker.Infrastructure/Profile/Migrations/V1ToV2Migration.cs
+- [X] T076 [US2] Implement HmacIntegrityVerifier in src/ReqChecker.Infrastructure/Profile/HmacIntegrityVerifier.cs
 
 ### Bundled Profile
 
-- [ ] T077 [US2] Create default-profile.json with sample tests in src/ReqChecker.App/Profiles/default-profile.json
-- [ ] T078 [US2] Create signature file for bundled profile in src/ReqChecker.App/Profiles/default-profile.json.sig
-- [ ] T079 [US2] Configure bundled profile as embedded resource in src/ReqChecker.App/ReqChecker.App.csproj (update)
+- [X] T077 [US2] Create default-profile.json with sample tests in src/ReqChecker.App/Profiles/default-profile.json
+- [X] T078 [US2] Create signature file for bundled profile in src/ReqChecker.App/Profiles/default-profile.json.sig
+- [X] T079 [US2] Configure bundled profile as embedded resource in src/ReqChecker.App/ReqChecker.App.csproj (update)
 
 ### UI for Profile Management
 
-- [ ] T080 [US2] Create ProfileSelectorViewModel with atomic loading in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
-- [ ] T081 [US2] Create ProfileSelectorView with profile list and import button in src/ReqChecker.App/Views/ProfileSelectorView.xaml
-- [ ] T082 [US2] Add file picker dialog for profile import in src/ReqChecker.App/Services/DialogService.cs (update)
-- [ ] T083 [US2] Display validation errors in InfoBar on import failure in src/ReqChecker.App/Views/ProfileSelectorView.xaml (update)
-- [ ] T084 [US2] Wire profile selection to TestListView navigation in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs (update)
+- [X] T080 [US2] Create ProfileSelectorViewModel with atomic loading in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
+- [X] T081 [US2] Create ProfileSelectorView with profile list and import button in src/ReqChecker.App/Views/ProfileSelectorView.xaml
+- [X] T082 [US2] Add file picker dialog for profile import in src/ReqChecker.App/Services/DialogService.cs (update)
+- [X] T083 [US2] Display validation errors in InfoBar on import failure in src/ReqChecker.App/Views/ProfileSelectorView.xaml (update)
+- [X] T084 [US2] Wire profile selection to TestListView navigation in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs (update)
 
 **Checkpoint**: User Story 2 complete - profiles load and can be imported
 

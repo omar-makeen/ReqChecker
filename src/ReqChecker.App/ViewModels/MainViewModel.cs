@@ -2,11 +2,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Interfaces;
+using ReqChecker.App.Services;
 
 namespace ReqChecker.App.ViewModels;
 
 /// <summary>
-/// Main view model for the application.
+/// Main view model for application.
 /// </summary>
 public partial class MainViewModel : ObservableObject
 {
@@ -17,32 +18,32 @@ public partial class MainViewModel : ObservableObject
     private ITestRunner? _testRunner;
 
     [ObservableProperty]
-    private Services.NavigationService? _navigationService;
+    private NavigationService? _navigationService;
 
     [ObservableProperty]
-    private Services.DialogService? _dialogService;
+    private DialogService? _dialogService;
 
     [RelayCommand]
     private void NavigateToProfiles()
     {
-        // TODO: Implement navigation
+        NavigationService?.NavigateToProfileSelector();
     }
 
     [RelayCommand]
     private void NavigateToTests()
     {
-        // TODO: Implement navigation
+        NavigationService?.NavigateToTestList();
     }
 
     [RelayCommand]
     private void NavigateToResults()
     {
-        // TODO: Implement navigation
+        NavigationService?.NavigateToResults();
     }
 
     [RelayCommand]
     private void NavigateToDiagnostics()
     {
-        // TODO: Implement navigation
+        // TODO: Implement navigation to diagnostics view
     }
 }
