@@ -3,17 +3,15 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
               xmlns:local="clr-namespace:ReqChecker.App"
-              xmlns:converters="clr-namespace:ReqChecker.App.Converters"
-              StartupUri="MainWindow.xaml">
+              xmlns:converters="clr-namespace:ReqChecker.App.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- WPF-UI Base Resources -->
+                <!-- WPF-UI Base Resources (theme applied dynamically by ThemeService) -->
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
 
-                <!-- ReqChecker Design System -->
-                <ResourceDictionary Source="Resources/Styles/Colors.Dark.xaml" />
+                <!-- ReqChecker Design System (Colors loaded dynamically by ThemeService) -->
                 <ResourceDictionary Source="Resources/Styles/Typography.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Spacing.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Animations.xaml" />
@@ -27,6 +25,7 @@
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
             <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>

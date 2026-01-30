@@ -79,4 +79,23 @@
     <Color x:Key="FocusRingColor">#4D6366f1</Color>
     <SolidColorBrush x:Key="FocusRing" Color="{StaticResource FocusRingColor}"/>
 
+    <!-- WPF-UI NavigationView Pane Background Overrides -->
+    <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="{StaticResource BackgroundBaseColor}"/>
+    <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{StaticResource BackgroundBaseColor}"/>
+    <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="{StaticResource BackgroundBaseColor}"/>
+
+    <!-- WPF-UI Control Backgrounds -->
+    <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
+    <SolidColorBrush x:Key="ControlFillColorSecondaryBrush" Color="{StaticResource BackgroundElevatedColor}"/>
+    <SolidColorBrush x:Key="ControlFillColorTertiaryBrush" Color="{StaticResource BackgroundOverlayColor}"/>
+    <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
+    <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="{StaticResource BackgroundElevatedColor}"/>
+
+    <!-- WPF-UI Window/App Background -->
+    <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="{StaticResource BackgroundBaseColor}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorBaseBrush" Color="{StaticResource BackgroundBaseColor}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
+    <SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="{StaticResource BackgroundElevatedColor}"/>
+    <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
+
 </ResourceDictionary>

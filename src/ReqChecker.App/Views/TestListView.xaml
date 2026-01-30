@@ -75,8 +75,9 @@
                         CornerRadius="10"
                         Padding="10,4"
                         Margin="12,0,0,0"
-                        VerticalAlignment="Center">
-                    <TextBlock Text="{Binding CurrentProfile.Tests.Count}"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Text="{Binding CurrentProfile.Tests.Count, FallbackValue=0}"
                                Style="{DynamicResource TextCaption}"
                                Foreground="{DynamicResource TextSecondary}"/>
                 </Border>
@@ -84,8 +85,10 @@
 
             <!-- Run All Tests Button with Gradient -->
             <Button x:Name="RunAllTestsButton"
+                    Grid.Column="1"
                     Style="{StaticResource PrimaryButtonLarge}"
                     Command="{Binding RunAllTestsCommand}"
+                    IsEnabled="{Binding CurrentProfile, Converter={StaticResource NullToBoolConverter}}"
                     TabIndex="1">
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,10,0"/>
@@ -94,8 +97,66 @@
             </Button>
         </Grid>
 
+        <!-- Empty State - No Profile Loaded -->
+        <Border Grid.Row="1"
+                Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,60,0,0">
+            <StackPanel HorizontalAlignment="Center" MaxWidth="400">
+                <!-- Illustration -->
+                <Border Background="{DynamicResource BackgroundSurface}"
+                        CornerRadius="50"
+                        Width="100"
+                        Height="100"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,32">
+                    <ui:SymbolIcon Symbol="FolderOpen24"
+                                   FontSize="48"
+                                   Foreground="{DynamicResource AccentPrimary}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Title -->
+                <TextBlock Text="No Profile Loaded"
+                           Style="{DynamicResource TextH2}"
+                           Foreground="{DynamicResource TextPrimary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+
+                <!-- Description -->
+                <TextBlock Text="Load a test profile to see available tests. Profiles contain test configurations and requirements for validation."
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextSecondary}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,32"/>
+
+                <!-- Action Button -->
+                <Button Style="{StaticResource PrimaryButton}"
+                        Command="{Binding NavigateToProfilesCommand}"
+                        HorizontalAlignment="Center"
+                        Padding="24,0">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock Text="Load Profile"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Recent profiles hint -->
+                <TextBlock Text="or select from the Profiles tab in the navigation"
+                           Style="{DynamicResource TextCaption}"
+                           Foreground="{DynamicResource TextTertiary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,16,0,0"/>
+            </StackPanel>
+        </Border>
+
         <!-- Test List with virtualization -->
         <ListBox Grid.Row="1"
+                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}"
                  ItemsSource="{Binding CurrentProfile.Tests}"
                  Background="Transparent"
                  BorderThickness="0"

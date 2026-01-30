@@ -39,6 +39,7 @@ public partial class ThemeService : ObservableObject
 
         // Load theme from preferences
         CurrentTheme = _preferencesService.Theme;
+        Serilog.Log.Information("ThemeService: Loaded theme from preferences: {Theme}", CurrentTheme);
 
         // Detect reduced motion setting
         DetectReducedMotion();
@@ -53,8 +54,10 @@ public partial class ThemeService : ObservableObject
     [RelayCommand]
     public void ToggleTheme()
     {
+        var oldTheme = CurrentTheme;
         CurrentTheme = CurrentTheme == AppTheme.Light ? AppTheme.Dark : AppTheme.Light;
         _preferencesService.Theme = CurrentTheme;
+        Serilog.Log.Information("ToggleTheme: Changing from {OldTheme} to {NewTheme}", oldTheme, CurrentTheme);
         ApplyTheme();
     }
 
@@ -117,9 +120,15 @@ public partial class ThemeService : ObservableObject
     /// </summary>
     private void ApplyThemeImmediate(ResourceDictionary resources)
     {
+        Serilog.Log.Information("ApplyThemeImmediate: Starting theme application for {Theme}", CurrentTheme);
+
+        // FIRST: Update WPF-UI theme so its resources are loaded
+        UpdateWpfUiTheme(resources);
+
         // Remove old theme dictionary if exists
         if (_currentThemeDictionary != null && resources.MergedDictionaries.Contains(_currentThemeDictionary))
         {
+            Serilog.Log.Information("Removing old theme dictionary from MergedDictionaries");
             resources.MergedDictionaries.Remove(_currentThemeDictionary);
         }
 
@@ -128,13 +137,22 @@ public partial class ThemeService : ObservableObject
             ? new Uri("pack://application:,,,/Resources/Styles/Colors.Dark.xaml", UriKind.Absolute)
             : new Uri("pack://application:,,,/Resources/Styles/Colors.Light.xaml", UriKind.Absolute);
 
+        Serilog.Log.Information("Loading color dictionary from: {Uri}", themeUri);
         _currentThemeDictionary = new ResourceDictionary { Source = themeUri };
 
-        // Add new theme dictionary at the beginning so it can be overridden by controls
-        resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
+        // THEN: Add our theme dictionary at the END so it overrides WPF-UI defaults
+        resources.MergedDictionaries.Add(_currentThemeDictionary);
+        Serilog.Log.Information("Added new theme dictionary. MergedDictionaries count: {Count}", resources.MergedDictionaries.Count);
 
-        // Update WPF-UI theme if available
-        UpdateWpfUiTheme();
+        // Log the BackgroundBase color to verify it's loaded correctly
+        if (_currentThemeDictionary["BackgroundBase"] is SolidColorBrush brush)
+        {
+            Serilog.Log.Information("BackgroundBase color loaded: {Color}", brush.Color);
+        }
+        else
+        {
+            Serilog.Log.Warning("BackgroundBase brush not found or not a SolidColorBrush");
+        }
     }
 
     /// <summary>
@@ -184,7 +202,7 @@ public partial class ThemeService : ObservableObject
     /// <summary>
     /// Updates WPF-UI's built-in theme to match our theme.
     /// </summary>
-    private void UpdateWpfUiTheme()
+    private void UpdateWpfUiTheme(ResourceDictionary resources)
     {
         try
         {
@@ -192,11 +210,53 @@ public partial class ThemeService : ObservableObject
                 ? Wpf.Ui.Appearance.ApplicationTheme.Dark
                 : Wpf.Ui.Appearance.ApplicationTheme.Light;
 
+            Serilog.Log.Information("Applying WPF-UI theme: {Theme} (CurrentTheme: {CurrentTheme})", wpfUiTheme, CurrentTheme);
             Wpf.Ui.Appearance.ApplicationThemeManager.Apply(wpfUiTheme);
+            Serilog.Log.Information("ApplicationThemeManager.Apply() completed successfully");
+
+            // Keep the XAML ThemesDictionary in sync so built-in control styles update
+            var merged = resources.MergedDictionaries;
+            Serilog.Log.Information("MergedDictionaries count before update: {Count}", merged.Count);
+
+            var existingIndex = -1;
+            for (var i = 0; i < merged.Count; i++)
+            {
+                if (merged[i] is Wpf.Ui.Markup.ThemesDictionary)
+                {
+                    existingIndex = i;
+                    Serilog.Log.Information("Found ThemesDictionary at index {Index}", i);
+                    break;
+                }
+            }
+
+            if (existingIndex >= 0)
+            {
+                Serilog.Log.Information("Removing ThemesDictionary at index {Index}", existingIndex);
+                merged.RemoveAt(existingIndex);
+            }
+
+            var newThemesDictionary = new Wpf.Ui.Markup.ThemesDictionary
+            {
+                Theme = wpfUiTheme
+            };
+            Serilog.Log.Information("Created new ThemesDictionary with Theme: {Theme}", wpfUiTheme);
+
+            if (existingIndex >= 0)
+            {
+                Serilog.Log.Information("Inserting new ThemesDictionary at index {Index}", existingIndex);
+                merged.Insert(existingIndex, newThemesDictionary);
+            }
+            else
+            {
+                Serilog.Log.Information("Inserting new ThemesDictionary at index 0 (not found existing)");
+                merged.Insert(0, newThemesDictionary);
+            }
+
+            Serilog.Log.Information("MergedDictionaries count after update: {Count}", merged.Count);
         }
         catch (Exception ex)
         {
-            Serilog.Log.Warning(ex, "Failed to update WPF-UI theme");
+            Serilog.Log.Error(ex, "Failed to update WPF-UI theme");
         }
     }
 

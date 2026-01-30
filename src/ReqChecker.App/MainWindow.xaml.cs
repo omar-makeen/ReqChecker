@@ -5,6 +5,7 @@ using ReqChecker.App.ViewModels;
 using ReqChecker.App.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui.Controls;
+using Serilog;
 
 namespace ReqChecker.App;
 
@@ -72,21 +73,38 @@ public partial class MainWindow : FluentWindow
 
     private void NavigationView_SelectionChanged(NavigationView sender, RoutedEventArgs args)
     {
+        Serilog.Log.Information("NavigationView_SelectionChanged called");
+        
         if (_isNavigating) return;
 
         var selectedItem = sender.SelectedItem as NavigationViewItem;
         var tag = selectedItem?.Tag?.ToString();
+        Serilog.Log.Information("Selected item tag: {Tag}", tag);
+        
         if (string.IsNullOrEmpty(tag)) return;
 
-        // Handle theme toggle separately
+        // Handle theme toggle separately - it's an action, not a navigation
         if (tag == "Theme")
         {
+            Serilog.Log.Information("Theme toggle clicked via sidebar - calling ToggleTheme");
             _themeService.ToggleTheme();
-            // Reset selection to previous item since theme is an action, not navigation
+
+            // Deselect the theme item so it can be clicked again
+            // Mark it as not active since it's not a navigation destination
+            if (selectedItem != null)
+            {
+                selectedItem.IsActive = false;
+            }
             return;
         }
 
         NavigateWithAnimation(tag);
+    }
+
+    private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
+    {
+        Serilog.Log.Information("ThemeToggleButton_Click called - calling ToggleTheme");
+        _themeService.ToggleTheme();
     }
 
     private async void NavigateWithAnimation(string tag)

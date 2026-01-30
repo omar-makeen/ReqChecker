@@ -45,12 +45,16 @@ public partial class App : System.Windows.Application
         var appState = Services.GetRequiredService<IAppState>();
         appState.SetLogsPath(Path.Combine(AppDataPath, "Logs"));
 
-        // Initialize theme service
+        // Initialize theme service BEFORE creating the window
         var themeService = Services.GetRequiredService<ThemeService>();
 
         // Register global exception handler
         this.DispatcherUnhandledException += App_DispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+        // Create and show main window AFTER theme is applied
+        var mainWindow = new MainWindow();
+        mainWindow.Show();
     }
 
     private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

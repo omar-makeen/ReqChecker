@@ -11,17 +11,15 @@ public class NullToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value == null)
+        var isNull = value == null || (value is string str && string.IsNullOrEmpty(str));
+        var invert = parameter is string p && p.Equals("Invert", StringComparison.OrdinalIgnoreCase);
+
+        if (invert)
         {
-            return Visibility.Collapsed;
+            return isNull ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        if (value is string str && string.IsNullOrEmpty(str))
-        {
-            return Visibility.Collapsed;
-        }
-
-        return Visibility.Visible;
+        return isNull ? Visibility.Collapsed : Visibility.Visible;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

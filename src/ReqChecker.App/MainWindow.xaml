@@ -12,8 +12,9 @@
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
         ExtendsContentIntoTitleBar="True"
-        WindowBackdropType="Mica"
-        WindowCornerPreference="Round">
+        WindowBackdropType="None"
+        WindowCornerPreference="Round"
+        Background="{DynamicResource BackgroundBase}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -58,7 +59,8 @@
                 IsPaneToggleVisible="True"
                 PaneTitle="Navigation"
                 SelectionChanged="NavigationView_SelectionChanged"
-                Background="Transparent">
+                Background="{DynamicResource BackgroundBase}"
+                Foreground="{DynamicResource TextPrimary}">
 
                 <ui:NavigationView.MenuItems>
                     <ui:NavigationViewItem
@@ -115,7 +117,7 @@
                 <ui:NavigationView.FooterMenuItems>
                     <ui:NavigationViewItem
                         x:Name="NavTheme"
-                        Content="{Binding ThemeLabel}"
+                        Content="{Binding DataContext.ThemeLabel, RelativeSource={RelativeSource AncestorType=Window}}"
                         Tag="Theme"
                         Icon="{ui:SymbolIcon WeatherMoon24}"
                         ToolTipService.ShowOnDisabled="True"
@@ -173,9 +175,9 @@
                         FontSize="12"
                         Foreground="{DynamicResource TextTertiary}"
                         Margin="0,0,6,0"
-                        Visibility="{Binding HasProfile, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        Visibility="{Binding DataContext.HasProfile, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     <TextBlock
-                        Text="{Binding ProfileName, FallbackValue='No profile loaded'}"
+                        Text="{Binding DataContext.ProfileName, RelativeSource={RelativeSource AncestorType=Window}, FallbackValue='No profile loaded'}"
                         Style="{DynamicResource TextCaption}"
                         Foreground="{DynamicResource TextSecondary}"
                         VerticalAlignment="Center"/>
@@ -186,12 +188,13 @@
                     <!-- Theme Toggle Button -->
                     <Button x:Name="ThemeToggleButton"
                             Style="{StaticResource IconButton}"
-                            Command="{Binding ThemeService.ToggleThemeCommand}"
+                            Command="{Binding DataContext.ThemeService.ToggleThemeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Click="ThemeToggleButton_Click"
                             ToolTip="Toggle dark/light theme"
                             Width="32"
                             Height="32"
                             Margin="0,0,12,0">
-                        <ui:SymbolIcon Symbol="{Binding ThemeIcon}" FontSize="16"/>
+                        <ui:SymbolIcon Symbol="{Binding DataContext.ThemeIcon, RelativeSource={RelativeSource AncestorType=Window}}" FontSize="16"/>
                     </Button>
 
                     <!-- Status Indicator -->
