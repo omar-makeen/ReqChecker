@@ -58,8 +58,9 @@ public class SequentialTestRunner : ITestRunner
         // Use provided settings or create default
         runSettings ??= new RunSettings();
 
-        foreach (var testDefinition in profile.Tests)
+        for (int i = 0; i < profile.Tests.Count; i++)
         {
+            var testDefinition = profile.Tests[i];
             cancellationToken.ThrowIfCancellationRequested();
 
             // Check if test type is registered
@@ -117,7 +118,7 @@ public class SequentialTestRunner : ITestRunner
             progress?.Report(testResult);
 
             // Apply inter-test delay (skip after last test)
-            if (runSettings.InterTestDelayMs > 0 && profile.Tests.IndexOf(testDefinition) < profile.Tests.Count - 1)
+            if (runSettings.InterTestDelayMs > 0 && i < profile.Tests.Count - 1)
             {
                 await Task.Delay(runSettings.InterTestDelayMs, cancellationToken);
             }
