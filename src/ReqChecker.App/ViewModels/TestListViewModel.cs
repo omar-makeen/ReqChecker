@@ -13,6 +13,7 @@ public partial class TestListViewModel : ObservableObject, IDisposable
 {
     private readonly IAppState _appState;
     private readonly NavigationService _navigationService;
+    private readonly ITestRunner _testRunner;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -21,15 +22,16 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     private TestDefinition? _selectedTest;
 
     [ObservableProperty]
-    private ITestRunner? _testRunner;
-
-    [ObservableProperty]
     private DialogService? _dialogService;
 
-    public TestListViewModel(IAppState appState, NavigationService navigationService)
+    [ObservableProperty]
+    private bool _isRunning;
+
+    public TestListViewModel(IAppState appState, NavigationService navigationService, ITestRunner testRunner)
     {
         _appState = appState;
         _navigationService = navigationService;
+        _testRunner = testRunner;
 
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
@@ -47,15 +49,15 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     /// Runs all tests in current profile.
     /// </summary>
     [RelayCommand]
-    private async Task RunAllTestsAsync()
+    private void RunAllTests()
     {
-        if (CurrentProfile == null || TestRunner == null)
+        if (CurrentProfile == null)
         {
             return;
         }
 
-        // TODO: Implement test execution and navigation
-        await Task.CompletedTask;
+        // Navigate to run progress view - it will handle the actual execution
+        _navigationService.NavigateToRunProgress();
     }
 
     /// <summary>

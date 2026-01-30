@@ -2,6 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
+using ReqChecker.Core.Interfaces;
+using ReqChecker.App.Services;
 using System.Collections.ObjectModel;
 
 namespace ReqChecker.App.ViewModels;
@@ -11,6 +13,10 @@ namespace ReqChecker.App.ViewModels;
 /// </summary>
 public partial class RunProgressViewModel : ObservableObject
 {
+    private readonly IAppState _appState;
+    private readonly ITestRunner _testRunner;
+    private readonly NavigationService _navigationService;
+
     [ObservableProperty]
     private Profile? _currentProfile;
 
@@ -54,6 +60,16 @@ public partial class RunProgressViewModel : ObservableObject
     [ObservableProperty]
     private int _skippedTests;
 
+    /// <summary>
+    /// Gets whether there are any test results to display.
+    /// </summary>
+    public bool HasResults => TestResults.Count > 0;
+
+    /// <summary>
+    /// Gets whether a test is actively executing (not just IsRunning).
+    /// </summary>
+    public bool IsTestRunning => IsRunning && !IsComplete && !IsCancelling;
+
     [ObservableProperty]
     private TestStatus? _currentStatus;
 
@@ -64,29 +80,153 @@ public partial class RunProgressViewModel : ObservableObject
     private bool _isComplete;
 
     [ObservableProperty]
+    private bool _isCancelling;
+
+    [ObservableProperty]
+    private bool _isRunning;
+
+    [ObservableProperty]
     private CancellationTokenSource? _cts;
 
     [ObservableProperty]
     private ObservableCollection<TestResult> _testResults = new();
 
+    [ObservableProperty]
+    private RunReport? _runReport;
+
+    public RunProgressViewModel(IAppState appState, ITestRunner testRunner, NavigationService navigationService)
+    {
+        _appState = appState;
+        _testRunner = testRunner;
+        _navigationService = navigationService;
+
+        // Get current profile from shared state
+        CurrentProfile = _appState.CurrentProfile;
+
+        if (CurrentProfile != null)
+        {
+            TotalTests = CurrentProfile.Tests.Count;
+        }
+    }
+
+    /// <summary>
+    /// Starts the test execution.
+    /// </summary>
+    public async Task StartTestsAsync()
+    {
+        if (CurrentProfile == null || IsRunning)
+        {
+            return;
+        }
+
+        IsRunning = true;
+        IsComplete = false;
+        Cts = new CancellationTokenSource();
+
+        // Reset counters
+        CompletedTests = 0;
+        FailedTests = 0;
+        SkippedTests = 0;
+        CurrentTestIndex = 0;
+        TestResults.Clear();
+
+        try
+        {
+            var progress = new Progress<TestResult>(OnTestCompleted);
+            RunReport = await _testRunner.RunTestsAsync(CurrentProfile, progress, Cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // User cancelled - this is expected
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't crash
+            Serilog.Log.Error(ex, "Error running tests");
+        }
+        finally
+        {
+            OnCompletion();
+        }
+    }
+
+    private void OnTestCompleted(TestResult result)
+    {
+        // Update on UI thread
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+        {
+            TestResults.Add(result);
+            CurrentTestIndex++;
+            // Set CurrentTestName to NEXT test (if any) instead of completed test
+            CurrentTestName = CurrentTestIndex < TotalTests
+                ? CurrentProfile?.Tests[CurrentTestIndex].DisplayName
+                : null;
+            CurrentStatus = result.Status;
+
+            switch (result.Status)
+            {
+                case TestStatus.Pass:
+                    CompletedTests++;
+                    break;
+                case TestStatus.Fail:
+                    FailedTests++;
+                    break;
+                case TestStatus.Skipped:
+                    SkippedTests++;
+                    break;
+            }
+
+            // Notify that HasResults has changed
+            OnPropertyChanged(nameof(HasResults));
+        });
+    }
+
+    /// <summary>
+    /// Atomically updates all final state properties when test execution completes.
+    /// </summary>
+    private void OnCompletion()
+    {
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+        {
+            IsRunning = false;
+            IsComplete = true;
+            IsCancelling = false;
+            CurrentTestName = null;
+        });
+    }
+
     /// <summary>
     /// Cancels the test run.
     /// </summary>
     [RelayCommand]
-    private async Task CancelAsync()
+    private void Cancel()
     {
+        if (!IsRunning || IsCancelling)
+            return;
+
+        IsCancelling = true;
         Cts?.Cancel();
-        IsComplete = true;
-        await Task.CompletedTask;
     }
 
     /// <summary>
     /// Navigates back to the test list view.
     /// </summary>
     [RelayCommand]
-    private async Task NavigateToTestListAsync()
+    private void NavigateToTestList()
     {
-        // TODO: Implement navigation
-        await Task.CompletedTask;
+        _navigationService.NavigateToTestList();
+    }
+
+    /// <summary>
+    /// Navigates to the results view.
+    /// </summary>
+    [RelayCommand]
+    private void ViewResults()
+    {
+        if (RunReport != null)
+        {
+            _appState.SetLastRunReport(RunReport);
+            _navigationService.NavigateToResults();
+        }
     }
 }

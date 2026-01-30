@@ -173,9 +173,31 @@ public partial class ProgressRing : UserControl
         var radius = (Math.Min(width, height) - strokeThickness) / 2;
         var center = new Point(width / 2, height / 2);
 
+        // Handle edge case where progress is 0
+        if (Progress <= 0)
+        {
+            _progressArc.Visibility = Visibility.Hidden;
+            return;
+        }
+
+        _progressArc.Visibility = Visibility.Visible;
+
         // Calculate arc based on progress
-        var progressAngle = (Progress / 100.0) * 360.0;
-        var startAngle = -90.0; // Start from top
+        double progressAngle;
+        double startAngle;
+
+        // Handle special case for 100% - render full ellipse instead of degenerate arc
+        if (Progress >= 100)
+        {
+            // For a full circle, use a slightly less than 360 degree arc to avoid degenerate geometry
+            progressAngle = 359.99;
+            startAngle = -90.0;
+        }
+        else
+        {
+            progressAngle = (Progress / 100.0) * 360.0;
+            startAngle = -90.0;
+        }
 
         // Convert angles to radians
         var startRad = startAngle * Math.PI / 180.0;
@@ -189,15 +211,6 @@ public partial class ProgressRing : UserControl
         var endPoint = new Point(
             center.X + radius * Math.Cos(endRad),
             center.Y + radius * Math.Sin(endRad));
-
-        // Handle edge case where progress is 0 or 100
-        if (Progress <= 0)
-        {
-            _progressArc.Visibility = Visibility.Hidden;
-            return;
-        }
-
-        _progressArc.Visibility = Visibility.Visible;
 
         // Update arc
         _arcFigure.StartPoint = startPoint;

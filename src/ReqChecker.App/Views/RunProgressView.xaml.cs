@@ -24,6 +24,15 @@ public partial class RunProgressView
 
         // Clean up subscription when unloaded
         Unloaded += OnUnloaded;
+
+        // Start tests when the view is loaded
+        Loaded += OnLoaded;
+    }
+
+    private async void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        // Start test execution automatically
+        await _viewModel.StartTestsAsync();
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
