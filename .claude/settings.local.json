@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(ls:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet test:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nImplement Phase 9: Polish and cross-cutting concerns\n\nAccessibility & UX:\n- Add keyboard navigation with access keys and tab order to all views\n- Add focus states and FocusManager configuration\n- Implement ThemeService with dark/light toggle and persistence\n- Add version info footer to MainWindow\n\nError Handling:\n- Add global exception handlers \\(Dispatcher and AppDomain\\)\n- Add user-friendly error dialogs with logging\n\nDistribution:\n- Configure self-contained single-file publish\n- Create WiX installer with Start Menu and Desktop shortcuts\n- Add License.rtf for installer\n- Add app.manifest for Windows compatibility\n- Add Icons README with branding guidelines\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git remote add:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}

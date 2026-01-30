@@ -25,17 +25,17 @@ Based on plan.md, paths are:
 
 **Purpose**: Create the foundational design system and resource dictionaries
 
-- [ ] T001 [P] Create dark theme color tokens in src/ReqChecker.App/Resources/Styles/Colors.Dark.xaml
-- [ ] T002 [P] Create light theme color tokens in src/ReqChecker.App/Resources/Styles/Colors.Light.xaml
-- [ ] T003 [P] Create typography styles in src/ReqChecker.App/Resources/Styles/Typography.xaml
-- [ ] T004 [P] Create spacing values in src/ReqChecker.App/Resources/Styles/Spacing.xaml
-- [ ] T005 Create PreferencesService for user settings persistence in src/ReqChecker.App/Services/PreferencesService.cs
-- [ ] T006 Create IPreferencesService interface in src/ReqChecker.App/Services/IPreferencesService.cs
-- [ ] T007 Add unit tests for PreferencesService in tests/ReqChecker.App.Tests/Services/PreferencesServiceTests.cs
-- [ ] T008 Enhance ThemeService with persistence and new resource dictionaries in src/ReqChecker.App/Services/ThemeService.cs
-- [ ] T009 Add unit tests for ThemeService in tests/ReqChecker.App.Tests/Services/ThemeServiceTests.cs
-- [ ] T010 Update App.xaml to merge new resource dictionaries in src/ReqChecker.App/App.xaml
-- [ ] T011 Register PreferencesService in DI container in src/ReqChecker.App/App.xaml.cs
+- [X] T001 [P] Create dark theme color tokens in src/ReqChecker.App/Resources/Styles/Colors.Dark.xaml
+- [X] T002 [P] Create light theme color tokens in src/ReqChecker.App/Resources/Styles/Colors.Light.xaml
+- [X] T003 [P] Create typography styles in src/ReqChecker.App/Resources/Styles/Typography.xaml
+- [X] T004 [P] Create spacing values in src/ReqChecker.App/Resources/Styles/Spacing.xaml
+- [X] T005 Create PreferencesService for user settings persistence in src/ReqChecker.App/Services/PreferencesService.cs
+- [X] T006 Create IPreferencesService interface in src/ReqChecker.App/Services/IPreferencesService.cs
+- [X] T007 Add unit tests for PreferencesService in tests/ReqChecker.App.Tests/Services/PreferencesServiceTests.cs
+- [X] T008 Enhance ThemeService with persistence and new resource dictionaries in src/ReqChecker.App/Services/ThemeService.cs
+- [X] T009 Add unit tests for ThemeService in tests/ReqChecker.App.Tests/Services/ThemeServiceTests.cs
+- [X] T010 Update App.xaml to merge new resource dictionaries in src/ReqChecker.App/App.xaml
+- [X] T011 Register PreferencesService in DI container in src/ReqChecker.App/App.xaml.cs
 
 **Checkpoint**: Theme system complete - colors, typography, spacing resources available, theme persists
 

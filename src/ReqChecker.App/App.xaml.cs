@@ -151,7 +151,9 @@ public partial class App : System.Windows.Application
             new NavigationService(sp));
         services.AddSingleton<DialogService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
-        services.AddSingleton<ThemeService>();
+        services.AddSingleton<IPreferencesService, PreferencesService>();
+        services.AddSingleton<ThemeService>(sp =>
+            new ThemeService(sp.GetRequiredService<IPreferencesService>()));
 
         // Register ViewModels
         services.AddTransient<MainViewModel>();

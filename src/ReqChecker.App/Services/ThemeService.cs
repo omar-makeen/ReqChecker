@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
-using System.IO;
 
 namespace ReqChecker.App.Services;
 
@@ -15,23 +14,31 @@ public enum AppTheme
 }
 
 /// <summary>
-/// Service for managing application theme.
+/// Service for managing application theme with resource dictionary switching.
 /// </summary>
 public partial class ThemeService : ObservableObject
 {
+    private readonly IPreferencesService _preferencesService;
+    private ResourceDictionary? _currentThemeDictionary;
+
     [ObservableProperty]
     private AppTheme _currentTheme;
 
-    private readonly string _settingsPath;
+    [ObservableProperty]
+    private bool _isReducedMotionEnabled;
 
-    public ThemeService()
+    public ThemeService(IPreferencesService preferencesService)
     {
-        _settingsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "ReqChecker",
-            "theme-settings.json");
+        _preferencesService = preferencesService;
 
-        LoadTheme();
+        // Load theme from preferences
+        CurrentTheme = _preferencesService.Theme;
+
+        // Detect reduced motion setting
+        DetectReducedMotion();
+
+        // Apply theme on startup
+        ApplyTheme();
     }
 
     /// <summary>
@@ -41,8 +48,8 @@ public partial class ThemeService : ObservableObject
     public void ToggleTheme()
     {
         CurrentTheme = CurrentTheme == AppTheme.Light ? AppTheme.Dark : AppTheme.Light;
+        _preferencesService.Theme = CurrentTheme;
         ApplyTheme();
-        SaveTheme();
     }
 
     /// <summary>
@@ -51,10 +58,22 @@ public partial class ThemeService : ObservableObject
     public void SetTheme(AppTheme theme)
     {
         CurrentTheme = theme;
+        _preferencesService.Theme = theme;
         ApplyTheme();
-        SaveTheme();
     }
 
+    /// <summary>
+    /// Detects if the system has reduced motion enabled.
+    /// </summary>
+    private void DetectReducedMotion()
+    {
+        // SystemParameters.ClientAreaAnimation reflects the Windows "Show animations in Windows" setting
+        IsReducedMotionEnabled = !SystemParameters.ClientAreaAnimation;
+    }
+
+    /// <summary>
+    /// Applies the current theme by switching resource dictionaries.
+    /// </summary>
     private void ApplyTheme()
     {
         var app = Application.Current;
@@ -63,56 +82,70 @@ public partial class ThemeService : ObservableObject
         var resources = app.Resources;
         if (resources == null) return;
 
-        // Apply theme to application
-        resources["ThemeMode"] = CurrentTheme.ToString();
-
-        // Update window backgrounds
-        if (app.MainWindow != null)
+        try
         {
-            app.MainWindow.Background = CurrentTheme == AppTheme.Dark
-                ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(32, 32, 32))
-                : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+            // Remove old theme dictionary if exists
+            if (_currentThemeDictionary != null && resources.MergedDictionaries.Contains(_currentThemeDictionary))
+            {
+                resources.MergedDictionaries.Remove(_currentThemeDictionary);
+            }
+
+            // Create new theme dictionary
+            var themeUri = CurrentTheme == AppTheme.Dark
+                ? new Uri("pack://application:,,,/Resources/Styles/Colors.Dark.xaml", UriKind.Absolute)
+                : new Uri("pack://application:,,,/Resources/Styles/Colors.Light.xaml", UriKind.Absolute);
+
+            _currentThemeDictionary = new ResourceDictionary { Source = themeUri };
+
+            // Add new theme dictionary at the beginning so it can be overridden by controls
+            resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
+
+            // Update WPF-UI theme if available
+            UpdateWpfUiTheme();
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Failed to apply theme {Theme}", CurrentTheme);
         }
     }
 
-    private void LoadTheme()
+    /// <summary>
+    /// Updates WPF-UI's built-in theme to match our theme.
+    /// </summary>
+    private void UpdateWpfUiTheme()
     {
         try
         {
-            if (File.Exists(_settingsPath))
-            {
-                var json = File.ReadAllText(_settingsPath);
-                var themeValue = System.Text.Json.JsonSerializer.Deserialize<string>(json);
-                if (Enum.TryParse<AppTheme>(themeValue, out var theme))
-                {
-                    CurrentTheme = theme;
-                    ApplyTheme();
-                }
-            }
+            var wpfUiTheme = CurrentTheme == AppTheme.Dark
+                ? Wpf.Ui.Appearance.ApplicationTheme.Dark
+                : Wpf.Ui.Appearance.ApplicationTheme.Light;
+
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(wpfUiTheme);
         }
-        catch
+        catch (Exception ex)
         {
-            // Default to light theme if loading fails
-            CurrentTheme = AppTheme.Light;
+            Serilog.Log.Warning(ex, "Failed to update WPF-UI theme");
         }
     }
 
-    private void SaveTheme()
+    /// <summary>
+    /// Gets the animation duration based on reduced motion setting.
+    /// Returns TimeSpan.Zero if reduced motion is enabled.
+    /// </summary>
+    public TimeSpan GetAnimationDuration(TimeSpan normalDuration)
     {
-        try
-        {
-            var directory = Path.GetDirectoryName(_settingsPath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var json = System.Text.Json.JsonSerializer.Serialize(CurrentTheme.ToString());
-            File.WriteAllText(_settingsPath, json);
-        }
-        catch
-        {
-            // Silently fail on save error
-        }
+        return IsReducedMotionEnabled ? TimeSpan.Zero : normalDuration;
     }
+
+    /// <summary>
+    /// Gets whether decorative animations should be enabled.
+    /// Decorative animations are disabled when reduced motion is enabled.
+    /// </summary>
+    public bool ShouldAnimateDecorative => !IsReducedMotionEnabled;
+
+    /// <summary>
+    /// Gets whether essential feedback animations should be enabled.
+    /// Essential animations (button press, status changes) are always enabled.
+    /// </summary>
+    public bool ShouldAnimateEssential => true;
 }
