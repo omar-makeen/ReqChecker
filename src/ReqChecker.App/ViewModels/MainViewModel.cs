@@ -13,6 +13,7 @@ namespace ReqChecker.App.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly IPreferencesService _preferencesService;
+    private readonly IAppState _appState;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -32,10 +33,22 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSidebarExpanded;
 
-    public MainViewModel(IPreferencesService preferencesService)
+    public MainViewModel(IPreferencesService preferencesService, IAppState appState)
     {
         _preferencesService = preferencesService;
+        _appState = appState;
         _isSidebarExpanded = _preferencesService.SidebarExpanded;
+
+        // Get current profile from shared state
+        CurrentProfile = _appState.CurrentProfile;
+
+        // Subscribe to profile changes
+        _appState.CurrentProfileChanged += OnCurrentProfileChanged;
+    }
+
+    private void OnCurrentProfileChanged(object? sender, EventArgs e)
+    {
+        CurrentProfile = _appState.CurrentProfile;
     }
 
     /// <summary>

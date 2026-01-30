@@ -71,6 +71,9 @@ public partial class App : System.Windows.Application
 
         // Prevent default unhandled exception processing
         e.Handled = true;
+
+        // Shutdown the application after showing the error dialog
+        Shutdown();
     }
 
     private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -79,14 +82,17 @@ public partial class App : System.Windows.Application
         Serilog.Log.Error(e.ExceptionObject as Exception, "Unhandled domain exception: {Message}",
             e.ExceptionObject?.ToString() ?? "Unknown error");
 
-        // Show user-friendly error message
+        // Show user-friendly error message - marshal UI work to Dispatcher
         if (e.IsTerminating)
         {
-            ShowErrorDialog(
-                "Critical Error",
-                "The application encountered a critical error and will close. " +
-                "Please check the logs folder for more details.",
-                e.ExceptionObject as Exception);
+            Dispatcher.Invoke(() =>
+            {
+                ShowErrorDialog(
+                    "Critical Error",
+                    "The application encountered a critical error and will close. " +
+                    "Please check the logs folder for more details.",
+                    e.ExceptionObject as Exception);
+            });
         }
     }
 
@@ -115,8 +121,15 @@ public partial class App : System.Windows.Application
         // Register profile management services
         services.AddSingleton<IProfileLoader, JsonProfileLoader>();
         services.AddSingleton<IProfileValidator, FluentProfileValidator>();
-        services.AddSingleton<IProfileMigrator, ProfileMigrationPipeline>();
-        services.AddSingleton<V1ToV2Migration>();
+
+        // Register individual migrators as IProfileMigrator (for collection resolution)
+        services.AddSingleton<IProfileMigrator, V1ToV2Migration>();
+
+        // Register ProfileMigrationPipeline directly (not as IProfileMigrator) to avoid circular dependency
+        // The pipeline orchestrates the individual migrators registered above
+        services.AddSingleton<ProfileMigrationPipeline>(sp =>
+            new ProfileMigrationPipeline(sp.GetServices<IProfileMigrator>()));
+
         // Note: HmacIntegrityVerifier is optional (null for user-provided profiles)
 
         // Register test implementations via attribute discovery
@@ -160,12 +173,17 @@ public partial class App : System.Windows.Application
             new ThemeService(sp.GetRequiredService<IPreferencesService>()));
 
         // Register ViewModels
-        services.AddTransient<MainViewModel>(sp =>
-            new MainViewModel(sp.GetRequiredService<IPreferencesService>()));
+        services.AddTransient<MainViewModel>();
         services.AddTransient<ProfileSelectorViewModel>();
         services.AddTransient<TestListViewModel>();
         services.AddTransient<RunProgressViewModel>();
-        services.AddTransient<ResultsViewModel>();
+        services.AddTransient<ResultsViewModel>(sp =>
+            new ResultsViewModel(
+                sp.GetRequiredService<JsonExporter>(),
+                sp.GetRequiredService<CsvExporter>(),
+                sp.GetRequiredService<IAppState>(),
+                sp.GetRequiredService<NavigationService>(),
+                sp.GetRequiredService<DialogService>()));
         services.AddTransient<DiagnosticsViewModel>();
 
         // Build service provider

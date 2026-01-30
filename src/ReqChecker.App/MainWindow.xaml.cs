@@ -101,12 +101,6 @@ public partial class MainWindow : FluentWindow
         NavigateWithAnimation(tag);
     }
 
-    private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
-    {
-        Serilog.Log.Information("ThemeToggleButton_Click called - calling ToggleTheme");
-        _themeService.ToggleTheme();
-    }
-
     private async void NavigateWithAnimation(string tag)
     {
         _isNavigating = true;

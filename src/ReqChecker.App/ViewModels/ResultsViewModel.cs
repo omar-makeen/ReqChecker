@@ -56,11 +56,18 @@ public partial class ResultsViewModel : ObservableObject
     private readonly CsvExporter _csvExporter;
     private readonly IAppState _appState;
 
-    public ResultsViewModel(JsonExporter jsonExporter, CsvExporter csvExporter, IAppState appState)
+    public ResultsViewModel(
+        JsonExporter jsonExporter,
+        CsvExporter csvExporter,
+        IAppState appState,
+        NavigationService navigationService,
+        DialogService dialogService)
     {
         _jsonExporter = jsonExporter;
         _csvExporter = csvExporter;
         _appState = appState;
+        NavigationService = navigationService;
+        DialogService = dialogService;
     }
 
     /// <summary>

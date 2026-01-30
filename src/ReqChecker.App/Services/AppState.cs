@@ -20,6 +20,9 @@ public class AppState : IAppState
     public event EventHandler? LastRunReportChanged;
 
     /// <inheritdoc />
+    public event EventHandler? CurrentProfileChanged;
+
+    /// <inheritdoc />
     public void SetLastRunReport(RunReport report)
     {
         LastRunReport = report;
@@ -36,6 +39,7 @@ public class AppState : IAppState
     public void SetCurrentProfile(Profile profile)
     {
         CurrentProfile = profile;
+        CurrentProfileChanged?.Invoke(this, EventArgs.Empty);
     }
 }
 
@@ -63,6 +67,11 @@ public interface IAppState
     /// Event raised when last run report changes.
     /// </summary>
     event EventHandler? LastRunReportChanged;
+
+    /// <summary>
+    /// Event raised when current profile changes.
+    /// </summary>
+    event EventHandler? CurrentProfileChanged;
 
     /// <summary>
     /// Sets the last run report.

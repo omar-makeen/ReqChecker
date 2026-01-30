@@ -24,14 +24,14 @@
 
 **Purpose**: Fix crash-inducing and functionally broken code - MUST complete first
 
-- [ ] T001 [H1] Fix DispatcherUnhandledException to call Shutdown() after error dialog in src/ReqChecker.App/App.xaml.cs
-- [ ] T002 [H2] Fix CurrentDomain_UnhandledException to marshal UI work to Dispatcher and terminate cleanly in src/ReqChecker.App/App.xaml.cs
-- [ ] T003 [H3] Remove Click="ThemeToggleButton_Click" from theme toggle button in src/ReqChecker.App/MainWindow.xaml (keep Command binding)
-- [ ] T004 [H3] Remove ThemeToggleButton_Click method from src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T005 [H4] Update NavigationService.NavigateToTestConfig to accept TestDefinition parameter in src/ReqChecker.App/Services/NavigationService.cs
-- [ ] T006 [H4] Update TestListViewModel.NavigateToTestConfig to pass selected test to navigation in src/ReqChecker.App/ViewModels/TestListViewModel.cs
-- [ ] T007 [H5] Inject NavigationService and DialogService into ResultsViewModel constructor in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
-- [ ] T008 [H5] Update ResultsViewModel DI registration to include NavigationService and DialogService in src/ReqChecker.App/App.xaml.cs
+- [X] T001 [H1] Fix DispatcherUnhandledException to call Shutdown() after error dialog in src/ReqChecker.App/App.xaml.cs
+- [X] T002 [H2] Fix CurrentDomain_UnhandledException to marshal UI work to Dispatcher and terminate cleanly in src/ReqChecker.App/App.xaml.cs
+- [X] T003 [H3] Remove Click="ThemeToggleButton_Click" from theme toggle button in src/ReqChecker.App/MainWindow.xaml (keep Command binding)
+- [X] T004 [H3] Remove ThemeToggleButton_Click method from src/ReqChecker.App/MainWindow.xaml.cs
+- [X] T005 [H4] Update NavigationService.NavigateToTestConfig to accept TestDefinition parameter in src/ReqChecker.App/Services/NavigationService.cs
+- [X] T006 [H4] Update TestListViewModel.NavigateToTestConfig to pass selected test to navigation in src/ReqChecker.App/ViewModels/TestListViewModel.cs
+- [X] T007 [H5] Inject NavigationService and DialogService into ResultsViewModel constructor in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
+- [X] T008 [H5] Update ResultsViewModel DI registration to include NavigationService and DialogService in src/ReqChecker.App/App.xaml.cs
 
 **Checkpoint**: App terminates cleanly on errors; theme toggles once; test config opens correct test; export buttons work
 

@@ -189,7 +189,6 @@
                     <Button x:Name="ThemeToggleButton"
                             Style="{StaticResource IconButton}"
                             Command="{Binding DataContext.ThemeService.ToggleThemeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Click="ThemeToggleButton_Click"
                             ToolTip="Toggle dark/light theme"
                             Width="32"
                             Height="32"

@@ -40,12 +40,11 @@ public class NavigationService
     /// <summary>
     /// Navigates to test configuration view.
     /// </summary>
-    public void NavigateToTestConfig(ProfileModel profile)
+    public void NavigateToTestConfig(TestDefinition test)
     {
-        var firstTest = profile.Tests.FirstOrDefault();
-        if (firstTest != null)
+        if (test != null)
         {
-            var viewModel = new TestConfigViewModel(firstTest);
+            var viewModel = new TestConfigViewModel(test);
             var view = new Views.TestConfigView(viewModel);
             _frame?.Navigate(view);
         }
