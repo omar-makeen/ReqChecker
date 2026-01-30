@@ -18,6 +18,11 @@ public class RunSettings
     public int DefaultRetryCount { get; set; } = 3;
 
     /// <summary>
+    /// Default retry delay in milliseconds (default: 5000).
+    /// </summary>
+    public int RetryDelayMs { get; set; } = 5000;
+
+    /// <summary>
     /// Retry delay strategy (default: Exponential).
     /// </summary>
     public BackoffStrategy RetryBackoff { get; set; } = BackoffStrategy.Exponential;

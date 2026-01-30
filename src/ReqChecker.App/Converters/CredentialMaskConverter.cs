@@ -1,4 +1,4 @@
-using ReqChecker.Infrastructure.Export;
+using ReqChecker.Core.Utilities;
 using System.Globalization;
 using System.Windows.Data;
 

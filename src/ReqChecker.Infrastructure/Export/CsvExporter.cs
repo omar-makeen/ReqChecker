@@ -2,6 +2,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
+using ReqChecker.Core.Utilities;
 using System.Globalization;
 
 namespace ReqChecker.Infrastructure.Export;

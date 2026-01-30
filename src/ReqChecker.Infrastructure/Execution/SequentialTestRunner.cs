@@ -106,9 +106,10 @@ public class SequentialTestRunner : ITestRunner
 
             // Check for PromptAtRun fields and prompt for credentials if needed
             var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
-            
+
             // Execute test with retry policy
-            var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, context, cancellationToken);
+            var runSettings = new RunSettings(); // Use default settings
+            var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
         }

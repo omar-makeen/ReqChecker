@@ -15,21 +15,20 @@ public static class RetryPolicy
     /// </summary>
     /// <param name="test">The test to execute.</param>
     /// <param name="testDefinition">The test definition containing retry configuration.</param>
+    /// <param name="runSettings">The run settings containing default retry configuration.</param>
     /// <param name="context">Optional execution context containing credentials.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The test result.</returns>
     public static async Task<TestResult> ExecuteWithRetryAsync(
         ITest test,
         TestDefinition testDefinition,
+        RunSettings runSettings,
         TestExecutionContext? context,
         CancellationToken cancellationToken = default)
     {
-        var retryCount = testDefinition.RetryCount ?? 0;
-        var retryDelayMs = 5000; // Default 5 seconds
-        var backoffStrategy = BackoffStrategy.None;
-
-        // Get retry settings from run settings if available
-        // For now, use defaults
+        var retryCount = testDefinition.RetryCount ?? runSettings.DefaultRetryCount;
+        var retryDelayMs = runSettings.RetryDelayMs;
+        var backoffStrategy = runSettings.RetryBackoff;
 
         TestResult? lastResult = null;
 

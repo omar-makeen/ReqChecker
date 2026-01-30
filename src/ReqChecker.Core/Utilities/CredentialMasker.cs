@@ -1,7 +1,7 @@
 using ReqChecker.Core.Models;
 using System.Text.RegularExpressions;
 
-namespace ReqChecker.Infrastructure.Export;
+namespace ReqChecker.Core.Utilities;
 
 /// <summary>
 /// Masks credential values in run reports for secure export.

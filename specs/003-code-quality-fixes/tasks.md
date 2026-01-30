@@ -102,10 +102,10 @@
 
 **Purpose**: Clean up remaining issues
 
-- [ ] T035 [P] [L2] Move CredentialMasker to src/ReqChecker.Core/Utilities/CredentialMasker.cs (or document decision to keep in Infrastructure)
-- [ ] T036 [P] [L2] Update CredentialMaskConverter to import from Core in src/ReqChecker.App/Converters/CredentialMaskConverter.cs
-- [ ] T037 [P] [L3] Update PassRate comment in RunSummary to match implementation (passed/total) in src/ReqChecker.Core/Models/RunSummary.cs
-- [ ] T038 [L4] Update RetryPolicy to read delay/strategy from TestDefinition or RunSettings in src/ReqChecker.Infrastructure/Execution/RetryPolicy.cs
+- [X] T035 [P] [L2] Move CredentialMasker to src/ReqChecker.Core/Utilities/CredentialMasker.cs (or document decision to keep in Infrastructure)
+- [X] T036 [P] [L2] Update CredentialMaskConverter to import from Core in src/ReqChecker.App/Converters/CredentialMaskConverter.cs
+- [X] T037 [P] [L3] Update PassRate comment in RunSummary to match implementation (passed/total) in src/ReqChecker.Core/Models/RunSummary.cs
+- [X] T038 [L4] Update RetryPolicy to read delay/strategy from TestDefinition or RunSettings in src/ReqChecker.Infrastructure/Execution/RetryPolicy.cs
 
 **Checkpoint**: Clean layer dependencies; accurate documentation; configurable retry
 

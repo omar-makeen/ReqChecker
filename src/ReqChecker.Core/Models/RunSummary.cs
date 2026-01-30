@@ -26,7 +26,7 @@ public class RunSummary
     public int Skipped { get; set; }
 
     /// <summary>
-    /// Pass percentage (passed / (passed + failed) * 100).
+    /// Pass percentage (passed / total * 100).
     /// </summary>
     public double PassRate { get; set; }
 }
