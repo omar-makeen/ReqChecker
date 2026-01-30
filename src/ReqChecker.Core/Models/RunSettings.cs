@@ -13,9 +13,9 @@ public class RunSettings
     public int DefaultTimeout { get; set; } = 30000;
 
     /// <summary>
-    /// Default retry attempts (default: 3).
+    /// Default retry attempts (default: 0).
     /// </summary>
-    public int DefaultRetryCount { get; set; } = 3;
+    public int DefaultRetryCount { get; set; } = 0;
 
     /// <summary>
     /// Default retry delay in milliseconds (default: 5000).
@@ -23,9 +23,9 @@ public class RunSettings
     public int RetryDelayMs { get; set; } = 5000;
 
     /// <summary>
-    /// Retry delay strategy (default: Exponential).
+    /// Retry delay strategy (default: None).
     /// </summary>
-    public BackoffStrategy RetryBackoff { get; set; } = BackoffStrategy.Exponential;
+    public BackoffStrategy RetryBackoff { get; set; } = BackoffStrategy.None;
 
     /// <summary>
     /// How to handle tests requiring admin privileges (default: SkipWithReason).

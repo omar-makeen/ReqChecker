@@ -54,6 +54,8 @@ public class SequentialTestRunner : ITestRunner
         var results = new List<TestResult>();
         var machineInfo = ReqChecker.Infrastructure.Platform.MachineInfoCollector.Collect();
 
+        var runSettings = new RunSettings(); // Use default settings
+
         foreach (var testDefinition in profile.Tests)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -108,7 +110,6 @@ public class SequentialTestRunner : ITestRunner
             var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
 
             // Execute test with retry policy
-            var runSettings = new RunSettings(); // Use default settings
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
