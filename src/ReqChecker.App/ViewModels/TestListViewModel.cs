@@ -9,7 +9,7 @@ namespace ReqChecker.App.ViewModels;
 /// <summary>
 /// View model for test list view.
 /// </summary>
-public partial class TestListViewModel : ObservableObject
+public partial class TestListViewModel : ObservableObject, IDisposable
 {
     private readonly IAppState _appState;
     private readonly NavigationService _navigationService;
@@ -78,5 +78,13 @@ public partial class TestListViewModel : ObservableObject
     private void NavigateToProfiles()
     {
         _navigationService.NavigateToProfileSelector();
+    }
+
+    /// <summary>
+    /// Disposes resources and unsubscribes from events.
+    /// </summary>
+    public void Dispose()
+    {
+        _appState.CurrentProfileChanged -= OnCurrentProfileChanged;
     }
 }

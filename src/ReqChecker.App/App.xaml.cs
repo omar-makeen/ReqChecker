@@ -177,13 +177,7 @@ public partial class App : System.Windows.Application
         services.AddTransient<ProfileSelectorViewModel>();
         services.AddTransient<TestListViewModel>();
         services.AddTransient<RunProgressViewModel>();
-        services.AddTransient<ResultsViewModel>(sp =>
-            new ResultsViewModel(
-                sp.GetRequiredService<JsonExporter>(),
-                sp.GetRequiredService<CsvExporter>(),
-                sp.GetRequiredService<IAppState>(),
-                sp.GetRequiredService<NavigationService>(),
-                sp.GetRequiredService<DialogService>()));
+        services.AddTransient<ResultsViewModel>();
         services.AddTransient<DiagnosticsViewModel>();
 
         // Build service provider

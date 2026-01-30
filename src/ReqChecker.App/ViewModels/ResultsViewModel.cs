@@ -60,8 +60,8 @@ public partial class ResultsViewModel : ObservableObject
         JsonExporter jsonExporter,
         CsvExporter csvExporter,
         IAppState appState,
-        NavigationService navigationService,
-        DialogService dialogService)
+        NavigationService? navigationService = null,
+        DialogService? dialogService = null)
     {
         _jsonExporter = jsonExporter;
         _csvExporter = csvExporter;

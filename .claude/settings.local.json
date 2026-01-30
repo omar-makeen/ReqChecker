@@ -18,7 +18,8 @@
       "Bash(tasklist /FI \"IMAGENAME eq ReqChecker.App.exe\")",
       "Bash(tasklist:*)",
       "Bash(findstr:*)",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(git show:*)"
     ]
   }
 }

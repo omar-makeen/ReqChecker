@@ -10,7 +10,7 @@ namespace ReqChecker.App.ViewModels;
 /// <summary>
 /// Main view model for application shell with sidebar navigation state.
 /// </summary>
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly IPreferencesService _preferencesService;
     private readonly IAppState _appState;
@@ -136,5 +136,13 @@ public partial class MainViewModel : ObservableObject
     private void ToggleSidebar()
     {
         IsSidebarExpanded = !IsSidebarExpanded;
+    }
+
+    /// <summary>
+    /// Disposes resources and unsubscribes from events.
+    /// </summary>
+    public void Dispose()
+    {
+        _appState.CurrentProfileChanged -= OnCurrentProfileChanged;
     }
 }
