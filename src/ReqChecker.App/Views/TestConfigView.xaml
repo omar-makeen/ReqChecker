@@ -1,0 +1,171 @@
+<Page x:Class="ReqChecker.App.Views.TestConfigView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:converters="clr-namespace:ReqChecker.App.Converters"
+      xmlns:controls="clr-namespace:ReqChecker.App.Controls"
+      xmlns:viewmodels="clr-namespace:ReqChecker.App.ViewModels"
+      mc:Ignorable="d">
+    <Page.Resources>
+        <converters:FieldPolicyToVisibilityConverter x:Key="FieldPolicyToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,20,20,10">
+            <Button Content="← Back" Command="{Binding CancelCommand}" Margin="0,0,10,10" Padding="15,5"/>
+            <TextBlock Text="Test Configuration" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Test Fields -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20,0,20,20">
+            <StackPanel>
+                <!-- Test Basic Info -->
+                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,20" Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Basic Information" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+                        <!-- Test Name (Locked) -->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Name" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestName}"/>
+                        </Grid>
+
+                        <!-- Test Type (Locked) -->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Type" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestType}"/>
+                        </Grid>
+
+                        <!-- Requires Admin (Locked) -->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Requires Admin" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding RequiresAdmin}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Execution Settings -->
+                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,20" Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Execution Settings" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+                        <!-- Timeout (Editable) -->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Timeout (ms)" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBox Grid.Column="1" Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}" 
+                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1"/>
+                        </Grid>
+
+                        <!-- Retries (Editable) -->
+                        <Grid Margin="0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Retries" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                            <TextBox Grid.Column="1" Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Dynamic Test Parameters -->
+                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Test Parameters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+
+                        <ItemsControl ItemsSource="{Binding Parameters}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,10"
+                                          Visibility="{Binding Policy, Converter={StaticResource FieldPolicyToVisibilityConverter}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Field Label -->
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Label}" 
+                                                   VerticalAlignment="Center" 
+                                                   FontWeight="SemiBold"/>
+
+                                        <!-- Editable Field -->
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                                 Padding="8" 
+                                                 BorderBrush="#DDDDDD" 
+                                                 BorderThickness="1"
+                                                 Visibility="{Binding IsEditable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                        <!-- Locked Field -->
+                                        <controls:LockedFieldControl Grid.Column="1"
+                                                                    Value="{Binding Value}"
+                                                                    Visibility="{Binding IsLocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                        <!-- Prompt At Run Field -->
+                                        <Border Grid.Column="1"
+                                                Background="#FFF3E0"
+                                                BorderBrush="#FFB74D"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="10"
+                                                Visibility="{Binding IsPromptAtRun, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="🔑" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Will be prompted during test execution" 
+                                                           VerticalAlignment="Center" 
+                                                           Foreground="#E65100"
+                                                           FontStyle="Italic"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0,20,20">
+            <Button Content="Cancel" 
+                    Command="{Binding CancelCommand}" 
+                    Margin="0,0,10,0" 
+                    Padding="20,10"
+                    Background="#F5F5F5"
+                    BorderBrush="#DDDDDD"/>
+            <Button Content="Save Changes" 
+                    Command="{Binding SaveCommand}" 
+                    Padding="20,10"
+                    Background="#0078D4"
+                    Foreground="White"/>
+        </StackPanel>
+    </Grid>
+</Page>

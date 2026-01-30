@@ -6,7 +6,7 @@ using ReqChecker.Core.Interfaces;
 namespace ReqChecker.App.ViewModels;
 
 /// <summary>
-/// View model for the test list view.
+/// View model for test list view.
 /// </summary>
 public partial class TestListViewModel : ObservableObject
 {
@@ -23,7 +23,7 @@ public partial class TestListViewModel : ObservableObject
     private Services.DialogService? _dialogService;
 
     /// <summary>
-    /// Runs all tests in the current profile.
+    /// Runs all tests in current profile.
     /// </summary>
     [RelayCommand]
     private async Task RunAllTestsAsync()
@@ -35,5 +35,18 @@ public partial class TestListViewModel : ObservableObject
 
         // TODO: Implement test execution and navigation
         await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Navigates to test configuration for the selected test.
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToTestConfig()
+    {
+        if (CurrentProfile == null)
+            return;
+
+        // Navigate to TestConfigView
+        NavigationService?.NavigateToTestConfig(CurrentProfile);
     }
 }

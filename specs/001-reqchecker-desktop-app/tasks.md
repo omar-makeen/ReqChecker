@@ -185,14 +185,14 @@ Based on plan.md layered architecture:
 
 ### Field Policy UI
 
-- [ ] T085 [P] [US3] Create FieldPolicyToVisibilityConverter in src/ReqChecker.App/Converters/FieldPolicyToVisibilityConverter.cs
-- [ ] T086 [P] [US3] Create LockedFieldControl with lock icon and tooltip in src/ReqChecker.App/Controls/LockedFieldControl.xaml
-- [ ] T087 [US3] Create TestConfigViewModel with field policy application in src/ReqChecker.App/ViewModels/TestConfigViewModel.cs
-- [ ] T088 [US3] Create TestConfigView with dynamic field rendering in src/ReqChecker.App/Views/TestConfigView.xaml
-- [ ] T089 [US3] Create CredentialPromptViewModel in src/ReqChecker.App/ViewModels/CredentialPromptViewModel.cs
-- [ ] T090 [US3] Create CredentialPromptDialog for PromptAtRun fields in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
-- [ ] T091 [US3] Integrate PromptAtRun handling into test execution flow in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs (update)
-- [ ] T092 [US3] Add navigation from TestList to TestConfig on test click in src/ReqChecker.App/ViewModels/TestListViewModel.cs (update)
+- [X] T085 [P] [US3] Create FieldPolicyToVisibilityConverter in src/ReqChecker.App/Converters/FieldPolicyToVisibilityConverter.cs
+- [X] T086 [P] [US3] Create LockedFieldControl with lock icon and tooltip in src/ReqChecker.App/Controls/LockedFieldControl.xaml
+- [X] T087 [US3] Create TestConfigViewModel with field policy application in src/ReqChecker.App/ViewModels/TestConfigViewModel.cs
+- [X] T088 [US3] Create TestConfigView with dynamic field rendering in src/ReqChecker.App/Views/TestConfigView.xaml
+- [X] T089 [US3] Create CredentialPromptViewModel in src/ReqChecker.App/ViewModels/CredentialPromptViewModel.cs
+- [X] T090 [US3] Create CredentialPromptDialog for PromptAtRun fields in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
+- [X] T091 [US3] Integrate PromptAtRun handling into test execution flow in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs (update)
+- [X] T092 [US3] Add navigation from TestList to TestConfig on test click in src/ReqChecker.App/ViewModels/TestListViewModel.cs (update)
 
 **Checkpoint**: User Story 3 complete - field policies enforced in UI
 

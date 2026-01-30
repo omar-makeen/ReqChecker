@@ -4,6 +4,7 @@ using ReqChecker.Core.Enums;
 using ReqChecker.Infrastructure.Tests;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json.Nodes;
 using ProfileModel = ReqChecker.Core.Models.Profile;
 
 namespace ReqChecker.Infrastructure.Execution;
@@ -16,7 +17,12 @@ public class SequentialTestRunner : ITestRunner
     private readonly Dictionary<string, ITest> _tests;
 
     /// <summary>
-    /// Initializes a new instance of the SequentialTestRunner.
+    /// Callback for prompting credentials during test execution.
+    /// </summary>
+    public Func<string, string, string?, Task<(string? username, string? password)>>? PromptForCredentials { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of SequentialTestRunner.
     /// </summary>
     /// <param name="tests">The available test implementations.</param>
     public SequentialTestRunner(IEnumerable<ITest> tests)
@@ -25,7 +31,7 @@ public class SequentialTestRunner : ITestRunner
     }
 
     /// <summary>
-    /// Gets the test type name from an ITest instance.
+    /// Gets test type name from an ITest instance.
     /// </summary>
     private static string GetTestType(ITest test)
     {
@@ -94,6 +100,9 @@ public class SequentialTestRunner : ITestRunner
                 continue;
             }
 
+            // Check for PromptAtRun fields and prompt for credentials if needed
+            await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
+
             // Execute test with retry policy
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, cancellationToken);
             results.Add(testResult);
@@ -126,6 +135,49 @@ public class SequentialTestRunner : ITestRunner
         };
 
         return report;
+    }
+
+    /// <summary>
+    /// Prompts for credentials if any test parameter has PromptAtRun policy.
+    /// </summary>
+    private async Task PromptForCredentialsIfNeededAsync(TestDefinition testDefinition, CancellationToken cancellationToken)
+    {
+        if (testDefinition.Parameters == null || PromptForCredentials == null)
+            return;
+
+        // Check for credentialRef parameter (indicates PromptAtRun)
+        if (testDefinition.Parameters.ContainsKey("credentialRef"))
+        {
+            var credentialRefNode = testDefinition.Parameters["credentialRef"];
+            var credentialRef = credentialRefNode?.ToString();
+            if (!string.IsNullOrEmpty(credentialRef))
+            {
+                // Prompt for credentials
+                var fieldLabel = FormatFieldName("credentialRef");
+                var result = await PromptForCredentials.Invoke(fieldLabel, credentialRef, null);
+                var username = result.username;
+                var password = result.password;
+
+                // Store credentials in test parameters
+                testDefinition.Parameters["username"] = username ?? string.Empty;
+                testDefinition.Parameters["password"] = password ?? string.Empty;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Formats a field name for display (camelCase to Title Case).
+    /// </summary>
+    private static string FormatFieldName(string fieldName)
+    {
+        if (string.IsNullOrEmpty(fieldName))
+            return fieldName;
+
+        return System.Text.RegularExpressions.Regex.Replace(
+            fieldName,
+            "(?<=[a-z])([A-Z])",
+            " $1")
+            .Trim();
     }
 
     /// <summary>

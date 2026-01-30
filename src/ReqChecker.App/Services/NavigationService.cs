@@ -1,6 +1,8 @@
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ReqChecker.App.ViewModels;
+using ReqChecker.Core.Models;
+using ProfileModel = ReqChecker.Core.Models.Profile;
 
 namespace ReqChecker.App.Services;
 
@@ -33,6 +35,20 @@ public class NavigationService
         var viewModel = _serviceProvider.GetRequiredService<ProfileSelectorViewModel>();
         var view = new Views.ProfileSelectorView(viewModel);
         _frame?.Navigate(view);
+    }
+
+    /// <summary>
+    /// Navigates to test configuration view.
+    /// </summary>
+    public void NavigateToTestConfig(ProfileModel profile)
+    {
+        var firstTest = profile.Tests.FirstOrDefault();
+        if (firstTest != null)
+        {
+            var viewModel = new TestConfigViewModel(firstTest);
+            var view = new Views.TestConfigView(viewModel);
+            _frame?.Navigate(view);
+        }
     }
 
     /// <summary>
