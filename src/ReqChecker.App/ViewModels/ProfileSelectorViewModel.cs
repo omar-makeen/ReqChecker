@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Enums;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
+using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.App.Services;
 using System.Reflection;
 using System.Collections.ObjectModel;
@@ -18,8 +19,8 @@ public partial class ProfileSelectorViewModel : ObservableObject
 {
     private readonly IProfileLoader _profileLoader;
     private readonly IProfileValidator _profileValidator;
-    private readonly IProfileMigrator _profileMigrator;
-    private readonly IIntegrityVerifier? _integrityVerifier;
+    private readonly ProfileMigrationPipeline _profileMigrator;
+    private readonly IAppState _appState;
     private readonly DialogService _dialogService;
     private readonly NavigationService _navigationService;
 
@@ -41,15 +42,15 @@ public partial class ProfileSelectorViewModel : ObservableObject
     public ProfileSelectorViewModel(
         IProfileLoader profileLoader,
         IProfileValidator profileValidator,
-        IProfileMigrator profileMigrator,
-        IIntegrityVerifier? integrityVerifier,
+        ProfileMigrationPipeline profileMigrator,
+        IAppState appState,
         DialogService dialogService,
         NavigationService navigationService)
     {
         _profileLoader = profileLoader;
         _profileValidator = profileValidator;
         _profileMigrator = profileMigrator;
-        _integrityVerifier = integrityVerifier;
+        _appState = appState;
         _dialogService = dialogService;
         _navigationService = navigationService;
 
@@ -259,6 +260,7 @@ public partial class ProfileSelectorViewModel : ObservableObject
         }
 
         SelectedProfile = profile;
+        _appState.SetCurrentProfile(profile);
         _navigationService.NavigateToTestList();
     }
 
