@@ -15,6 +15,7 @@ namespace ReqChecker.Infrastructure.Execution;
 public class SequentialTestRunner : ITestRunner
 {
     private readonly Dictionary<string, ITest> _tests;
+    private readonly ICredentialProvider? _credentialProvider;
 
     /// <summary>
     /// Callback for prompting credentials during test execution.
@@ -25,9 +26,11 @@ public class SequentialTestRunner : ITestRunner
     /// Initializes a new instance of SequentialTestRunner.
     /// </summary>
     /// <param name="tests">The available test implementations.</param>
-    public SequentialTestRunner(IEnumerable<ITest> tests)
+    /// <param name="credentialProvider">Optional credential provider for secure credential storage.</param>
+    public SequentialTestRunner(IEnumerable<ITest> tests, ICredentialProvider? credentialProvider = null)
     {
         _tests = tests.ToDictionary(t => GetTestType(t), t => t);
+        _credentialProvider = credentialProvider;
     }
 
     /// <summary>
@@ -142,7 +145,7 @@ public class SequentialTestRunner : ITestRunner
     /// </summary>
     private async Task PromptForCredentialsIfNeededAsync(TestDefinition testDefinition, CancellationToken cancellationToken)
     {
-        if (testDefinition.Parameters == null || PromptForCredentials == null)
+        if (testDefinition.Parameters == null)
             return;
 
         // Check for credentialRef parameter (indicates PromptAtRun)
@@ -152,11 +155,42 @@ public class SequentialTestRunner : ITestRunner
             var credentialRef = credentialRefNode?.ToString();
             if (!string.IsNullOrEmpty(credentialRef))
             {
-                // Prompt for credentials
-                var fieldLabel = FormatFieldName("credentialRef");
-                var result = await PromptForCredentials.Invoke(fieldLabel, credentialRef, null);
-                var username = result.username;
-                var password = result.password;
+                string? username = null;
+                string? password = null;
+
+                // First, try to get credentials from the credential provider
+                if (_credentialProvider != null)
+                {
+                    var storedCredentials = await _credentialProvider.GetCredentialsAsync(credentialRef);
+                    if (storedCredentials.HasValue)
+                    {
+                        username = storedCredentials.Value.Username;
+                        password = storedCredentials.Value.Password;
+                    }
+                }
+
+                // If credentials not found and prompt callback is available, prompt user
+                if ((username == null || password == null) && PromptForCredentials != null)
+                {
+                    var fieldLabel = FormatFieldName("credentialRef");
+                    var result = await PromptForCredentials.Invoke(fieldLabel, credentialRef, null);
+                    username = result.username;
+                    password = result.password;
+
+                    // Optionally store the credentials back to the provider
+                    if (username != null && password != null && _credentialProvider != null)
+                    {
+                        try
+                        {
+                            await _credentialProvider.StoreCredentialsAsync(credentialRef, username, password);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log warning but continue with test execution
+                            System.Diagnostics.Debug.WriteLine($"Failed to store credentials: {ex.Message}");
+                        }
+                    }
+                }
 
                 // Store credentials in test parameters
                 testDefinition.Parameters["username"] = username ?? string.Empty;

@@ -91,4 +91,14 @@ public class NavigationService
             _frame.GoBack();
         }
     }
+
+    /// <summary>
+    /// Navigates to diagnostics view.
+    /// </summary>
+    public void NavigateToDiagnostics()
+    {
+        var viewModel = _serviceProvider.GetRequiredService<DiagnosticsViewModel>();
+        var view = new Views.DiagnosticsView(viewModel);
+        _frame?.Navigate(view);
+    }
 }

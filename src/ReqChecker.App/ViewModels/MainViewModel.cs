@@ -44,6 +44,6 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToDiagnostics()
     {
-        // TODO: Implement navigation to diagnostics view
+        NavigationService?.NavigateToDiagnostics();
     }
 }

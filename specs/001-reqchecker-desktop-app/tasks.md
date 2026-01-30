@@ -228,13 +228,13 @@ Based on plan.md layered architecture:
 
 ### Diagnostics Infrastructure
 
-- [ ] T099 [US5] Create ClipboardService in src/ReqChecker.App/Services/ClipboardService.cs
+- [X] T099 [US5] Create ClipboardService in src/ReqChecker.App/Services/ClipboardService.cs
 
 ### Diagnostics UI
 
-- [ ] T100 [US5] Create DiagnosticsViewModel with last run data in src/ReqChecker.App/ViewModels/DiagnosticsViewModel.cs
-- [ ] T101 [US5] Create DiagnosticsView with summary, Open Logs, Copy Details in src/ReqChecker.App/Views/DiagnosticsView.xaml
-- [ ] T102 [US5] Add Diagnostics navigation item to MainWindow in src/ReqChecker.App/MainWindow.xaml (update)
+- [X] T100 [US5] Create DiagnosticsViewModel with last run data in src/ReqChecker.App/ViewModels/DiagnosticsViewModel.cs
+- [X] T101 [US5] Create DiagnosticsView with summary, Open Logs, Copy Details in src/ReqChecker.App/Views/DiagnosticsView.xaml
+- [X] T102 [US5] Add Diagnostics navigation item to MainWindow in src/ReqChecker.App/MainWindow.xaml (update)
 
 **Checkpoint**: User Story 5 complete - diagnostics accessible
 
@@ -248,15 +248,15 @@ Based on plan.md layered architecture:
 
 ### Security Infrastructure
 
-- [ ] T103 [US6] Implement WindowsCredentialProvider with P/Invoke in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
-- [ ] T104 [US6] Implement DpapiProtector for local encryption in src/ReqChecker.Infrastructure/Security/DpapiProtector.cs
-- [ ] T105 [US6] Integrate credential resolution into test execution in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs (update)
+- [X] T103 [US6] Implement WindowsCredentialProvider with P/Invoke in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
+- [X] T104 [US6] Implement DpapiProtector for local encryption in src/ReqChecker.Infrastructure/Security/DpapiProtector.cs
+- [X] T105 [US6] Integrate credential resolution into test execution in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs (update)
 
 ### Secret Masking
 
-- [ ] T106 [US6] Add credential masking to JsonExporter in src/ReqChecker.Infrastructure/Export/JsonExporter.cs (update)
-- [ ] T107 [US6] Add credential masking to CsvExporter in src/ReqChecker.Infrastructure/Export/CsvExporter.cs (update)
-- [ ] T108 [US6] Add credential masking to ResultsView display in src/ReqChecker.App/Views/ResultsView.xaml (update)
+- [X] T106 [US6] Add credential masking to JsonExporter in src/ReqChecker.Infrastructure/Export/JsonExporter.cs (update)
+- [X] T107 [US6] Add credential masking to CsvExporter in src/ReqChecker.Infrastructure/Export/CsvExporter.cs (update)
+- [X] T108 [US6] Add credential masking to ResultsView display in src/ReqChecker.App/Views/ResultsView.xaml (update)
 
 **Checkpoint**: User Story 6 complete - secrets handled securely
 

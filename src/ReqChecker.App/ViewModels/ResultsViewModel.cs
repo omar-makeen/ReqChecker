@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.Export;
+using ReqChecker.App.Services;
 using Serilog;
 
 namespace ReqChecker.App.ViewModels;
@@ -16,10 +17,10 @@ public partial class ResultsViewModel : ObservableObject
     private RunReport? _report;
 
     [ObservableProperty]
-    private Services.NavigationService? _navigationService;
+    private NavigationService? _navigationService;
 
     [ObservableProperty]
-    private Services.DialogService? _dialogService;
+    private DialogService? _dialogService;
 
     [ObservableProperty]
     private string? _statusMessage;
@@ -32,11 +33,24 @@ public partial class ResultsViewModel : ObservableObject
 
     private readonly JsonExporter _jsonExporter;
     private readonly CsvExporter _csvExporter;
+    private readonly IAppState _appState;
 
-    public ResultsViewModel(JsonExporter jsonExporter, CsvExporter csvExporter)
+    public ResultsViewModel(JsonExporter jsonExporter, CsvExporter csvExporter, IAppState appState)
     {
         _jsonExporter = jsonExporter;
         _csvExporter = csvExporter;
+        _appState = appState;
+    }
+
+    /// <summary>
+    /// Called when Report property changes. Stores the report in app state.
+    /// </summary>
+    partial void OnReportChanged(RunReport? value)
+    {
+        if (value != null)
+        {
+            _appState.SetLastRunReport(value);
+        }
     }
 
     /// <summary>
