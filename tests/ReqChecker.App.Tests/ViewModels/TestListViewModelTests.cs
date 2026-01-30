@@ -19,12 +19,13 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
         // Act
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Assert - ViewModel is created and profile is loaded
         Assert.NotNull(viewModel);
@@ -38,12 +39,13 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
         // Act
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
         viewModel.Dispose();
 
         // Assert - After dispose, event handler should not be invoked
@@ -58,12 +60,13 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
         // Act
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Should not throw
         viewModel.Dispose();
@@ -81,12 +84,13 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile1 = new Profile { Name = "Profile 1", SchemaVersion = 2 };
         var profile2 = new Profile { Name = "Profile 2", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile1);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Act - Initially profile1
         Assert.Equal(profile1, viewModel.CurrentProfile);
@@ -105,12 +109,13 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
         var test = new TestDefinition { DisplayName = "Test 1", Type = "Ping" };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Act
         viewModel.SelectedTest = test;
@@ -126,11 +131,12 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
         viewModel.CurrentProfile = profile;
 
         // Act & Assert - Should not throw
@@ -145,74 +151,52 @@ public class TestListViewModelTests
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Assert
         Assert.NotNull(viewModel.NavigateToProfilesCommand);
     }
 
     [Fact]
-    public async Task RunAllTestsCommand_ShouldNotThrowWhenProfileIsNull()
+    public void RunAllTestsCommand_ShouldNotThrowWhenProfileIsNull()
     {
         // Arrange
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
+        var mockTestRunner = new Mock<ITestRunner>();
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Act - Should not throw
-        var exception = await Record.ExceptionAsync(() => viewModel.RunAllTestsCommand.ExecuteAsync(null));
+        var exception = Record.Exception(() => viewModel.RunAllTestsCommand.Execute(null));
 
         // Assert - No exception thrown
         Assert.Null(exception);
     }
 
     [Fact]
-    public async Task RunAllTestsCommand_ShouldNotThrowWhenTestRunnerIsNull()
+    public void RunAllTestsCommand_Exists()
     {
         // Arrange
         var mockAppState = new Mock<IAppState>();
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
-
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
-
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
-        viewModel.TestRunner = null;
-
-        // Act - Should not throw
-        var exception = await Record.ExceptionAsync(() => viewModel.RunAllTestsCommand.ExecuteAsync(null));
-
-        // Assert - No exception thrown
-        Assert.Null(exception);
-    }
-
-    [Fact]
-    public void TestRunner_CanBeSet()
-    {
-        // Arrange
-        var mockAppState = new Mock<IAppState>();
-        var mockServiceProvider = new Mock<IServiceProvider>();
-        var navigationService = new NavigationService(mockServiceProvider.Object);
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
         var mockTestRunner = new Mock<ITestRunner>();
+        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
         mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
-        var viewModel = new TestListViewModel(mockAppState.Object, navigationService);
-
-        // Act
-        viewModel.TestRunner = mockTestRunner.Object;
+        var viewModel = new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
 
         // Assert
-        Assert.Equal(mockTestRunner.Object, viewModel.TestRunner);
+        Assert.NotNull(viewModel.RunAllTestsCommand);
     }
 }

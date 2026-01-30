@@ -109,6 +109,13 @@ public class SequentialTestRunner : ITestRunner
                 continue;
             }
 
+            // Apply inter-test delay before execution (skip for first test)
+            // This makes the delay visible to users as they see "Running Test X" during the delay
+            if (runSettings.InterTestDelayMs > 0 && i > 0)
+            {
+                await Task.Delay(runSettings.InterTestDelayMs, cancellationToken);
+            }
+
             // Check for PromptAtRun fields and prompt for credentials if needed
             var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
 
@@ -116,12 +123,6 @@ public class SequentialTestRunner : ITestRunner
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
-
-            // Apply inter-test delay (skip after last test)
-            if (runSettings.InterTestDelayMs > 0 && i < profile.Tests.Count - 1)
-            {
-                await Task.Delay(runSettings.InterTestDelayMs, cancellationToken);
-            }
         }
 
         stopwatch.Stop();

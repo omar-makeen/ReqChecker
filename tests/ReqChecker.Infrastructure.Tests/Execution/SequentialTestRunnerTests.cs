@@ -76,7 +76,7 @@ public class SequentialTestRunnerTests
     }
 
     [Fact]
-    public async Task RunTestsAsync_WithDelay_NoDelayAfterLastTest()
+    public async Task RunTestsAsync_WithDelay_NoDelayBeforeFirstTest()
     {
         // Arrange
         var runner = new SequentialTestRunner(new[] { new InstantTest() });
@@ -92,7 +92,7 @@ public class SequentialTestRunnerTests
         // Assert: With 2 tests, expect 1 delay of 100ms (not 2)
         // Should be around 100ms, not 200ms
         Assert.True(stopwatch.ElapsedMilliseconds >= 80 && stopwatch.ElapsedMilliseconds < 180,
-            $"Expected ~100ms (1 delay), but got {stopwatch.ElapsedMilliseconds}ms. Should not delay after last test.");
+            $"Expected ~100ms (1 delay), but got {stopwatch.ElapsedMilliseconds}ms. Should not delay before first test.");
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class SequentialTestRunnerTests
         var cts = new CancellationTokenSource();
         var stopwatch = Stopwatch.StartNew();
 
-        // Cancel after a short delay (after first test completes, during first inter-test delay)
+        // Cancel after a short delay (during the delay before second test)
         _ = Task.Run(async () =>
         {
             await Task.Delay(50);
