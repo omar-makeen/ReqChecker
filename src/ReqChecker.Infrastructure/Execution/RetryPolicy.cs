@@ -15,6 +15,7 @@ public static class RetryPolicy
     /// </summary>
     /// <param name="test">The test to execute.</param>
     /// <param name="testDefinition">The test definition containing retry configuration.</param>
+    /// <param name="context">Optional execution context containing credentials.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The test result.</returns>
     public static async Task<TestResult> ExecuteWithRetryAsync(

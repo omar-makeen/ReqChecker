@@ -6,6 +6,7 @@ using ReqChecker.Infrastructure.Tests;
 using ReqChecker.Infrastructure.Execution;
 using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.Infrastructure.ProfileManagement.Migrations;
+using ReqChecker.Infrastructure.Profile;
 using ReqChecker.Infrastructure.Export;
 using ReqChecker.Infrastructure.Logging;
 using ReqChecker.Infrastructure.Security;
@@ -121,6 +122,7 @@ public partial class App : System.Windows.Application
         // Register profile management services
         services.AddSingleton<IProfileLoader, JsonProfileLoader>();
         services.AddSingleton<IProfileValidator, FluentProfileValidator>();
+        services.AddSingleton<ReqChecker.Core.Interfaces.IProfileStorageService, ReqChecker.Infrastructure.Profile.ProfileStorageService>();
 
         // Register individual migrators as IProfileMigrator (for collection resolution)
         services.AddSingleton<IProfileMigrator, V1ToV2Migration>();

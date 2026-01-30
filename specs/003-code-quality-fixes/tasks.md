@@ -77,15 +77,15 @@
 
 ### Logging Improvements
 
-- [ ] T025 [M6] Add Serilog.Log.Warning for swallowed exceptions in LoadBundledProfilesAsync in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
-- [ ] T026 [M6] Add Serilog.Log.Warning for swallowed exceptions in LoadUserProfilesAsync in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
+- [X] T025 [M6] Add Serilog.Log.Warning for swallowed exceptions in LoadBundledProfilesAsync in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
+- [X] T026 [M6] Add Serilog.Log.Warning for swallowed exceptions in LoadUserProfilesAsync in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
 
 ### Profile Storage Service Extraction
 
-- [ ] T027 [P] [M7] Create IProfileStorageService interface in src/ReqChecker.App/Services/IProfileStorageService.cs
-- [ ] T028 [P] [M7] Create ProfileStorageService implementation in src/ReqChecker.Infrastructure/Profile/ProfileStorageService.cs
-- [ ] T029 [M7] Register ProfileStorageService in DI container in src/ReqChecker.App/App.xaml.cs
-- [ ] T030 [M7] Update ProfileSelectorViewModel to use IProfileStorageService for file operations in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
+- [X] T027 [P] [M7] Create IProfileStorageService interface in src/ReqChecker.Core/Interfaces/IProfileStorageService.cs
+- [X] T028 [P] [M7] Create ProfileStorageService implementation in src/ReqChecker.Infrastructure/Profile/ProfileStorageService.cs
+- [X] T029 [M7] Register ProfileStorageService in DI container in src/ReqChecker.App/App.xaml.cs
+- [X] T030 [M7] Update ProfileSelectorViewModel to use IProfileStorageService for file operations in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
 
 ### ViewModel Disposal
 

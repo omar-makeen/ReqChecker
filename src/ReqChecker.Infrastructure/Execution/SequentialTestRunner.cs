@@ -46,7 +46,7 @@ public class SequentialTestRunner : ITestRunner
 
     /// <inheritdoc/>
     public async Task<RunReport> RunTestsAsync(
-        Profile profile,
+        ProfileModel profile,
         IProgress<TestResult> progress,
         CancellationToken cancellationToken)
     {
@@ -149,7 +149,7 @@ public class SequentialTestRunner : ITestRunner
     private async Task<TestExecutionContext?> PromptForCredentialsIfNeededAsync(TestDefinition testDefinition, CancellationToken cancellationToken)
     {
         if (testDefinition.Parameters == null)
-            return;
+            return null;
 
         // Check for credentialRef parameter (indicates PromptAtRun)
         if (testDefinition.Parameters.ContainsKey("credentialRef"))

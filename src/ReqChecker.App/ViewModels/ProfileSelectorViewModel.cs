@@ -7,8 +7,8 @@ using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.App.Services;
 using System.Reflection;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
+using Serilog;
 
 namespace ReqChecker.App.ViewModels;
 
@@ -23,6 +23,7 @@ public partial class ProfileSelectorViewModel : ObservableObject
     private readonly IAppState _appState;
     private readonly DialogService _dialogService;
     private readonly NavigationService _navigationService;
+    private readonly IProfileStorageService _profileStorageService;
 
     [ObservableProperty]
     private ObservableCollection<Profile> _profiles = new();
@@ -45,7 +46,8 @@ public partial class ProfileSelectorViewModel : ObservableObject
         ProfileMigrationPipeline profileMigrator,
         IAppState appState,
         DialogService dialogService,
-        NavigationService navigationService)
+        NavigationService navigationService,
+        IProfileStorageService profileStorageService)
     {
         _profileLoader = profileLoader;
         _profileValidator = profileValidator;
@@ -53,6 +55,7 @@ public partial class ProfileSelectorViewModel : ObservableObject
         _appState = appState;
         _dialogService = dialogService;
         _navigationService = navigationService;
+        _profileStorageService = profileStorageService;
 
         // Load profiles on initialization
         _ = LoadProfilesAsync();
@@ -134,9 +137,9 @@ public partial class ProfileSelectorViewModel : ObservableObject
 
                 profiles.Add(profile);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Skip profiles that fail to load
+                Log.Warning(ex, "Failed to load bundled profile from resource: {ResourceName}", resourceName);
             }
         }
 
@@ -149,15 +152,9 @@ public partial class ProfileSelectorViewModel : ObservableObject
     private async Task<List<Profile>> LoadUserProfilesAsync()
     {
         var profiles = new List<Profile>();
-        var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        var profilesPath = Path.Combine(appDataPath, "ReqChecker", "Profiles");
+        var filePaths = _profileStorageService.GetProfileFilePaths();
 
-        if (!Directory.Exists(profilesPath))
-        {
-            return profiles;
-        }
-
-        foreach (var filePath in Directory.GetFiles(profilesPath, "*.json"))
+        foreach (var filePath in filePaths)
         {
             try
             {
@@ -179,9 +176,9 @@ public partial class ProfileSelectorViewModel : ObservableObject
 
                 profiles.Add(profile);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Skip profiles that fail to load
+                Log.Warning(ex, "Failed to load user profile from file: {FilePath}", filePath);
             }
         }
 
@@ -227,12 +224,7 @@ public partial class ProfileSelectorViewModel : ObservableObject
             }
 
             // Copy to user profiles directory
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var profilesPath = Path.Combine(appDataPath, "ReqChecker", "Profiles");
-            Directory.CreateDirectory(profilesPath);
-
-            var destinationPath = Path.Combine(profilesPath, Path.GetFileName(filePath));
-            File.Copy(filePath, destinationPath, overwrite: true);
+            _profileStorageService.CopyProfileToUserDirectory(filePath, overwrite: true);
 
             // Add to profiles list
             Profiles.Add(profile);

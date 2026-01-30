@@ -104,12 +104,12 @@ public class WindowsCredentialProvider : ICredentialProvider
                     throw new InvalidOperationException(
                         $"Failed to store credentials. Windows error code: {error}");
                 }
-
-                // Zero out password bytes from memory after use
-                Array.Clear(passwordBytes, 0, passwordBytes.Length);
             }
             finally
             {
+                // Zero out password bytes from memory after use
+                Array.Clear(passwordBytes, 0, passwordBytes.Length);
+
                 if (credential.TargetName != IntPtr.Zero)
                     Marshal.FreeHGlobal(credential.TargetName);
                 if (credential.Comment != IntPtr.Zero)
