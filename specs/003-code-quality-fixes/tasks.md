@@ -89,10 +89,10 @@
 
 ### ViewModel Disposal
 
-- [ ] T031 [P] [M8] Add IDisposable to MainViewModel with event unsubscription in src/ReqChecker.App/ViewModels/MainViewModel.cs
-- [ ] T032 [P] [M8] Add IDisposable to TestListViewModel with event unsubscription in src/ReqChecker.App/ViewModels/TestListViewModel.cs
+- [X] T031 [P] [M8] Add IDisposable to MainViewModel with event unsubscription in src/ReqChecker.App/ViewModels/MainViewModel.cs
+- [X] T032 [P] [M8] Add IDisposable to TestListViewModel with event unsubscription in src/ReqChecker.App/ViewModels/TestListViewModel.cs
 - [ ] T033 [P] [M8] Add IDisposable to ProfileSelectorViewModel if it subscribes to events in src/ReqChecker.App/ViewModels/ProfileSelectorViewModel.cs
-- [ ] T034 [M8] Update NavigationService to call Dispose on ViewModels when navigating away in src/ReqChecker.App/Services/NavigationService.cs
+- [X] T034 [M8] Update NavigationService to call Dispose on ViewModels when navigating away in src/ReqChecker.App/Services/NavigationService.cs
 
 **Checkpoint**: Profile errors logged; file ops in Infrastructure; no ViewModel memory leaks
 
