@@ -33,7 +33,7 @@ public class RunSettings
     public AdminBehavior AdminBehavior { get; set; } = AdminBehavior.SkipWithReason;
 
     /// <summary>
-    /// Delay in milliseconds between test completions. 0 = no delay.
+    /// Delay in milliseconds between test completions (default: 500).
     /// </summary>
     public int InterTestDelayMs { get; set; } = 500;
 }
