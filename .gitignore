@@ -295,3 +295,6 @@ logs/
 # Publish output
 publish/
 dist/
+
+# Windows device file (accidentally created)
+nul
