@@ -1,5 +1,5 @@
 {
-  "id": "sample-diagnostics-001",
+  "id": "00000000-0000-0000-0000-000000000001",
   "name": "Sample Diagnostics",
   "schemaVersion": 2,
   "source": "Bundled",
@@ -11,7 +11,7 @@
   },
   "tests": [
     {
-      "id": "sample-001",
+      "id": "10000000-0000-0000-0000-000000000001",
       "type": "Ping",
       "displayName": "Network Connectivity Check",
       "description": "Pings Google DNS to verify basic network connectivity.",
@@ -28,7 +28,7 @@
       "requiresAdmin": false
     },
     {
-      "id": "sample-002",
+      "id": "10000000-0000-0000-0000-000000000002",
       "type": "HttpGet",
       "displayName": "HTTPS Connectivity Check",
       "description": "Verifies HTTPS connectivity to example.com.",
@@ -46,7 +46,7 @@
       "requiresAdmin": false
     },
     {
-      "id": "sample-003",
+      "id": "10000000-0000-0000-0000-000000000003",
       "type": "DnsLookup",
       "displayName": "DNS Resolution Check",
       "description": "Verifies DNS can resolve google.com.",
@@ -61,7 +61,7 @@
       "requiresAdmin": false
     },
     {
-      "id": "sample-004",
+      "id": "10000000-0000-0000-0000-000000000004",
       "type": "FileExists",
       "displayName": "System File Check",
       "description": "Verifies Windows hosts file exists.",

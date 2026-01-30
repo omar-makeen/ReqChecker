@@ -1,6 +1,7 @@
 using ReqChecker.Core.Interfaces;
 using ProfileModel = ReqChecker.Core.Models.Profile;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ReqChecker.Infrastructure.ProfileManagement;
 
@@ -17,7 +18,8 @@ public class JsonProfileLoader : IProfileLoader
         {
             PropertyNameCaseInsensitive = true,
             ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true
+            AllowTrailingCommas = true,
+            Converters = { new JsonStringEnumConverter() }
         };
     }
 

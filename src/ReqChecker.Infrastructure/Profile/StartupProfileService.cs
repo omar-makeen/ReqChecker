@@ -1,6 +1,7 @@
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
+using ReqChecker.Infrastructure.ProfileManagement;
 using Serilog;
 
 namespace ReqChecker.Infrastructure.Profile;
@@ -12,7 +13,7 @@ public class StartupProfileService : IStartupProfileService
 {
     private readonly IProfileLoader _profileLoader;
     private readonly IProfileValidator _profileValidator;
-    private readonly IProfileMigrator _migrationPipeline;
+    private readonly ProfileMigrationPipeline _migrationPipeline;
 
     private const string StartupProfileFileName = "startup-profile.json";
 
@@ -25,7 +26,7 @@ public class StartupProfileService : IStartupProfileService
     public StartupProfileService(
         IProfileLoader profileLoader,
         IProfileValidator profileValidator,
-        IProfileMigrator migrationPipeline)
+        ProfileMigrationPipeline migrationPipeline)
     {
         _profileLoader = profileLoader ?? throw new ArgumentNullException(nameof(profileLoader));
         _profileValidator = profileValidator ?? throw new ArgumentNullException(nameof(profileValidator));
@@ -92,7 +93,7 @@ public class StartupProfileService : IStartupProfileService
             // Set source to UserProvided since it's an external file
             profile.Source = ProfileSource.UserProvided;
 
-            Log.Information("Successfully loaded startup profile: {ProfileName} ({TestId} tests)",
+            Log.Information("Successfully loaded startup profile: {ProfileName} ({TestCount} tests)",
                 profile.Name, profile.Tests.Count);
 
             return StartupProfileResult.Loaded(profile);

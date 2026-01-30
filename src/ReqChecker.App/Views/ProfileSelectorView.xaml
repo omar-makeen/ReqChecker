@@ -289,17 +289,7 @@
                         <TextBlock Text="Import a profile to get started with testing"
                                    Style="{DynamicResource TextBody}"
                                    Foreground="{DynamicResource TextSecondary}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,24"/>
-
-                        <Button Style="{StaticResource PrimaryButton}"
-                                Command="{Binding ImportProfileCommand}"
-                                HorizontalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="ArrowUpload24" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Import Profile"/>
-                            </StackPanel>
-                        </Button>
+                                   HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
 

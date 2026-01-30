@@ -55,19 +55,26 @@ public partial class App : System.Windows.Application
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
         // Check for startup profile
-        var startupProfileService = Services.GetRequiredService<IStartupProfileService>();
-        var startupResult = await startupProfileService.TryLoadStartupProfileAsync();
+        try
+        {
+            var startupProfileService = Services.GetRequiredService<IStartupProfileService>();
+            var startupResult = await startupProfileService.TryLoadStartupProfileAsync();
 
-        if (startupResult.Success && startupResult.Profile != null)
-        {
-            // Set the startup profile in app state
-            appState.SetCurrentProfile(startupResult.Profile);
-            Log.Information("Startup profile loaded: {ProfileName}", startupResult.Profile.Name);
+            if (startupResult.Success && startupResult.Profile != null)
+            {
+                // Set the startup profile in app state
+                appState.SetCurrentProfile(startupResult.Profile);
+                Log.Information("Startup profile loaded: {ProfileName}", startupResult.Profile.Name);
+            }
+            else if (startupResult.FileFound && !string.IsNullOrEmpty(startupResult.ErrorMessage))
+            {
+                // Startup profile file exists but is invalid - show error dialog
+                ShowStartupProfileError(startupResult.ErrorMessage);
+            }
         }
-        else if (startupResult.FileFound && !string.IsNullOrEmpty(startupResult.ErrorMessage))
+        catch (Exception ex)
         {
-            // Startup profile file exists but is invalid - show error dialog
-            ShowStartupProfileError(startupResult.ErrorMessage);
+            Log.Error(ex, "Failed to check for startup profile");
         }
 
         // Create and show main window AFTER theme is applied
@@ -131,7 +138,7 @@ public partial class App : System.Windows.Application
 
     private void ShowStartupProfileError(string errorMessage)
     {
-        var result = System.Windows.MessageBox.Show(
+        System.Windows.MessageBox.Show(
             $"The startup configuration could not be loaded.\n\n{errorMessage}\n\n" +
             "Click Continue to open the profile selector and choose a different configuration.",
             "Startup Configuration Error",
