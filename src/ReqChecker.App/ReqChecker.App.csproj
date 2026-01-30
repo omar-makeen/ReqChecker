@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\ReqChecker.Core\ReqChecker.Core.csproj" />
@@ -12,20 +12,25 @@
     <PackageReference Include="WPF-UI" Version="4.2.0" />
   </ItemGroup>
 
+  <!-- Core project settings -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- ApplicationIcon>Resources\Icons\app.ico</ApplicationIcon> -->
+    <!-- TODO: Add app.ico file to Resources/Icons/ directory -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <!-- Publish settings (only apply during dotnet publish) -->
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true' Or '$(Configuration)' == 'Release'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <!-- ApplicationIcon>Resources\Icons\app.ico</ApplicationIcon> -->
-    <!-- TODO: Add app.ico file to Resources/Icons/ directory -->
-    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
