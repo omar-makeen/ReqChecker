@@ -5,39 +5,97 @@
              xmlns:local="clr-namespace:ReqChecker.App.Controls"
              mc:Ignorable="d"
              x:Class="ReqChecker.App.Controls.ProgressRing"
-             Width="40"
-             Height="40">
+             x:Name="Root"
+             Width="120"
+             Height="120">
+    <UserControl.Resources>
+        <!-- Gradient brush for progress stroke -->
+        <LinearGradientBrush x:Key="ProgressGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#00d9ff" Offset="0"/>
+            <GradientStop Color="#6366f1" Offset="1"/>
+        </LinearGradientBrush>
+    </UserControl.Resources>
+
     <Grid>
-        <Ellipse Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=local:ProgressRing}}"
-                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=local:ProgressRing}}"
-                 Stroke="LightGray"
-                 StrokeThickness="3"
-                 StrokeDashArray="100"
-                 StrokeDashOffset="0"
-                 Opacity="0.3" />
-        <Ellipse x:Name="ProgressEllipse"
-                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=local:ProgressRing}}"
-                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=local:ProgressRing}}"
-                 Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=local:ProgressRing}}"
-                 StrokeThickness="3"
-                 StrokeDashArray="75, 25"
-                 StrokeDashOffset="0">
+        <!-- Background track -->
+        <Ellipse x:Name="BackgroundTrack"
+                 Width="{Binding ActualWidth, ElementName=Root}"
+                 Height="{Binding ActualHeight, ElementName=Root}"
+                 Stroke="{DynamicResource BorderSubtle}"
+                 StrokeThickness="8"
+                 Opacity="0.5"/>
+
+        <!-- Progress arc container -->
+        <Canvas x:Name="ProgressCanvas"
+                Width="{Binding ActualWidth, ElementName=Root}"
+                Height="{Binding ActualHeight, ElementName=Root}">
+            <Path x:Name="ProgressArc"
+                  Stroke="{StaticResource ProgressGradient}"
+                  StrokeThickness="8"
+                  StrokeStartLineCap="Round"
+                  StrokeEndLineCap="Round">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure x:Name="ArcFigure" StartPoint="60,4">
+                            <ArcSegment x:Name="ArcSegment"
+                                        Size="56,56"
+                                        SweepDirection="Clockwise"
+                                        IsLargeArc="False"
+                                        Point="60,4"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Canvas>
+
+        <!-- Indeterminate spinner (shown when no progress value) -->
+        <Ellipse x:Name="IndeterminateRing"
+                 Width="{Binding ActualWidth, ElementName=Root}"
+                 Height="{Binding ActualHeight, ElementName=Root}"
+                 Stroke="{StaticResource ProgressGradient}"
+                 StrokeThickness="8"
+                 StrokeDashArray="1.5, 3"
+                 Visibility="Collapsed"
+                 RenderTransformOrigin="0.5,0.5">
             <Ellipse.RenderTransform>
-                <RotateTransform x:Name="RotationTransform"
-                                CenterX="20"
-                                CenterY="20" />
+                <RotateTransform x:Name="SpinnerRotation" Angle="0"/>
             </Ellipse.RenderTransform>
         </Ellipse>
+
+        <!-- Center content -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!-- Percentage text -->
+            <TextBlock x:Name="PercentageText"
+                       Text="{Binding Progress, ElementName=Root, StringFormat={}{0:0}%}"
+                       Style="{DynamicResource TextDisplay}"
+                       Foreground="{DynamicResource TextPrimary}"
+                       HorizontalAlignment="Center"
+                       FontSize="28"
+                       FontWeight="SemiBold"/>
+            <!-- Label -->
+            <TextBlock x:Name="LabelText"
+                       Text="{Binding Label, ElementName=Root}"
+                       Style="{DynamicResource TextCaption}"
+                       Foreground="{DynamicResource TextSecondary}"
+                       HorizontalAlignment="Center"
+                       Margin="0,2,0,0"/>
+        </StackPanel>
     </Grid>
+
     <UserControl.Triggers>
+        <!-- Spinner animation for indeterminate mode -->
         <EventTrigger RoutedEvent="UserControl.Loaded">
-            <BeginStoryboard>
+            <BeginStoryboard x:Name="SpinnerStoryboard">
                 <Storyboard x:Name="RotationStoryboard" RepeatBehavior="Forever">
-                    <DoubleAnimation Storyboard.TargetName="RotationTransform"
-                                    Storyboard.TargetProperty="Angle"
-                                    From="0"
-                                    To="360"
-                                    Duration="0:0:1" />
+                    <DoubleAnimation Storyboard.TargetName="SpinnerRotation"
+                                     Storyboard.TargetProperty="Angle"
+                                     From="0"
+                                     To="360"
+                                     Duration="0:0:1.5">
+                        <DoubleAnimation.EasingFunction>
+                            <SineEase EasingMode="EaseInOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>

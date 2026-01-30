@@ -156,7 +156,8 @@ public partial class App : System.Windows.Application
             new ThemeService(sp.GetRequiredService<IPreferencesService>()));
 
         // Register ViewModels
-        services.AddTransient<MainViewModel>();
+        services.AddTransient<MainViewModel>(sp =>
+            new MainViewModel(sp.GetRequiredService<IPreferencesService>()));
         services.AddTransient<ProfileSelectorViewModel>();
         services.AddTransient<TestListViewModel>();
         services.AddTransient<RunProgressViewModel>();

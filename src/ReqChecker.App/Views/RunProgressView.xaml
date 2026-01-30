@@ -3,79 +3,326 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:ReqChecker.App.Controls"
       mc:Ignorable="d"
+      Background="{DynamicResource BackgroundBase}"
       FocusManager.FocusedElement="{Binding ElementName=CancelButton}">
-    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+
+    <Page.Resources>
+        <!-- Staggered item entrance style trigger -->
+        <Style x:Key="AnimatedTestResultItem" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="30"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                             From="30" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,10,20,10">
-            <TextBlock Text="Run Progress" FontSize="24" FontWeight="Bold"/>
-            <Button x:Name="CancelButton" Content="_Cancel" Command="{Binding CancelCommand}" Margin="20,0,0,0" Padding="15,5" TabIndex="1" IsCancel="True"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Progress Display -->
-        <StackPanel Grid.Row="1" Margin="40" VerticalAlignment="Top">
-            <TextBlock Text="{Binding CurrentTestName}" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
-
-            <!-- Progress Indicator -->
-            <Border Width="200" Height="200" BorderBrush="#E0E0E0" BorderThickness="2" CornerRadius="100" HorizontalAlignment="Center">
-                <Grid>
-                    <Ellipse Width="180" Height="180" Stroke="#4CAF50" StrokeThickness="4" StrokeDashArray="5,5"/>
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding CompletedTests}" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBlock Text="{Binding TotalTests, StringFormat='of {0}'}" FontSize="14" HorizontalAlignment="Center" Foreground="#666666"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- Status -->
-            <TextBlock Text="{Binding CurrentStatus}" FontSize="16" FontWeight="Bold" Margin="0,20,0,0" HorizontalAlignment="Center"/>
-
-            <!-- Stats -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <StackPanel Orientation="Horizontal" Margin="10,0">
-                    <TextBlock Text="{Binding CompletedTests}" FontSize="14" FontWeight="Bold" Foreground="#4CAF50"/>
-                    <TextBlock Text=" Passed" FontSize="14" Foreground="#4CAF50"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="10,0">
-                    <TextBlock Text="{Binding FailedTests}" FontSize="14" FontWeight="Bold" Foreground="#DC3545"/>
-                    <TextBlock Text=" Failed" FontSize="14" Foreground="#DC3545"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="10,0">
-                    <TextBlock Text="{Binding SkippedTests}" FontSize="14" FontWeight="Bold" Foreground="#6B7280"/>
-                    <TextBlock Text=" Skipped" FontSize="14" Foreground="#6B7280"/>
-                </StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="Play24"
+                               FontSize="24"
+                               Foreground="{DynamicResource AccentPrimary}"
+                               Margin="0,0,12,0"/>
+                <TextBlock Text="Test Execution"
+                           Style="{DynamicResource TextH1}"
+                           Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
 
-            <!-- Test Results List -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="300" Margin="0,20,0,0">
-                <ItemsControl ItemsSource="{Binding TestResults}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="5" Padding="10">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+            <Button x:Name="CancelButton"
+                    Grid.Column="1"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding CancelCommand}"
+                    IsCancel="True"
+                    TabIndex="1">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="Dismiss24" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Cancel"/>
+                </StackPanel>
+            </Button>
+        </Grid>
 
-                                    <!-- Test Name -->
-                                    <TextBlock Grid.Column="0" Text="{Binding DisplayName}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MaxWidth="400"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                                    <!-- Status Badge -->
-                                    <Border Grid.Column="1" Background="{Binding Status, Converter={StaticResource TestStatusToColorConverter}}" CornerRadius="12" Padding="8,4">
-                                        <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="Bold" Foreground="White"/>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </StackPanel>
+            <!-- Left: Progress Ring and Current Test -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <!-- Progress Ring -->
+                <controls:ProgressRing x:Name="MainProgressRing"
+                                       Width="160"
+                                       Height="160"
+                                       Progress="{Binding ProgressPercentage}"
+                                       Label="Complete"
+                                       ShowPercentage="True"
+                                       HorizontalAlignment="Center">
+                    <controls:ProgressRing.Effect>
+                        <DropShadowEffect Color="#00d9ff"
+                                          BlurRadius="15"
+                                          ShadowDepth="0"
+                                          Opacity="0.3"/>
+                    </controls:ProgressRing.Effect>
+                </controls:ProgressRing>
+
+                <!-- Current Test Card -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,32,0,0"
+                        MinWidth="300">
+                    <StackPanel>
+                        <TextBlock Text="Currently Running"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextTertiary}"
+                                   Margin="0,0,0,8"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Animated spinner -->
+                            <ui:SymbolIcon Grid.Column="0"
+                                           Symbol="ArrowSync24"
+                                           FontSize="20"
+                                           Foreground="{DynamicResource AccentPrimary}"
+                                           Margin="0,0,12,0"
+                                           RenderTransformOrigin="0.5,0.5">
+                                <ui:SymbolIcon.RenderTransform>
+                                    <RotateTransform x:Name="SpinnerRotation"/>
+                                </ui:SymbolIcon.RenderTransform>
+                                <ui:SymbolIcon.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimation Storyboard.TargetName="SpinnerRotation"
+                                                                 Storyboard.TargetProperty="Angle"
+                                                                 From="0" To="360"
+                                                                 Duration="0:0:1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </ui:SymbolIcon.Triggers>
+                            </ui:SymbolIcon>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding CurrentTestName, FallbackValue='Waiting...'}"
+                                       Style="{DynamicResource TextBody}"
+                                       Foreground="{DynamicResource TextPrimary}"
+                                       FontWeight="Medium"
+                                       TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Stats Summary -->
+                <Grid Margin="0,24,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Passed -->
+                    <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding CompletedTests}"
+                                   Style="{DynamicResource TextH2}"
+                                   Foreground="{DynamicResource StatusPass}"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="Passed"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Failed -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding FailedTests}"
+                                   Style="{DynamicResource TextH2}"
+                                   Foreground="{DynamicResource StatusFail}"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="Failed"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Skipped -->
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding SkippedTests}"
+                                   Style="{DynamicResource TextH2}"
+                                   Foreground="{DynamicResource StatusSkip}"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="Skipped"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <!-- Divider -->
+            <Border Grid.Column="1"
+                    Width="1"
+                    Background="{DynamicResource BorderSubtle}"
+                    VerticalAlignment="Stretch"
+                    Margin="0,40"/>
+
+            <!-- Right: Completed Tests List -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- List Header -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                    <ui:SymbolIcon Symbol="TaskListLtr24"
+                                   FontSize="20"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,0,8,0"/>
+                    <TextBlock Text="Completed Tests"
+                               Style="{DynamicResource TextH3}"
+                               Foreground="{DynamicResource TextPrimary}"/>
+                    <Border Background="{DynamicResource BackgroundElevated}"
+                            CornerRadius="10"
+                            Padding="8,2"
+                            Margin="12,0,0,0"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding TestResults.Count}"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Test Results List -->
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding TestResults}"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource AnimatedTestResultItem}"
+                                        Background="{DynamicResource BackgroundSurface}"
+                                        BorderBrush="{DynamicResource BorderDefault}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16,12"
+                                        Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Test Info -->
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       Style="{DynamicResource TextBody}"
+                                                       Foreground="{DynamicResource TextPrimary}"
+                                                       FontWeight="Medium"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Duration, StringFormat='{}{0:N0}ms'}"
+                                                       Style="{DynamicResource TextCaption}"
+                                                       Foreground="{DynamicResource TextTertiary}"
+                                                       Margin="0,4,0,0"
+                                                       Visibility="{Binding Duration, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                        </StackPanel>
+
+                                        <!-- Status Badge -->
+                                        <controls:TestStatusBadge Grid.Column="1"
+                                                                  Status="{Binding Status}"
+                                                                  ShowIcon="True"
+                                                                  VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Empty state -->
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TestResults.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                </ScrollViewer>
+
+                <!-- Empty State (when no results yet) -->
+                <Border Grid.Row="1"
+                        Visibility="{Binding TestResults.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Invert}"
+                        Background="{DynamicResource BackgroundSurface}"
+                        BorderBrush="{DynamicResource BorderSubtle}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="32">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="Clock24"
+                                       FontSize="48"
+                                       Foreground="{DynamicResource TextTertiary}"
+                                       HorizontalAlignment="Center"/>
+                        <TextBlock Text="Waiting for results..."
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,16,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Page>

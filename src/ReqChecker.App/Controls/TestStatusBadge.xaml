@@ -6,15 +6,47 @@
         xmlns:core="clr-namespace:ReqChecker.Core.Enums;assembly=ReqChecker.Core"
         x:Class="ReqChecker.App.Controls.TestStatusBadge"
         mc:Ignorable="d"
-        Padding="8,4"
-        CornerRadius="4"
+        x:Name="Root"
+        Padding="10,5"
+        CornerRadius="12"
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
-        MinWidth="60"
+        MinWidth="70"
+        RenderTransformOrigin="0.5,0.5"
         Background="{Binding Status, RelativeSource={RelativeSource AncestorType=local:TestStatusBadge}, Converter={StaticResource TestStatusToColorConverter}}">
-    <TextBlock Text="{Binding Status, RelativeSource={RelativeSource AncestorType=local:TestStatusBadge}}"
-               Foreground="White"
-               FontSize="12"
-               FontWeight="SemiBold"
-               TextAlignment="Center" />
+    <Border.RenderTransform>
+        <ScaleTransform ScaleX="1" ScaleY="1"/>
+    </Border.RenderTransform>
+    <Border.Effect>
+        <DropShadowEffect x:Name="GlowEffect"
+                          ShadowDepth="0"
+                          Direction="0"
+                          BlurRadius="8"
+                          Opacity="0.5"
+                          Color="{Binding Status, RelativeSource={RelativeSource AncestorType=local:TestStatusBadge}, Converter={StaticResource TestStatusToColorConverter}, ConverterParameter=GlowColor}"/>
+    </Border.Effect>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Status Icon -->
+        <TextBlock x:Name="StatusIcon"
+                   Grid.Column="0"
+                   FontFamily="Segoe Fluent Icons"
+                   FontSize="12"
+                   Foreground="White"
+                   VerticalAlignment="Center"
+                   Margin="0,0,6,0"/>
+
+        <!-- Status Text -->
+        <TextBlock Grid.Column="1"
+                   Text="{Binding Status, RelativeSource={RelativeSource AncestorType=local:TestStatusBadge}}"
+                   Foreground="White"
+                   FontSize="12"
+                   FontWeight="SemiBold"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center"/>
+    </Grid>
 </Border>

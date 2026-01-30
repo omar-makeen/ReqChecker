@@ -1,0 +1,401 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Animation Durations -->
+    <Duration x:Key="DurationFast">0:0:0.15</Duration>
+    <Duration x:Key="DurationNormal">0:0:0.2</Duration>
+    <Duration x:Key="DurationSlow">0:0:0.3</Duration>
+    <Duration x:Key="DurationVeryFast">0:0:0.1</Duration>
+
+    <!-- Easing Functions -->
+    <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut"/>
+    <QuadraticEase x:Key="EaseIn" EasingMode="EaseIn"/>
+    <QuadraticEase x:Key="EaseInOut" EasingMode="EaseInOut"/>
+    <CubicEase x:Key="CubicEaseOut" EasingMode="EaseOut"/>
+    <CubicEase x:Key="CubicEaseIn" EasingMode="EaseIn"/>
+    <ExponentialEase x:Key="ExponentialEaseOut" EasingMode="EaseOut" Exponent="4"/>
+
+    <!-- View Transition - Fade In -->
+    <Storyboard x:Key="ViewFadeIn">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+            From="10" To="0"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- View Transition - Fade Out -->
+    <Storyboard x:Key="ViewFadeOut">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="1" To="0"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseIn"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Card Hover Animation -->
+    <Storyboard x:Key="CardHoverEnter">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="20"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+            To="-2"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="CardHoverLeave">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="10"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+            To="0"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Button Press Animation -->
+    <Storyboard x:Key="ButtonPressDown">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+            To="0.98"
+            Duration="{StaticResource DurationVeryFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+            To="0.98"
+            Duration="{StaticResource DurationVeryFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="ButtonPressUp">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+            To="1"
+            Duration="{StaticResource DurationVeryFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+            To="1"
+            Duration="{StaticResource DurationVeryFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Pulse Animation (for status changes) -->
+    <Storyboard x:Key="PulseAnimation" RepeatBehavior="1x">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+            From="1" To="1.05"
+            Duration="0:0:0.15"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+            From="1" To="1.05"
+            Duration="0:0:0.15"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Window Fade In -->
+    <Storyboard x:Key="WindowFadeIn">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationSlow}">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Sidebar Expand/Collapse -->
+    <Storyboard x:Key="SidebarExpand">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Width"
+            To="240"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="SidebarCollapse">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Width"
+            To="72"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Navigation Item Active Indicator Fade In -->
+    <Storyboard x:Key="NavIndicatorFadeIn">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+            From="0" To="1"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- View Slide In From Right (for forward navigation) -->
+    <Storyboard x:Key="ViewSlideInRight">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+            From="20" To="0"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- View Slide Out Left (for forward navigation) -->
+    <Storyboard x:Key="ViewSlideOutLeft">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="1" To="0"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseIn"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+            From="0" To="-20"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseIn"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Staggered Item Entrance Animation (for list items) -->
+    <Storyboard x:Key="ListItemEntrance">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+            From="15" To="0"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Hover Background Fade -->
+    <Storyboard x:Key="HoverBackgroundEnter">
+        <ColorAnimation
+            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+            To="{StaticResource BackgroundElevatedColor}"
+            Duration="{StaticResource DurationFast}">
+            <ColorAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </ColorAnimation.EasingFunction>
+        </ColorAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="HoverBackgroundLeave">
+        <ColorAnimation
+            Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+            To="Transparent"
+            Duration="{StaticResource DurationFast}">
+            <ColorAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </ColorAnimation.EasingFunction>
+        </ColorAnimation>
+    </Storyboard>
+
+    <!-- Expand/Collapse Content Animation -->
+    <Storyboard x:Key="ExpandContent">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <Storyboard x:Key="CollapseContent">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="1" To="0"
+            Duration="{StaticResource DurationFast}">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseIn"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Test Completion Pulse Animation -->
+    <Storyboard x:Key="TestCompletePulse">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+            From="1" To="1.1"
+            Duration="0:0:0.15"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+            From="1" To="1.1"
+            Duration="0:0:0.15"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Success Glow Pulse (for pass status) -->
+    <Storyboard x:Key="SuccessGlowPulse" RepeatBehavior="1x">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            From="8" To="16"
+            Duration="0:0:0.2"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+            From="0.5" To="0.8"
+            Duration="0:0:0.2"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Error Glow Pulse (for fail status) -->
+    <Storyboard x:Key="ErrorGlowPulse" RepeatBehavior="1x">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            From="8" To="20"
+            Duration="0:0:0.25"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Progress Ring Glow -->
+    <Storyboard x:Key="ProgressRingGlow" RepeatBehavior="Forever">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            From="10" To="20"
+            Duration="0:0:1"
+            AutoReverse="True">
+            <DoubleAnimation.EasingFunction>
+                <SineEase EasingMode="EaseInOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Test Item Slide In (staggered entrance for test results) -->
+    <Storyboard x:Key="TestItemSlideIn">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+            From="30" To="0"
+            Duration="{StaticResource DurationNormal}">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut"/>
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+</ResourceDictionary>

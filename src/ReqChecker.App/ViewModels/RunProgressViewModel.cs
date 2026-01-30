@@ -23,6 +23,31 @@ public partial class RunProgressViewModel : ObservableObject
     [ObservableProperty]
     private int _completedTests;
 
+    /// <summary>
+    /// Gets the progress percentage (0-100).
+    /// </summary>
+    public double ProgressPercentage => TotalTests > 0 ? (double)(CompletedTests + FailedTests + SkippedTests) / TotalTests * 100 : 0;
+
+    partial void OnCompletedTestsChanged(int value)
+    {
+        OnPropertyChanged(nameof(ProgressPercentage));
+    }
+
+    partial void OnFailedTestsChanged(int value)
+    {
+        OnPropertyChanged(nameof(ProgressPercentage));
+    }
+
+    partial void OnSkippedTestsChanged(int value)
+    {
+        OnPropertyChanged(nameof(ProgressPercentage));
+    }
+
+    partial void OnTotalTestsChanged(int value)
+    {
+        OnPropertyChanged(nameof(ProgressPercentage));
+    }
+
     [ObservableProperty]
     private int _failedTests;
 

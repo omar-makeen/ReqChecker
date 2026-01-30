@@ -47,15 +47,15 @@ Based on plan.md, paths are:
 
 **⚠️ CRITICAL**: No view redesign work can begin until this phase is complete
 
-- [ ] T012 Convert MainWindow to FluentWindow base class in src/ReqChecker.App/MainWindow.xaml
-- [ ] T013 Update MainWindow.xaml.cs to inherit from FluentWindow in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T014 Replace header navigation with NavigationView sidebar in src/ReqChecker.App/MainWindow.xaml
-- [ ] T015 Add IsSidebarExpanded property to MainWindowViewModel in src/ReqChecker.App/ViewModels/MainWindowViewModel.cs
-- [ ] T016 Implement sidebar collapse/expand toggle with persistence in src/ReqChecker.App/MainWindow.xaml
-- [ ] T017 Configure Mica backdrop for title bar with Windows 10 fallback in src/ReqChecker.App/MainWindow.xaml
-- [ ] T018 Add status bar with version, profile name, theme toggle in src/ReqChecker.App/MainWindow.xaml
-- [ ] T019 Create view transition animations in src/ReqChecker.App/Resources/Styles/Animations.xaml
-- [ ] T020 Implement frame navigation with fade transitions in src/ReqChecker.App/MainWindow.xaml.cs
+- [X] T012 Convert MainWindow to FluentWindow base class in src/ReqChecker.App/MainWindow.xaml
+- [X] T013 Update MainWindow.xaml.cs to inherit from FluentWindow in src/ReqChecker.App/MainWindow.xaml.cs
+- [X] T014 Replace header navigation with NavigationView sidebar in src/ReqChecker.App/MainWindow.xaml
+- [X] T015 Add IsSidebarExpanded property to MainWindowViewModel in src/ReqChecker.App/ViewModels/MainViewModel.cs
+- [X] T016 Implement sidebar collapse/expand toggle with persistence in src/ReqChecker.App/MainWindow.xaml
+- [X] T017 Configure Mica backdrop for title bar with Windows 10 fallback in src/ReqChecker.App/MainWindow.xaml
+- [X] T018 Add status bar with version, profile name, theme toggle in src/ReqChecker.App/MainWindow.xaml
+- [X] T019 Create view transition animations in src/ReqChecker.App/Resources/Styles/Animations.xaml
+- [X] T020 Implement frame navigation with fade transitions in src/ReqChecker.App/MainWindow.xaml.cs
 
 **Checkpoint**: Sidebar navigation functional, collapse/expand works, state persists, Mica visible on Windows 11
 
@@ -69,12 +69,12 @@ Based on plan.md, paths are:
 
 ### Implementation for User Story 1
 
-- [ ] T021 [P] [US1] Create button styles (Primary gradient, Secondary, Ghost) in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T022 [P] [US1] Create card base style with elevation in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T023 [P] [US1] Add hover animations for cards in src/ReqChecker.App/Resources/Styles/Animations.xaml
-- [ ] T024 [US1] Add window fade-in animation on launch in src/ReqChecker.App/MainWindow.xaml
-- [ ] T025 [US1] Implement reduced motion detection in src/ReqChecker.App/Services/ThemeService.cs
-- [ ] T026 [US1] Add conditional animation logic based on system settings in src/ReqChecker.App/Resources/Styles/Animations.xaml
+- [X] T021 [P] [US1] Create button styles (Primary gradient, Secondary, Ghost) in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T022 [P] [US1] Create card base style with elevation in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T023 [P] [US1] Add hover animations for cards in src/ReqChecker.App/Resources/Styles/Animations.xaml
+- [X] T024 [US1] Add window fade-in animation on launch in src/ReqChecker.App/MainWindow.xaml
+- [X] T025 [US1] Implement reduced motion detection in src/ReqChecker.App/Services/ThemeService.cs
+- [X] T026 [US1] Add conditional animation logic based on system settings in src/ReqChecker.App/Resources/Styles/Animations.xaml
 
 **Checkpoint**: App launches with smooth fade-in, dark theme looks premium, Mica effect visible
 
@@ -88,11 +88,11 @@ Based on plan.md, paths are:
 
 ### Implementation for User Story 2
 
-- [ ] T027 [P] [US2] Style NavigationView items with icons in src/ReqChecker.App/MainWindow.xaml
-- [ ] T028 [P] [US2] Add active item accent border indicator (3px left border) in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T029 [US2] Add hover effect with background highlight in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T030 [US2] Implement 200ms slide/fade view transitions in src/ReqChecker.App/Resources/Styles/Animations.xaml
-- [ ] T031 [US2] Add navigation item tooltips when sidebar collapsed in src/ReqChecker.App/MainWindow.xaml
+- [X] T027 [P] [US2] Style NavigationView items with icons in src/ReqChecker.App/MainWindow.xaml
+- [X] T028 [P] [US2] Add active item accent border indicator (3px left border) in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T029 [US2] Add hover effect with background highlight in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T030 [US2] Implement 200ms slide/fade view transitions in src/ReqChecker.App/Resources/Styles/Animations.xaml
+- [X] T031 [US2] Add navigation item tooltips when sidebar collapsed in src/ReqChecker.App/MainWindow.xaml
 
 **Checkpoint**: Navigation feels smooth and responsive, active state clear, hover feedback visible
 
@@ -106,14 +106,14 @@ Based on plan.md, paths are:
 
 ### Implementation for User Story 3
 
-- [ ] T032 [P] [US3] Enhance ProgressRing with gradient stroke in src/ReqChecker.App/Controls/ProgressRing.xaml
-- [ ] T033 [P] [US3] Add ProgressRing.xaml.cs code-behind for gradient animation in src/ReqChecker.App/Controls/ProgressRing.xaml.cs
-- [ ] T034 [US3] Add pulse animation for test completion in src/ReqChecker.App/Resources/Styles/Animations.xaml
-- [ ] T035 [US3] Enhance TestStatusBadge with glow effects in src/ReqChecker.App/Controls/TestStatusBadge.xaml
-- [ ] T036 [US3] Redesign RunProgressView with centered progress ring in src/ReqChecker.App/Views/RunProgressView.xaml
-- [ ] T037 [US3] Add current test card below progress ring in src/ReqChecker.App/Views/RunProgressView.xaml
-- [ ] T038 [US3] Add completed tests mini-list with scroll in src/ReqChecker.App/Views/RunProgressView.xaml
-- [ ] T039 [US3] Add staggered entrance animations for test items in src/ReqChecker.App/Views/RunProgressView.xaml
+- [X] T032 [P] [US3] Enhance ProgressRing with gradient stroke in src/ReqChecker.App/Controls/ProgressRing.xaml
+- [X] T033 [P] [US3] Add ProgressRing.xaml.cs code-behind for gradient animation in src/ReqChecker.App/Controls/ProgressRing.xaml.cs
+- [X] T034 [US3] Add pulse animation for test completion in src/ReqChecker.App/Resources/Styles/Animations.xaml
+- [X] T035 [US3] Enhance TestStatusBadge with glow effects in src/ReqChecker.App/Controls/TestStatusBadge.xaml
+- [X] T036 [US3] Redesign RunProgressView with centered progress ring in src/ReqChecker.App/Views/RunProgressView.xaml
+- [X] T037 [US3] Add current test card below progress ring in src/ReqChecker.App/Views/RunProgressView.xaml
+- [X] T038 [US3] Add completed tests mini-list with scroll in src/ReqChecker.App/Views/RunProgressView.xaml
+- [X] T039 [US3] Add staggered entrance animations for test items in src/ReqChecker.App/Views/RunProgressView.xaml
 
 **Checkpoint**: Test execution visually engaging, progress ring animates smoothly, pulse on completion
 
