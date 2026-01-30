@@ -5,6 +5,16 @@
 **Status**: Draft
 **Input**: User request for complete UI/UX overhaul to create an elegant, professional, and beautiful enterprise application
 
+## Clarifications
+
+### Session 2026-01-30
+
+- Q: What approach should be used for the custom title bar? → A: WPF-UI FluentWindow - Uses framework's built-in custom title bar with native Windows behaviors
+- Q: What should control the sidebar collapse/expand behavior? → A: User toggle with persistence - Manual toggle button, preference saved and restored on restart
+- Q: What should happen when Windows "reduce motion" accessibility setting is enabled? → A: Essential only - Keep button/click feedback, disable page transitions and decorative effects
+- Q: Should the application use backdrop materials (Mica/Acrylic)? → A: Mica on title bar only - Subtle wallpaper-tinted title bar, solid content areas
+- Q: What type of empty state illustrations should be used? → A: Fluent icon compositions - Large Fluent icons with supporting text, no custom artwork
+
 ## Vision Statement
 
 Transform ReqChecker from a functional utility into a world-class enterprise application with a stunning, modern interface that sets new standards for Windows desktop design. The goal is to create an application that users are proud to show colleagues - combining the sophistication of premium macOS apps with the power of Windows Fluent Design.
@@ -97,7 +107,7 @@ A user prefers light mode for daytime work. They click the theme toggle and the 
 - **VD-002**: Sidebar MUST include app logo/branding, navigation items with icons, and theme toggle
 - **VD-003**: Main content area MUST have consistent padding (24px) and maximum width constraint (1400px)
 - **VD-004**: Application MUST maintain visual consistency across all views
-- **VD-005**: Window MUST support standard operations (minimize, maximize, close) with custom-styled title bar
+- **VD-005**: Window MUST use WPF-UI FluentWindow for custom-styled title bar with native Windows 11 snap layouts and drag behaviors
 
 **Color System**
 
@@ -148,6 +158,8 @@ A user prefers light mode for daytime work. They click the theme toggle and the 
 **Navigation Sidebar**
 
 - **CP-001**: Sidebar MUST be 72px wide in collapsed mode, 240px when expanded
+- **CP-001a**: Sidebar MUST include a toggle button to switch between collapsed/expanded states
+- **CP-001b**: Sidebar state MUST persist across app restarts via user preferences
 - **CP-002**: Navigation items MUST show icon + label, icon only when collapsed
 - **CP-003**: Active item MUST have accent-colored left border indicator (3px)
 - **CP-004**: Hover state MUST show subtle background highlight
@@ -190,7 +202,7 @@ A user prefers light mode for daytime work. They click the theme toggle and the 
 
 **Main Window / Shell**
 
-- **VW-001**: Custom title bar MUST blend with application design
+- **VW-001**: Custom title bar MUST blend with application design and use Mica backdrop material on Windows 11 (fallback to solid color on Windows 10)
 - **VW-002**: Window MUST support Windows 11 snap layouts
 - **VW-003**: Status bar MUST show version, current profile, and theme toggle
 
@@ -199,7 +211,7 @@ A user prefers light mode for daytime work. They click the theme toggle and the 
 - **VW-010**: Profiles MUST display as large cards with gradient header strip
 - **VW-011**: Selected profile MUST have prominent accent border
 - **VW-012**: Import button MUST use drag-drop target styling when file hovers
-- **VW-013**: Empty state MUST show engaging illustration and clear call-to-action
+- **VW-013**: Empty state MUST show large Fluent icon composition (no custom artwork) with clear messaging and call-to-action button
 
 **Test List View**
 
@@ -240,7 +252,7 @@ A user prefers light mode for daytime work. They click the theme toggle and the 
 - **AC-001**: All interactive elements MUST be keyboard navigable
 - **AC-002**: Focus states MUST be clearly visible with accent-colored outline
 - **AC-003**: All colors MUST meet WCAG AA contrast requirements (4.5:1 for text)
-- **AC-004**: Animations MUST respect prefers-reduced-motion system setting
+- **AC-004**: Animations MUST respect prefers-reduced-motion system setting: when enabled, keep essential feedback animations (button press, status changes) but disable page transitions, hover effects, and decorative animations
 - **AC-005**: Screen reader support MUST announce navigation changes and status updates
 
 ### Performance Requirements

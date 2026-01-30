@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserPreferences",
+  "description": "User UI preferences for ReqChecker application",
+  "type": "object",
+  "properties": {
+    "theme": {
+      "type": "string",
+      "enum": ["dark", "light"],
+      "default": "dark",
+      "description": "Current color theme"
+    },
+    "sidebarExpanded": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether sidebar is expanded (240px) or collapsed (72px)"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last preference update"
+    }
+  },
+  "required": ["theme", "sidebarExpanded"],
+  "additionalProperties": false
+}
