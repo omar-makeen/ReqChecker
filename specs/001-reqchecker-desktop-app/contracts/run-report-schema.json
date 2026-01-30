@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reqchecker.example.com/schemas/run-report.json",
+  "title": "ReqChecker Run Report",
+  "description": "Output report from a ReqChecker test execution session",
+  "type": "object",
+  "required": ["runId", "profileId", "profileName", "startTime", "endTime", "machineInfo", "results", "summary"],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique run identifier"
+    },
+    "profileId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Source profile ID"
+    },
+    "profileName": {
+      "type": "string",
+      "description": "Source profile name"
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Run start timestamp (ISO 8601)"
+    },
+    "endTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Run end timestamp (ISO 8601)"
+    },
+    "durationMs": {
+      "type": "integer",
+      "description": "Total duration in milliseconds"
+    },
+    "machineInfo": {
+      "$ref": "#/$defs/machineInfo"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/testResult"
+      }
+    },
+    "summary": {
+      "$ref": "#/$defs/runSummary"
+    }
+  },
+  "$defs": {
+    "machineInfo": {
+      "type": "object",
+      "properties": {
+        "hostname": { "type": "string" },
+        "osVersion": { "type": "string" },
+        "osBuild": { "type": "string" },
+        "processorCount": { "type": "integer" },
+        "totalMemoryMB": { "type": "integer" },
+        "userName": { "type": "string" },
+        "isElevated": { "type": "boolean" },
+        "networkInterfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/networkInterfaceInfo"
+          }
+        }
+      }
+    },
+    "networkInterfaceInfo": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "macAddress": { "type": "string" },
+        "ipAddresses": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "status": { "type": "string" }
+      }
+    },
+    "testResult": {
+      "type": "object",
+      "required": ["testId", "testType", "displayName", "status", "startTime", "endTime", "humanSummary"],
+      "properties": {
+        "testId": {
+          "type": "string",
+          "description": "Test definition ID"
+        },
+        "testType": {
+          "type": "string",
+          "description": "Test type identifier"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User-facing test name"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pass", "Fail", "Skipped"],
+          "description": "Test outcome"
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "durationMs": {
+          "type": "integer",
+          "description": "Test duration in milliseconds"
+        },
+        "attemptCount": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of execution attempts"
+        },
+        "evidence": {
+          "$ref": "#/$defs/testEvidence"
+        },
+        "error": {
+          "$ref": "#/$defs/testError"
+        },
+        "humanSummary": {
+          "type": "string",
+          "description": "User-friendly result message"
+        },
+        "technicalDetails": {
+          "type": "string",
+          "description": "Detailed technical output"
+        }
+      }
+    },
+    "testEvidence": {
+      "type": "object",
+      "properties": {
+        "responseData": {
+          "type": "string",
+          "maxLength": 4096,
+          "description": "Response body/output (truncated)"
+        },
+        "responseCode": {
+          "type": "integer",
+          "description": "HTTP status code if applicable"
+        },
+        "responseHeaders": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Response headers if applicable"
+        },
+        "fileContent": {
+          "type": "string",
+          "maxLength": 4096,
+          "description": "File content sample if applicable"
+        },
+        "processList": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Running processes if applicable"
+        },
+        "registryValue": {
+          "type": "string",
+          "description": "Registry value if applicable"
+        },
+        "timing": {
+          "$ref": "#/$defs/timingBreakdown"
+        }
+      }
+    },
+    "timingBreakdown": {
+      "type": "object",
+      "properties": {
+        "connectMs": { "type": "integer" },
+        "executeMs": { "type": "integer" },
+        "totalMs": { "type": "integer" }
+      }
+    },
+    "testError": {
+      "type": "object",
+      "required": ["category", "message"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["Network", "Timeout", "Permission", "Validation", "Configuration", "Unknown"],
+          "description": "Error classification"
+        },
+        "message": {
+          "type": "string",
+          "description": "User-friendly error message"
+        },
+        "exceptionType": {
+          "type": "string",
+          "description": ".NET exception type name"
+        },
+        "stackTrace": {
+          "type": "string",
+          "description": "Stack trace (debug builds only)"
+        },
+        "innerError": {
+          "$ref": "#/$defs/testError",
+          "description": "Nested exception if any"
+        }
+      }
+    },
+    "runSummary": {
+      "type": "object",
+      "required": ["totalTests", "passed", "failed", "skipped"],
+      "properties": {
+        "totalTests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Pass percentage (passed / (passed + failed) * 100)"
+        }
+      }
+    }
+  }
+}
