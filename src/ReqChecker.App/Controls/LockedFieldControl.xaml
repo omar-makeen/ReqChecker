@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d"
+             Opacity="0.7">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -11,27 +13,30 @@
         </Grid.ColumnDefinitions>
 
         <!-- Lock Icon -->
-        <Border Grid.Column="0" 
-                Background="#F5F5F5" 
-                BorderBrush="#DDDDDD" 
-                BorderThickness="1" 
-                CornerRadius="4" 
-                Padding="8"
+        <Border Grid.Column="0"
+                Background="{DynamicResource BackgroundElevated}"
+                BorderBrush="{DynamicResource BorderSubtle}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10"
                 Margin="0,0,10,0"
                 ToolTip="This field is locked and cannot be edited">
-            <TextBlock Text="🔒" FontSize="16" VerticalAlignment="Center"/>
+            <ui:SymbolIcon Symbol="LockClosed24"
+                           FontSize="16"
+                           Foreground="{DynamicResource TextTertiary}"/>
         </Border>
 
         <!-- Field Value (Read-only) -->
-        <Border Grid.Column="1" 
-                Background="#FAFAFA" 
-                BorderBrush="#E0E0E0" 
-                BorderThickness="1" 
-                CornerRadius="4" 
-                Padding="10"
+        <Border Grid.Column="1"
+                Background="{DynamicResource BackgroundElevated}"
+                BorderBrush="{DynamicResource BorderSubtle}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="12,10"
                 IsEnabled="False">
-            <TextBlock x:Name="ValueTextBlock" 
-                       Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+            <TextBlock x:Name="ValueTextBlock"
+                       Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                       Foreground="{DynamicResource TextSecondary}"
                        VerticalAlignment="Center"
                        TextWrapping="Wrap"/>
         </Border>

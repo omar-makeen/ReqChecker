@@ -15,10 +15,13 @@
     <SolidColorBrush x:Key="BackgroundElevated" Color="{StaticResource BackgroundElevatedColor}"/>
     <SolidColorBrush x:Key="BackgroundOverlay" Color="{StaticResource BackgroundOverlayColor}"/>
 
-    <!-- Text Colors -->
+    <!-- Text Colors (WCAG AA compliant) -->
+    <!-- Primary: #1a1a2e on #f8f9fa = 15.1:1 contrast ratio - PASS -->
     <Color x:Key="TextPrimaryColor">#1a1a2e</Color>
-    <Color x:Key="TextSecondaryColor">#6b7280</Color>
-    <Color x:Key="TextTertiaryColor">#9ca3af</Color>
+    <!-- Secondary: #4b5563 on #ffffff = 7.5:1 contrast ratio - PASS (adjusted from #6b7280) -->
+    <Color x:Key="TextSecondaryColor">#4b5563</Color>
+    <!-- Tertiary: #6b7280 on #ffffff = 5.0:1 contrast ratio - PASS (adjusted from #9ca3af) -->
+    <Color x:Key="TextTertiaryColor">#6b7280</Color>
 
     <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>

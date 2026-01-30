@@ -3,9 +3,46 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d"
+      Background="{DynamicResource BackgroundBase}"
       FocusManager.FocusedElement="{Binding ElementName=OpenLogsButton}">
-    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+
+    <Page.Resources>
+        <!-- Staggered entrance animation for cards -->
+        <Style x:Key="AnimatedDiagCard" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="20"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             From="20" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -13,93 +50,335 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Margin="20,10,20,10">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Diagnostics" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button x:Name="OpenLogsButton" Content="Open _Logs Folder" Command="{Binding OpenLogsFolderCommand}" Margin="20,0,0,0" Padding="15,5" TabIndex="1"/>
-                <Button Content="_Copy Details" Command="{Binding CopyDetailsCommand}" IsEnabled="{Binding HasLastRun}" Margin="10,0,0,0" Padding="15,5" TabIndex="2"/>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="Stethoscope24"
+                               FontSize="24"
+                               Foreground="{DynamicResource AccentPrimary}"
+                               Margin="0,0,12,0"/>
+                <TextBlock Text="Diagnostics"
+                           Style="{DynamicResource TextH1}"
+                           Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
-            <!-- Status Message -->
-            <Border Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}}"
-                    Margin="0,10,0,0" Padding="10,8" CornerRadius="4">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background" Value="#E8F5E9"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsStatusError}" Value="True">
-                                <Setter Property="Background" Value="#FFEBEE"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <TextBlock Text="{Binding StatusMessage}" FontSize="13">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#2E7D32"/>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="OpenLogsButton"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding OpenLogsFolderCommand}"
+                        TabIndex="1"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Open Logs"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource PrimaryButton}"
+                        Command="{Binding CopyDetailsCommand}"
+                        IsEnabled="{Binding HasLastRun}"
+                        TabIndex="2">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Copy24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Copy Details"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Status Message -->
+        <Border Grid.Row="1"
+                Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}}"
+                Margin="0,0,0,16"
+                CornerRadius="8"
+                Padding="16,12">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#1A10B981"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource StatusPass}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                            <Setter Property="Background" Value="#1AEF4444"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource StatusFail}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel Orientation="Horizontal">
+                <ui:SymbolIcon FontSize="18" Margin="0,0,12,0">
+                    <ui:SymbolIcon.Style>
+                        <Style TargetType="ui:SymbolIcon">
+                            <Setter Property="Symbol" Value="CheckmarkCircle24"/>
+                            <Setter Property="Foreground" Value="{DynamicResource StatusPass}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsStatusError}" Value="True">
-                                    <Setter Property="Foreground" Value="#C62828"/>
+                                    <Setter Property="Symbol" Value="ErrorCircle24"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource StatusFail}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:SymbolIcon.Style>
+                </ui:SymbolIcon>
+                <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource StatusPass}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStatusError}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource StatusFail}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-            </Border>
-        </StackPanel>
-
-        <!-- Last Run Summary -->
-        <Border Grid.Row="1" Background="#F5F5F5" Padding="20" Margin="20,0,20,20" CornerRadius="8">
-            <StackPanel>
-                <TextBlock Text="Last Run Summary" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-                <TextBlock Text="{Binding LastRunSummary}" FontSize="13" FontFamily="Consolas,Courier New" TextWrapping="Wrap"/>
             </StackPanel>
         </Border>
 
-        <!-- Machine Info -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="20,0,20,20">
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
-                <Border Background="#E3F2FD" Padding="20" CornerRadius="8" Margin="0,0,0,10">
-                    <StackPanel>
-                        <TextBlock Text="Machine Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-                        <TextBlock Text="{Binding MachineInfoSummary}" FontSize="13" FontFamily="Consolas,Courier New" TextWrapping="Wrap"/>
-                    </StackPanel>
+                <!-- Last Run Summary Card -->
+                <Border Style="{StaticResource AnimatedDiagCard}">
+                    <Border Style="{StaticResource DiagnosticCardHighlight}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <Border Background="{DynamicResource AccentPrimary}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="History24"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Last Run Summary"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Border Background="{DynamicResource BackgroundSurface}"
+                                    CornerRadius="8"
+                                    Padding="16">
+                                <TextBlock Text="{Binding LastRunSummary}"
+                                           FontSize="13"
+                                           FontFamily="Cascadia Code, Consolas, Courier New"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           TextWrapping="Wrap"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                 </Border>
 
-                <!-- Network Interfaces -->
-                <Border Background="#FFF3E0" Padding="20" CornerRadius="8">
-                    <StackPanel>
-                        <TextBlock Text="Network Interfaces" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-                        <ItemsControl ItemsSource="{Binding LastRunReport.MachineInfo.NetworkInterfaces}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="15">
-                                        <StackPanel>
-                                            <TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding Name}"/>
-                                            <TextBlock FontSize="12" Margin="0,5,0,0" Text="{Binding Description}"/>
-                                            <TextBlock FontSize="12" Margin="0,5,0,0">
-                                                <Run Text="Status: "/>
-                                                <Run Text="{Binding Status}" FontWeight="SemiBold"/>
-                                            </TextBlock>
-                                            <TextBlock FontSize="12" Margin="0,2,0,0">
-                                                <Run Text="MAC: "/>
-                                                <Run Text="{Binding MacAddress}" FontWeight="SemiBold"/>
-                                            </TextBlock>
-                                            <ItemsControl ItemsSource="{Binding IpAddresses}" Margin="0,5,0,0">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock FontSize="12">
-                                                            <Run Text="• "/>
-                                                            <Run Text="{Binding}"/>
+                <!-- Machine Information Card -->
+                <Border Style="{StaticResource AnimatedDiagCard}">
+                    <Border Style="{StaticResource DiagnosticCard}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <Border Background="{DynamicResource AccentSecondary}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="DesktopMac24"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Machine Information"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Border Background="{DynamicResource BackgroundElevated}"
+                                    CornerRadius="8"
+                                    Padding="16">
+                                <TextBlock Text="{Binding MachineInfoSummary}"
+                                           FontSize="13"
+                                           FontFamily="Cascadia Code, Consolas, Courier New"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           TextWrapping="Wrap"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Border>
+
+                <!-- Network Interfaces Card -->
+                <Border Style="{StaticResource AnimatedDiagCard}">
+                    <Border Style="{StaticResource DiagnosticCard}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                <Border Background="{DynamicResource StatusPass}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="Wifi124"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Network Interfaces"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                                <Border Background="{DynamicResource BackgroundElevated}"
+                                        CornerRadius="10"
+                                        Padding="10,4"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding LastRunReport.MachineInfo.NetworkInterfaces.Count}"
+                                               Style="{DynamicResource TextCaption}"
+                                               Foreground="{DynamicResource TextSecondary}"/>
+                                </Border>
+                            </StackPanel>
+
+                            <ItemsControl ItemsSource="{Binding LastRunReport.MachineInfo.NetworkInterfaces}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource NetworkInterfaceCard}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Status Indicator -->
+                                                <Border Grid.Column="0"
+                                                        Width="4"
+                                                        CornerRadius="2"
+                                                        Margin="0,0,16,0">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background" Value="{DynamicResource StatusFail}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Up">
+                                                                    <Setter Property="Background" Value="{DynamicResource StatusPass}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+
+                                                <!-- Interface Details -->
+                                                <StackPanel Grid.Column="1">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding Name}"
+                                                                   Style="{DynamicResource TextBody}"
+                                                                   Foreground="{DynamicResource TextPrimary}"
+                                                                   FontWeight="SemiBold"/>
+
+                                                        <Border Grid.Column="1"
+                                                                CornerRadius="10"
+                                                                Padding="8,2">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="#1AEF4444"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Status}" Value="Up">
+                                                                            <Setter Property="Background" Value="#1A10B981"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <TextBlock Text="{Binding Status}"
+                                                                       FontSize="11"
+                                                                       FontWeight="Medium">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Foreground" Value="{DynamicResource StatusFail}"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding Status}" Value="Up">
+                                                                                <Setter Property="Foreground" Value="{DynamicResource StatusPass}"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Border>
+                                                    </Grid>
+
+                                                    <TextBlock Text="{Binding Description}"
+                                                               Style="{DynamicResource TextCaption}"
+                                                               Foreground="{DynamicResource TextTertiary}"
+                                                               Margin="0,4,0,0"
+                                                               TextTrimming="CharacterEllipsis"/>
+
+                                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                                        <ui:SymbolIcon Symbol="Link24"
+                                                                       FontSize="12"
+                                                                       Foreground="{DynamicResource TextTertiary}"
+                                                                       Margin="0,0,6,0"/>
+                                                        <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondary}">
+                                                            <Run Text="MAC: "/>
+                                                            <Run Text="{Binding MacAddress}" FontFamily="Cascadia Code, Consolas"/>
                                                         </TextBlock>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+                                                    </StackPanel>
+
+                                                    <!-- IP Addresses -->
+                                                    <ItemsControl ItemsSource="{Binding IpAddresses}" Margin="0,8,0,0">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                                    <Border Background="{DynamicResource AccentPrimary}"
+                                                                            Width="6" Height="6"
+                                                                            CornerRadius="3"
+                                                                            Margin="0,0,8,0"
+                                                                            VerticalAlignment="Center"/>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               FontSize="12"
+                                                                               FontFamily="Cascadia Code, Consolas"
+                                                                               Foreground="{DynamicResource TextSecondary}"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Empty State for Network Interfaces -->
+                            <Border Visibility="{Binding LastRunReport.MachineInfo.NetworkInterfaces.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                                    Background="{DynamicResource BackgroundElevated}"
+                                    CornerRadius="8"
+                                    Padding="24"
+                                    HorizontalAlignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="WifiOff24"
+                                                   FontSize="32"
+                                                   Foreground="{DynamicResource TextTertiary}"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,12"/>
+                                    <TextBlock Text="No network interfaces detected"
+                                               Style="{DynamicResource TextBody}"
+                                               Foreground="{DynamicResource TextTertiary}"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                 </Border>
             </StackPanel>
         </ScrollViewer>

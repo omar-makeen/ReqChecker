@@ -3,9 +3,46 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       mc:Ignorable="d"
+      Background="{DynamicResource BackgroundBase}"
       FocusManager.FocusedElement="{Binding ElementName=RefreshButton}">
-    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+
+    <Page.Resources>
+        <!-- Staggered entrance animation for profile cards -->
+        <Style x:Key="AnimatedProfileCard" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="20"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             From="20" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -13,76 +50,274 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,20,20,10">
-            <TextBlock Text="Select Profile" FontSize="24" FontWeight="Bold"/>
-            <Button x:Name="RefreshButton" Content="_Refresh" Command="{Binding LoadProfilesCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="1"/>
-            <Button Content="_Import Profile" Command="{Binding ImportProfileCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="2"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="FolderOpen24"
+                               FontSize="24"
+                               Foreground="{DynamicResource AccentPrimary}"
+                               Margin="0,0,12,0"/>
+                <TextBlock Text="Select Profile"
+                           Style="{DynamicResource TextH1}"
+                           Foreground="{DynamicResource TextPrimary}"/>
+            </StackPanel>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="RefreshButton"
+                        Style="{StaticResource SecondaryButton}"
+                        Command="{Binding LoadProfilesCommand}"
+                        TabIndex="1"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="ArrowSync24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Refresh"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Import Button with drag-drop styling -->
+                <Button Style="{StaticResource PrimaryButton}"
+                        Command="{Binding ImportProfileCommand}"
+                        TabIndex="2"
+                        AllowDrop="True">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="ArrowUpload24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Import Profile"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <!-- Error Message -->
-        <Border Grid.Row="1" Background="#FFEBEE" BorderBrush="#FFC5C5" CornerRadius="4" Padding="15" Margin="20,10,20,10" Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding ErrorMessage}" Foreground="#B71C1C" TextWrapping="Wrap" Margin="0,0,10,0"/>
-                <Button Content="_Dismiss" Command="{Binding ClearErrorCommand}" HorizontalAlignment="Right" Margin="10,10,0,0" Padding="10,5" TabIndex="3"/>
-            </StackPanel>
+        <Border Grid.Row="1"
+                Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}"
+                Background="#1AEF4444"
+                BorderBrush="{DynamicResource StatusFail}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16,12"
+                Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="ErrorCircle24"
+                                   FontSize="20"
+                                   Foreground="{DynamicResource StatusFail}"
+                                   Margin="0,0,12,0"/>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="{DynamicResource StatusFail}"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Style="{StaticResource GhostButtonSmall}"
+                        Command="{Binding ClearErrorCommand}"
+                        Content="Dismiss"
+                        TabIndex="3"/>
+            </Grid>
         </Border>
 
         <!-- Profile List -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="20,0,20,20">
-            <StackPanel>
-                <ItemsControl ItemsSource="{Binding Profiles}">
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <!-- Profiles Grid -->
+                <ItemsControl ItemsSource="{Binding Profiles}"
+                              Visibility="{Binding Profiles.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Invert}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,10" Padding="15">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                            <Border Style="{StaticResource AnimatedProfileCard}"
+                                    Width="320"
+                                    Margin="0,0,16,16"
+                                    Cursor="Hand">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                  CommandParameter="{Binding}"/>
+                                </Border.InputBindings>
 
-                                    <!-- Profile Name -->
-                                    <TextBlock Grid.Row="0" Text="{Binding Name}" FontSize="18" FontWeight="SemiBold"/>
+                                <Border Background="{DynamicResource BackgroundSurface}"
+                                        BorderBrush="{DynamicResource BorderDefault}"
+                                        BorderThickness="1"
+                                        CornerRadius="12"
+                                        ClipToBounds="True">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
 
-                                    <!-- Source Badge -->
-                                    <Border Grid.Row="1" Background="#0078D4" CornerRadius="12" Padding="8,4" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding Source}" FontSize="12" FontWeight="Bold" Foreground="White"/>
-                                    </Border>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
 
-                                    <!-- Profile Details -->
-                                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,10,0,0">
-                                        <TextBlock Text="Tests: " FontSize="12" Foreground="#666666"/>
-                                        <TextBlock Text="{Binding Tests.Count}" FontSize="12" FontWeight="SemiBold" Margin="5,0,20,0"/>
-                                        <TextBlock Text="Schema: " FontSize="12" Foreground="#666666"/>
-                                        <TextBlock Text="{Binding SchemaVersion}" FontSize="12" FontWeight="SemiBold" Margin="5,0,20,0"/>
-                                    </StackPanel>
+                                        <!-- Gradient Header Strip -->
+                                        <Border Grid.Row="0"
+                                                Height="6"
+                                                Background="{DynamicResource AccentGradientHorizontal}"/>
 
-                                    <!-- Select Button -->
-                                    <Button Grid.Row="1" Grid.ColumnSpan="2"
-                                            Content="_Select"
-                                            Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                            CommandParameter="{Binding}"
-                                            Margin="10,0,0,0"
-                                            Padding="20,8"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            TabIndex="10"/>
-                                </Grid>
+                                        <!-- Card Content -->
+                                        <StackPanel Grid.Row="1" Margin="20,16,20,20">
+                                            <!-- Profile Name and Source Badge -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Name}"
+                                                           Style="{DynamicResource TextH3}"
+                                                           Foreground="{DynamicResource TextPrimary}"
+                                                           FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <Border Grid.Column="1"
+                                                        Background="{DynamicResource AccentSecondary}"
+                                                        CornerRadius="10"
+                                                        Padding="10,4">
+                                                    <TextBlock Text="{Binding Source}"
+                                                               FontSize="11"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Profile Details -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                                <ui:SymbolIcon Symbol="Beaker24"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource TextTertiary}"
+                                                               Margin="0,0,6,0"/>
+                                                <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
+                                                    <Run Text="{Binding Tests.Count}"/>
+                                                    <Run Text="tests"/>
+                                                </TextBlock>
+
+                                                <Border Width="1"
+                                                        Height="14"
+                                                        Background="{DynamicResource BorderSubtle}"
+                                                        Margin="16,0"/>
+
+                                                <ui:SymbolIcon Symbol="Code24"
+                                                               FontSize="14"
+                                                               Foreground="{DynamicResource TextTertiary}"
+                                                               Margin="0,0,6,0"/>
+                                                <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
+                                                    <Run Text="v"/>
+                                                    <Run Text="{Binding SchemaVersion}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <!-- Select Button -->
+                                            <Button Style="{StaticResource SecondaryButtonSmall}"
+                                                    Content="Select Profile"
+                                                    Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    HorizontalAlignment="Stretch"
+                                                    Margin="0,20,0,0"
+                                                    TabIndex="10"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
                             </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
                 <!-- Empty State -->
-                <TextBlock Text="No profiles found. Import a profile to get started."
-                           FontSize="16"
-                           Foreground="#666666"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding Profiles.Count, Converter={StaticResource CountToVisibilityConverter}}"/>
+                <Border Visibility="{Binding Profiles.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                        Background="{DynamicResource BackgroundSurface}"
+                        BorderBrush="{DynamicResource BorderSubtle}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="48"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="0,48,0,0">
+                    <StackPanel HorizontalAlignment="Center">
+                        <!-- Icon Composition -->
+                        <Grid Width="80" Height="80" Margin="0,0,0,24">
+                            <Ellipse Fill="{DynamicResource BackgroundElevated}"
+                                     Width="80" Height="80"/>
+                            <ui:SymbolIcon Symbol="FolderOpen24"
+                                           FontSize="36"
+                                           Foreground="{DynamicResource TextTertiary}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            <Border Background="{DynamicResource AccentPrimary}"
+                                    CornerRadius="12"
+                                    Width="24" Height="24"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,4,4">
+                                <ui:SymbolIcon Symbol="Add24"
+                                               FontSize="14"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+
+                        <TextBlock Text="No profiles found"
+                                   Style="{DynamicResource TextH3}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+
+                        <TextBlock Text="Import a profile to get started with testing"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,24"/>
+
+                        <Button Style="{StaticResource PrimaryButton}"
+                                Command="{Binding ImportProfileCommand}"
+                                HorizontalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowUpload24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Import Profile"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
                 <!-- Loading Indicator -->
-                <TextBlock Text="Loading profiles..." FontSize="16" Foreground="#666666" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            </StackPanel>
+                <Border Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center">
+                        <ui:ProgressRing IsIndeterminate="True"
+                                         Width="48" Height="48"/>
+                        <TextBlock Text="Loading profiles..."
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,16,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>

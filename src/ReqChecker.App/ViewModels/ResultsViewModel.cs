@@ -1,6 +1,10 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ReqChecker.Core.Enums;
 using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.Export;
 using ReqChecker.App.Services;
@@ -9,12 +13,29 @@ using Serilog;
 namespace ReqChecker.App.ViewModels;
 
 /// <summary>
+/// Filter options for test results.
+/// </summary>
+public enum ResultsFilter
+{
+    All,
+    Passed,
+    Failed,
+    Skipped
+}
+
+/// <summary>
 /// View model for results view.
 /// </summary>
 public partial class ResultsViewModel : ObservableObject
 {
     [ObservableProperty]
     private RunReport? _report;
+
+    [ObservableProperty]
+    private ResultsFilter _activeFilter = ResultsFilter.All;
+
+    [ObservableProperty]
+    private ICollectionView? _filteredResults;
 
     [ObservableProperty]
     private NavigationService? _navigationService;
@@ -50,7 +71,53 @@ public partial class ResultsViewModel : ObservableObject
         if (value != null)
         {
             _appState.SetLastRunReport(value);
+            SetupFilteredResults();
         }
+    }
+
+    /// <summary>
+    /// Called when ActiveFilter changes. Updates the filtered results.
+    /// </summary>
+    partial void OnActiveFilterChanged(ResultsFilter value)
+    {
+        FilteredResults?.Refresh();
+    }
+
+    private void SetupFilteredResults()
+    {
+        if (Report?.Results == null)
+        {
+            FilteredResults = null;
+            return;
+        }
+
+        var view = CollectionViewSource.GetDefaultView(Report.Results);
+        view.Filter = FilterTestResult;
+        FilteredResults = view;
+    }
+
+    private bool FilterTestResult(object obj)
+    {
+        if (obj is not TestResult result)
+            return false;
+
+        return ActiveFilter switch
+        {
+            ResultsFilter.All => true,
+            ResultsFilter.Passed => result.Status == TestStatus.Pass,
+            ResultsFilter.Failed => result.Status == TestStatus.Fail,
+            ResultsFilter.Skipped => result.Status == TestStatus.Skipped,
+            _ => true
+        };
+    }
+
+    /// <summary>
+    /// Sets the active filter.
+    /// </summary>
+    [RelayCommand]
+    private void SetFilter(ResultsFilter filter)
+    {
+        ActiveFilter = filter;
     }
 
     /// <summary>

@@ -51,7 +51,7 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 IsPaneOpen="{Binding IsSidebarExpanded, Mode=TwoWay}"
-                PaneDisplayMode="LeftCompact"
+                PaneDisplayMode="Left"
                 OpenPaneLength="240"
                 CompactPaneLength="72"
                 IsBackButtonVisible="Collapsed"
@@ -146,8 +146,8 @@
         <!-- Status Bar -->
         <Border
             Grid.Row="2"
-            Background="{DynamicResource SurfaceSecondaryBrush}"
-            BorderBrush="{DynamicResource BorderSubtleBrush}"
+            Background="{DynamicResource BackgroundSurface}"
+            BorderBrush="{DynamicResource BorderSubtle}"
             BorderThickness="0,1,0,0"
             Padding="16,8">
             <Grid>
@@ -161,8 +161,8 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock
                         Text="v1.0.0"
-                        Style="{StaticResource TextCaption}"
-                        Foreground="{DynamicResource TextTertiaryBrush}"
+                        Style="{DynamicResource TextCaption}"
+                        Foreground="{DynamicResource TextTertiary}"
                         VerticalAlignment="Center"/>
                 </StackPanel>
 
@@ -171,23 +171,45 @@
                     <ui:SymbolIcon
                         Symbol="Document24"
                         FontSize="12"
-                        Foreground="{DynamicResource TextTertiaryBrush}"
+                        Foreground="{DynamicResource TextTertiary}"
                         Margin="0,0,6,0"
                         Visibility="{Binding HasProfile, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     <TextBlock
                         Text="{Binding ProfileName, FallbackValue='No profile loaded'}"
-                        Style="{StaticResource TextCaption}"
-                        Foreground="{DynamicResource TextSecondaryBrush}"
+                        Style="{DynamicResource TextCaption}"
+                        Foreground="{DynamicResource TextSecondary}"
                         VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Status Indicators -->
+                <!-- Theme Toggle and Status -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock
-                        Text="Ready"
-                        Style="{StaticResource TextCaption}"
-                        Foreground="{DynamicResource StatusSuccessBrush}"
-                        VerticalAlignment="Center"/>
+                    <!-- Theme Toggle Button -->
+                    <Button x:Name="ThemeToggleButton"
+                            Style="{StaticResource IconButton}"
+                            Command="{Binding ThemeService.ToggleThemeCommand}"
+                            ToolTip="Toggle dark/light theme"
+                            Width="32"
+                            Height="32"
+                            Margin="0,0,12,0">
+                        <ui:SymbolIcon Symbol="{Binding ThemeIcon}" FontSize="16"/>
+                    </Button>
+
+                    <!-- Status Indicator -->
+                    <Border Background="{DynamicResource StatusPass}"
+                            CornerRadius="4"
+                            Padding="8,4"
+                            Opacity="0.9">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="6" Height="6"
+                                     Fill="White"
+                                     VerticalAlignment="Center"
+                                     Margin="0,0,6,0"/>
+                            <TextBlock Text="Ready"
+                                       FontSize="11"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>

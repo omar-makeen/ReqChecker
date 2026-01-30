@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ReqChecker.App.Services;
 
@@ -20,12 +22,16 @@ public partial class ThemeService : ObservableObject
 {
     private readonly IPreferencesService _preferencesService;
     private ResourceDictionary? _currentThemeDictionary;
+    private const int ThemeTransitionDurationMs = 300;
 
     [ObservableProperty]
     private AppTheme _currentTheme;
 
     [ObservableProperty]
     private bool _isReducedMotionEnabled;
+
+    [ObservableProperty]
+    private bool _isTransitioning;
 
     public ThemeService(IPreferencesService preferencesService)
     {
@@ -72,41 +78,107 @@ public partial class ThemeService : ObservableObject
     }
 
     /// <summary>
-    /// Applies the current theme by switching resource dictionaries.
+    /// Applies the current theme by switching resource dictionaries with cross-fade transition.
     /// </summary>
     private void ApplyTheme()
     {
         var app = Application.Current;
         if (app == null) return;
 
+        var mainWindow = app.MainWindow;
         var resources = app.Resources;
         if (resources == null) return;
 
         try
         {
-            // Remove old theme dictionary if exists
-            if (_currentThemeDictionary != null && resources.MergedDictionaries.Contains(_currentThemeDictionary))
+            // Determine if we should animate (not on startup, and reduced motion not enabled)
+            bool shouldAnimate = mainWindow != null &&
+                                 mainWindow.IsLoaded &&
+                                 !IsReducedMotionEnabled &&
+                                 _currentThemeDictionary != null;
+
+            if (shouldAnimate)
             {
-                resources.MergedDictionaries.Remove(_currentThemeDictionary);
+                ApplyThemeWithTransition(mainWindow!, resources);
             }
-
-            // Create new theme dictionary
-            var themeUri = CurrentTheme == AppTheme.Dark
-                ? new Uri("pack://application:,,,/Resources/Styles/Colors.Dark.xaml", UriKind.Absolute)
-                : new Uri("pack://application:,,,/Resources/Styles/Colors.Light.xaml", UriKind.Absolute);
-
-            _currentThemeDictionary = new ResourceDictionary { Source = themeUri };
-
-            // Add new theme dictionary at the beginning so it can be overridden by controls
-            resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
-
-            // Update WPF-UI theme if available
-            UpdateWpfUiTheme();
+            else
+            {
+                ApplyThemeImmediate(resources);
+            }
         }
         catch (Exception ex)
         {
             Serilog.Log.Warning(ex, "Failed to apply theme {Theme}", CurrentTheme);
         }
+    }
+
+    /// <summary>
+    /// Applies theme immediately without animation (used on startup).
+    /// </summary>
+    private void ApplyThemeImmediate(ResourceDictionary resources)
+    {
+        // Remove old theme dictionary if exists
+        if (_currentThemeDictionary != null && resources.MergedDictionaries.Contains(_currentThemeDictionary))
+        {
+            resources.MergedDictionaries.Remove(_currentThemeDictionary);
+        }
+
+        // Create new theme dictionary
+        var themeUri = CurrentTheme == AppTheme.Dark
+            ? new Uri("pack://application:,,,/Resources/Styles/Colors.Dark.xaml", UriKind.Absolute)
+            : new Uri("pack://application:,,,/Resources/Styles/Colors.Light.xaml", UriKind.Absolute);
+
+        _currentThemeDictionary = new ResourceDictionary { Source = themeUri };
+
+        // Add new theme dictionary at the beginning so it can be overridden by controls
+        resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
+
+        // Update WPF-UI theme if available
+        UpdateWpfUiTheme();
+    }
+
+    /// <summary>
+    /// Applies theme with a smooth cross-fade transition.
+    /// </summary>
+    private void ApplyThemeWithTransition(Window mainWindow, ResourceDictionary resources)
+    {
+        IsTransitioning = true;
+
+        // Create fade out animation
+        var fadeOut = new DoubleAnimation
+        {
+            From = 1.0,
+            To = 0.85,
+            Duration = TimeSpan.FromMilliseconds(ThemeTransitionDurationMs / 2),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+        };
+
+        // Create fade in animation
+        var fadeIn = new DoubleAnimation
+        {
+            From = 0.85,
+            To = 1.0,
+            Duration = TimeSpan.FromMilliseconds(ThemeTransitionDurationMs / 2),
+            EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+        };
+
+        // When fade out completes, switch theme and fade in
+        fadeOut.Completed += (s, e) =>
+        {
+            // Switch the theme
+            ApplyThemeImmediate(resources);
+
+            // Fade back in
+            fadeIn.Completed += (s2, e2) =>
+            {
+                IsTransitioning = false;
+            };
+
+            mainWindow.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+        };
+
+        // Start fade out
+        mainWindow.BeginAnimation(UIElement.OpacityProperty, fadeOut);
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Media.Animation;
 using ReqChecker.App.ViewModels;
 using ReqChecker.App.Services;
@@ -100,7 +101,16 @@ public partial class MainWindow : FluentWindow
                 await ApplyViewFadeOut();
             }
 
-            // Navigate to the selected view
+            // Navigate to the selected view and get view name for announcement
+            string viewName = tag switch
+            {
+                "Profiles" => "Profile Selector",
+                "Tests" => "Test List",
+                "Results" => "Test Results",
+                "Diagnostics" => "Diagnostics",
+                _ => tag
+            };
+
             switch (tag)
             {
                 case "Profiles":
@@ -117,6 +127,9 @@ public partial class MainWindow : FluentWindow
                     break;
             }
 
+            // Announce navigation change for screen readers
+            AnnounceForScreenReader($"Navigated to {viewName}");
+
             // Apply fade-in animation if not reduced motion
             if (!_themeService.IsReducedMotionEnabled)
             {
@@ -126,6 +139,26 @@ public partial class MainWindow : FluentWindow
         finally
         {
             _isNavigating = false;
+        }
+    }
+
+    /// <summary>
+    /// Announces a message to screen readers using UI Automation.
+    /// </summary>
+    private void AnnounceForScreenReader(string message)
+    {
+        try
+        {
+            var peer = UIElementAutomationPeer.FromElement(this);
+            peer?.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+
+            // Set the automation name on the content frame to announce the change
+            System.Windows.Automation.AutomationProperties.SetName(ContentFrame, message);
+            System.Windows.Automation.AutomationProperties.SetLiveSetting(ContentFrame, System.Windows.Automation.AutomationLiveSetting.Polite);
+        }
+        catch
+        {
+            // Silently fail if automation is not available
         }
     }
 

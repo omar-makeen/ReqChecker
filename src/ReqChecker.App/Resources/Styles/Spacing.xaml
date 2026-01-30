@@ -47,7 +47,7 @@
 
     <!-- Border Thickness -->
     <Thickness x:Key="BorderThin">1</Thickness>
-    <Thickness x:Key="BorderDefault">2</Thickness>
+    <Thickness x:Key="BorderDefaultThickness">2</Thickness>
     <Thickness x:Key="BorderThick">3</Thickness>
 
     <!-- Sidebar Dimensions -->

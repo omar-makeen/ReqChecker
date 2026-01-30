@@ -1,0 +1,44 @@
+<UserControl x:Class="ReqChecker.App.Controls.DonutChart"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:ReqChecker.App.Controls"
+             mc:Ignorable="d"
+             x:Name="Root"
+             Width="120"
+             Height="120">
+    <Grid>
+        <!-- Background track -->
+        <Ellipse x:Name="BackgroundTrack"
+                 Width="{Binding ActualWidth, ElementName=Root}"
+                 Height="{Binding ActualHeight, ElementName=Root}"
+                 Stroke="{DynamicResource BorderSubtle}"
+                 StrokeThickness="12"
+                 Opacity="0.3"/>
+
+        <!-- Chart canvas for segments -->
+        <Canvas x:Name="ChartCanvas"
+                Width="{Binding ActualWidth, ElementName=Root}"
+                Height="{Binding ActualHeight, ElementName=Root}"
+                ClipToBounds="False"/>
+
+        <!-- Center content -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="TotalText"
+                       Text="{Binding Total, ElementName=Root}"
+                       Style="{DynamicResource TextDisplay}"
+                       Foreground="{DynamicResource TextPrimary}"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+            <TextBlock x:Name="LabelText"
+                       Text="{Binding CenterLabel, ElementName=Root}"
+                       Style="{DynamicResource TextCaption}"
+                       Foreground="{DynamicResource TextSecondary}"
+                       FontSize="11"
+                       HorizontalAlignment="Center"
+                       Margin="0,2,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

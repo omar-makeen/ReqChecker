@@ -127,17 +127,17 @@ Based on plan.md, paths are:
 
 ### Implementation for User Story 4
 
-- [ ] T040 [P] [US4] Create SummaryCard control in src/ReqChecker.App/Controls/SummaryCard.xaml
-- [ ] T041 [P] [US4] Create SummaryCard.xaml.cs code-behind in src/ReqChecker.App/Controls/SummaryCard.xaml.cs
-- [ ] T042 [P] [US4] Create ExpanderCard control in src/ReqChecker.App/Controls/ExpanderCard.xaml
-- [ ] T043 [P] [US4] Create ExpanderCard.xaml.cs code-behind in src/ReqChecker.App/Controls/ExpanderCard.xaml.cs
-- [ ] T044 [US4] Create donut chart component for pass/fail/skip ratio in src/ReqChecker.App/Controls/DonutChart.xaml
-- [ ] T045 [US4] Add DonutChart.xaml.cs with draw-in animation in src/ReqChecker.App/Controls/DonutChart.xaml.cs
-- [ ] T046 [US4] Redesign ResultsView with summary dashboard at top in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T047 [US4] Add filter tabs (All/Passed/Failed/Skipped) to ResultsView in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T048 [US4] Add ResultsFilter enum and filtering logic to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
-- [ ] T049 [US4] Replace result cards with ExpanderCard components in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T050 [US4] Style export buttons with icons in src/ReqChecker.App/Views/ResultsView.xaml
+- [X] T040 [P] [US4] Create SummaryCard control in src/ReqChecker.App/Controls/SummaryCard.xaml
+- [X] T041 [P] [US4] Create SummaryCard.xaml.cs code-behind in src/ReqChecker.App/Controls/SummaryCard.xaml.cs
+- [X] T042 [P] [US4] Create ExpanderCard control in src/ReqChecker.App/Controls/ExpanderCard.xaml
+- [X] T043 [P] [US4] Create ExpanderCard.xaml.cs code-behind in src/ReqChecker.App/Controls/ExpanderCard.xaml.cs
+- [X] T044 [US4] Create donut chart component for pass/fail/skip ratio in src/ReqChecker.App/Controls/DonutChart.xaml
+- [X] T045 [US4] Add DonutChart.xaml.cs with draw-in animation in src/ReqChecker.App/Controls/DonutChart.xaml.cs
+- [X] T046 [US4] Redesign ResultsView with summary dashboard at top in src/ReqChecker.App/Views/ResultsView.xaml
+- [X] T047 [US4] Add filter tabs (All/Passed/Failed/Skipped) to ResultsView in src/ReqChecker.App/Views/ResultsView.xaml
+- [X] T048 [US4] Add ResultsFilter enum and filtering logic to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
+- [X] T049 [US4] Replace result cards with ExpanderCard components in src/ReqChecker.App/Views/ResultsView.xaml
+- [X] T050 [US4] Style export buttons with icons in src/ReqChecker.App/Views/ResultsView.xaml
 
 **Checkpoint**: Results view shows animated dashboard, cards expand/collapse smoothly, filtering works
 
@@ -151,11 +151,11 @@ Based on plan.md, paths are:
 
 ### Implementation for User Story 5
 
-- [ ] T051 [US5] Implement 300ms cross-fade theme transition in src/ReqChecker.App/Services/ThemeService.cs
-- [ ] T052 [US5] Verify and adjust WCAG AA contrast for all text colors in src/ReqChecker.App/Resources/Styles/Colors.Dark.xaml
-- [ ] T053 [US5] Verify and adjust WCAG AA contrast for light theme in src/ReqChecker.App/Resources/Styles/Colors.Light.xaml
-- [ ] T054 [US5] Add theme toggle button styling in status bar in src/ReqChecker.App/MainWindow.xaml
-- [ ] T055 [US5] Ensure all DynamicResource references for theme-aware colors in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T051 [US5] Implement 300ms cross-fade theme transition in src/ReqChecker.App/Services/ThemeService.cs
+- [X] T052 [US5] Verify and adjust WCAG AA contrast for all text colors in src/ReqChecker.App/Resources/Styles/Colors.Dark.xaml
+- [X] T053 [US5] Verify and adjust WCAG AA contrast for light theme in src/ReqChecker.App/Resources/Styles/Colors.Light.xaml
+- [X] T054 [US5] Add theme toggle button styling in status bar in src/ReqChecker.App/MainWindow.xaml
+- [X] T055 [US5] Ensure all DynamicResource references for theme-aware colors in src/ReqChecker.App/Resources/Styles/Controls.xaml
 
 **Checkpoint**: Theme switch is smooth, both themes accessible, preference persists
 
@@ -167,34 +167,34 @@ Based on plan.md, paths are:
 
 ### Profile Selector View
 
-- [ ] T056 [P] Redesign ProfileSelectorView with large profile cards in src/ReqChecker.App/Views/ProfileSelectorView.xaml
-- [ ] T057 [P] Add gradient header strip to profile cards in src/ReqChecker.App/Views/ProfileSelectorView.xaml
-- [ ] T058 Add empty state with Fluent icon composition in src/ReqChecker.App/Views/ProfileSelectorView.xaml
-- [ ] T059 Add drag-drop styling for import button in src/ReqChecker.App/Views/ProfileSelectorView.xaml
+- [X] T056 [P] Redesign ProfileSelectorView with large profile cards in src/ReqChecker.App/Views/ProfileSelectorView.xaml
+- [X] T057 [P] Add gradient header strip to profile cards in src/ReqChecker.App/Views/ProfileSelectorView.xaml
+- [X] T058 Add empty state with Fluent icon composition in src/ReqChecker.App/Views/ProfileSelectorView.xaml
+- [X] T059 Add drag-drop styling for import button in src/ReqChecker.App/Views/ProfileSelectorView.xaml
 
 ### Test List View
 
-- [ ] T060 [P] Redesign TestListView with interactive cards in src/ReqChecker.App/Views/TestListView.xaml
-- [ ] T061 [P] Add test type icons to test cards in src/ReqChecker.App/Views/TestListView.xaml
-- [ ] T062 Style Run All Tests button with gradient accent in src/ReqChecker.App/Views/TestListView.xaml
-- [ ] T063 Add staggered entrance animations for test cards in src/ReqChecker.App/Views/TestListView.xaml
+- [X] T060 [P] Redesign TestListView with interactive cards in src/ReqChecker.App/Views/TestListView.xaml
+- [X] T061 [P] Add test type icons to test cards in src/ReqChecker.App/Views/TestListView.xaml
+- [X] T062 Style Run All Tests button with gradient accent in src/ReqChecker.App/Views/TestListView.xaml
+- [X] T063 Add staggered entrance animations for test cards in src/ReqChecker.App/Views/TestListView.xaml
 
 ### Test Config View
 
-- [ ] T064 [P] Redesign TestConfigView with organized parameter sections in src/ReqChecker.App/Views/TestConfigView.xaml
-- [ ] T065 [P] Update LockedFieldControl with lock icon and reduced opacity in src/ReqChecker.App/Controls/LockedFieldControl.xaml
-- [ ] T066 Add floating label input styling in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T067 Add inline validation error animations in src/ReqChecker.App/Views/TestConfigView.xaml
+- [X] T064 [P] Redesign TestConfigView with organized parameter sections in src/ReqChecker.App/Views/TestConfigView.xaml
+- [X] T065 [P] Update LockedFieldControl with lock icon and reduced opacity in src/ReqChecker.App/Controls/LockedFieldControl.xaml
+- [X] T066 Add floating label input styling in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T067 Add inline validation error animations in src/ReqChecker.App/Views/TestConfigView.xaml
 
 ### Diagnostics View
 
-- [ ] T068 [P] Redesign DiagnosticsView with key-value card format in src/ReqChecker.App/Views/DiagnosticsView.xaml
-- [ ] T069 Add visual status indicators for last run summary in src/ReqChecker.App/Views/DiagnosticsView.xaml
-- [ ] T070 Style Copy/Open Logs action buttons in src/ReqChecker.App/Views/DiagnosticsView.xaml
+- [X] T068 [P] Redesign DiagnosticsView with key-value card format in src/ReqChecker.App/Views/DiagnosticsView.xaml
+- [X] T069 Add visual status indicators for last run summary in src/ReqChecker.App/Views/DiagnosticsView.xaml
+- [X] T070 Style Copy/Open Logs action buttons in src/ReqChecker.App/Views/DiagnosticsView.xaml
 
 ### Credential Prompt Dialog
 
-- [ ] T071 Restyle CredentialPromptDialog with design system in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
+- [X] T071 Restyle CredentialPromptDialog with design system in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
 
 **Checkpoint**: All views consistent with new design system
 
@@ -204,17 +204,17 @@ Based on plan.md, paths are:
 
 **Purpose**: Ensure accessibility compliance and final polish
 
-- [ ] T072 [P] Implement custom focus ring style (accent-colored outline) in src/ReqChecker.App/Resources/Styles/Controls.xaml
-- [ ] T073 Verify keyboard navigation for all interactive elements in all Views
-- [ ] T074 Add screen reader announcements for navigation changes in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T075 Add screen reader announcements for status updates in src/ReqChecker.App/Views/RunProgressView.xaml.cs
-- [ ] T076 [P] Add virtualization to test list and results list in src/ReqChecker.App/Views/TestListView.xaml
-- [ ] T077 [P] Add virtualization to results list in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T078 Test reduced motion setting disables decorative animations
-- [ ] T079 Test high DPI rendering (100%, 125%, 150%, 200%)
-- [ ] T080 Test Windows 10 fallback (no Mica, solid colors)
-- [ ] T081 Performance profiling for 60fps animations
-- [ ] T082 Final visual review against mockups in specs/002-ui-ux-redesign/visual-mockups.md
+- [X] T072 [P] Implement custom focus ring style (accent-colored outline) in src/ReqChecker.App/Resources/Styles/Controls.xaml
+- [X] T073 Verify keyboard navigation for all interactive elements in all Views
+- [X] T074 Add screen reader announcements for navigation changes in src/ReqChecker.App/MainWindow.xaml.cs
+- [X] T075 Add screen reader announcements for status updates in src/ReqChecker.App/Views/RunProgressView.xaml.cs
+- [X] T076 [P] Add virtualization to test list and results list in src/ReqChecker.App/Views/TestListView.xaml
+- [X] T077 [P] Add virtualization to results list in src/ReqChecker.App/Views/ResultsView.xaml
+- [X] T078 Test reduced motion setting disables decorative animations
+- [X] T079 Test high DPI rendering (100%, 125%, 150%, 200%)
+- [X] T080 Test Windows 10 fallback (no Mica, solid colors)
+- [X] T081 Performance profiling for 60fps animations
+- [X] T082 Final visual review against mockups in specs/002-ui-ux-redesign/visual-mockups.md
 
 ---
 

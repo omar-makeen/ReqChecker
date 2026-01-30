@@ -3,17 +3,52 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:converters="clr-namespace:ReqChecker.App.Converters"
       xmlns:controls="clr-namespace:ReqChecker.App.Controls"
       xmlns:viewmodels="clr-namespace:ReqChecker.App.ViewModels"
       mc:Ignorable="d"
-      FocusManager.FocusedElement="{Binding ElementName=CancelButton}">
+      Background="{DynamicResource BackgroundBase}"
+      FocusManager.FocusedElement="{Binding ElementName=BackButton}">
+
     <Page.Resources>
         <converters:FieldPolicyToVisibilityConverter x:Key="FieldPolicyToVisibilityConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <!-- Staggered entrance animation for sections -->
+        <Style x:Key="AnimatedSection" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="20"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             From="20" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
     </Page.Resources>
 
-    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,155 +56,311 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,20,20,10">
-            <Button x:Name="CancelButton" Content="← _Back" Command="{Binding CancelCommand}" Margin="0,0,10,10" Padding="15,5" TabIndex="1"/>
-            <TextBlock Text="Test Configuration" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Test Fields -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20,0,20,20">
-            <StackPanel>
-                <!-- Test Basic Info -->
-                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,20" Padding="20">
-                    <StackPanel>
-                        <TextBlock Text="Basic Information" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+            <Button x:Name="BackButton"
+                    Style="{StaticResource GhostButton}"
+                    Command="{Binding CancelCommand}"
+                    TabIndex="1"
+                    Margin="0,0,16,0">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Back"/>
+                </StackPanel>
+            </Button>
 
-                        <!-- Test Name (Locked) -->
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Name" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestName}"/>
-                        </Grid>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="Settings24"
+                               FontSize="24"
+                               Foreground="{DynamicResource AccentPrimary}"
+                               Margin="0,0,12,0"/>
+                <TextBlock Text="Test Configuration"
+                           Style="{DynamicResource TextH1}"
+                           Foreground="{DynamicResource TextPrimary}"/>
+            </StackPanel>
+        </Grid>
 
-                        <!-- Test Type (Locked) -->
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Type" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestType}"/>
-                        </Grid>
+        <!-- Test Configuration Content -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel MaxWidth="800">
 
-                        <!-- Requires Admin (Locked) -->
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Requires Admin" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <controls:LockedFieldControl Grid.Column="1" Value="{Binding RequiresAdmin}"/>
-                        </Grid>
-                    </StackPanel>
+                <!-- Basic Information Section -->
+                <Border Style="{StaticResource AnimatedSection}">
+                    <Border Style="{StaticResource ParameterGroupCard}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource AccentPrimary}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="Info24"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Basic Information"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Test Name (Locked) -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Text="Name"
+                                           Style="{DynamicResource TextBody}"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           VerticalAlignment="Center"/>
+                                <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestName}"/>
+                            </Grid>
+
+                            <!-- Test Type (Locked) -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Text="Type"
+                                           Style="{DynamicResource TextBody}"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           VerticalAlignment="Center"/>
+                                <controls:LockedFieldControl Grid.Column="1" Value="{Binding TestType}"/>
+                            </Grid>
+
+                            <!-- Requires Admin (Locked) -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0"
+                                           Text="Requires Admin"
+                                           Style="{DynamicResource TextBody}"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Border Background="{DynamicResource BackgroundElevated}"
+                                            CornerRadius="6"
+                                            Padding="12,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon Symbol="Shield24"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource StatusSkip}"
+                                                           Margin="0,0,8,0"
+                                                           Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <TextBlock Text="{Binding RequiresAdmin}"
+                                                       Foreground="{DynamicResource TextSecondary}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </Border>
 
-                <!-- Execution Settings -->
-                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,20" Padding="20">
-                    <StackPanel>
-                        <TextBlock Text="Execution Settings" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                <!-- Execution Settings Section -->
+                <Border Style="{StaticResource AnimatedSection}">
+                    <Border Style="{StaticResource ParameterGroupCard}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource AccentSecondary}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="Timer24"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Execution Settings"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                        <!-- Timeout (Editable) -->
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="_Timeout (ms)" VerticalAlignment="Center" FontWeight="SemiBold" Target="TimeoutTextBox"/>
-                            <TextBox x:Name="TimeoutTextBox" Grid.Column="1" Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1" TabIndex="2"/>
-                        </Grid>
+                            <!-- Timeout -->
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0"
+                                       Content="_Timeout (ms)"
+                                       Style="{DynamicResource TextBody}"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       VerticalAlignment="Center"
+                                       Target="TimeoutTextBox"/>
+                                <TextBox x:Name="TimeoutTextBox"
+                                         Grid.Column="1"
+                                         Style="{StaticResource InputField}"
+                                         Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
+                                         TabIndex="2"/>
+                            </Grid>
 
-                        <!-- Retries (Editable) -->
-                        <Grid Margin="0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="_Retries" VerticalAlignment="Center" FontWeight="SemiBold" Target="RetryCountTextBox"/>
-                            <TextBox x:Name="RetryCountTextBox" Grid.Column="1" Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1" TabIndex="3"/>
-                        </Grid>
-                    </StackPanel>
+                            <!-- Retries -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0"
+                                       Content="_Retries"
+                                       Style="{DynamicResource TextBody}"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       VerticalAlignment="Center"
+                                       Target="RetryCountTextBox"/>
+                                <TextBox x:Name="RetryCountTextBox"
+                                         Grid.Column="1"
+                                         Style="{StaticResource InputField}"
+                                         Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
+                                         TabIndex="3"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </Border>
 
-                <!-- Dynamic Test Parameters -->
-                <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Padding="20">
-                    <StackPanel>
-                        <TextBlock Text="Test Parameters" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,15"/>
+                <!-- Test Parameters Section -->
+                <Border Style="{StaticResource AnimatedSection}">
+                    <Border Style="{StaticResource ParameterGroupCard}">
+                        <StackPanel>
+                            <!-- Section Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <Border Background="{DynamicResource StatusPass}"
+                                        CornerRadius="6"
+                                        Width="32" Height="32"
+                                        Margin="0,0,12,0">
+                                    <ui:SymbolIcon Symbol="SlideSettings24"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="Test Parameters"
+                                           Style="{DynamicResource TextH3}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                        <ItemsControl ItemsSource="{Binding Parameters}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,10"
-                                          Visibility="{Binding Policy, Converter={StaticResource FieldPolicyToVisibilityConverter}}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="150"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                            <ItemsControl ItemsSource="{Binding Parameters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,16"
+                                              Visibility="{Binding Policy, Converter={StaticResource FieldPolicyToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
 
-                                        <!-- Field Label -->
-                                        <TextBlock Grid.Column="0" 
-                                                   Text="{Binding Label}" 
-                                                   VerticalAlignment="Center" 
-                                                   FontWeight="SemiBold"/>
+                                            <!-- Field Label -->
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Label}"
+                                                       Style="{DynamicResource TextBody}"
+                                                       Foreground="{DynamicResource TextSecondary}"
+                                                       VerticalAlignment="Center"/>
 
-                                        <!-- Editable Field -->
-                                        <TextBox Grid.Column="1"
-                                                 Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                                 Padding="8" 
-                                                 BorderBrush="#DDDDDD" 
-                                                 BorderThickness="1"
-                                                 Visibility="{Binding IsEditable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <!-- Editable Field -->
+                                            <TextBox Grid.Column="1"
+                                                     Style="{StaticResource InputField}"
+                                                     Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                                     Visibility="{Binding IsEditable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                                        <!-- Locked Field -->
-                                        <controls:LockedFieldControl Grid.Column="1"
-                                                                    Value="{Binding Value}"
-                                                                    Visibility="{Binding IsLocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <!-- Locked Field -->
+                                            <controls:LockedFieldControl Grid.Column="1"
+                                                                         Value="{Binding Value}"
+                                                                         Visibility="{Binding IsLocked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                                        <!-- Prompt At Run Field -->
-                                        <Border Grid.Column="1"
-                                                Background="#FFF3E0"
-                                                BorderBrush="#FFB74D"
-                                                BorderThickness="1"
-                                                CornerRadius="4"
-                                                Padding="10"
-                                                Visibility="{Binding IsPromptAtRun, Converter={StaticResource BoolToVisibilityConverter}}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="🔑" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="Will be prompted during test execution" 
-                                                           VerticalAlignment="Center" 
-                                                           Foreground="#E65100"
-                                                           FontStyle="Italic"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+                                            <!-- Prompt At Run Field -->
+                                            <Border Grid.Column="1"
+                                                    Style="{StaticResource PromptAtRunIndicator}"
+                                                    Visibility="{Binding IsPromptAtRun, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ui:SymbolIcon Symbol="Key24"
+                                                                   FontSize="16"
+                                                                   Foreground="White"
+                                                                   Margin="0,0,10,0"/>
+                                                    <TextBlock Text="Will be prompted during test execution"
+                                                               Foreground="White"
+                                                               FontStyle="Italic"
+                                                               VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Empty State for Parameters -->
+                            <Border Visibility="{Binding Parameters.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                                    Background="{DynamicResource BackgroundElevated}"
+                                    CornerRadius="8"
+                                    Padding="24"
+                                    HorizontalAlignment="Center">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="DocumentBulletList24"
+                                                   FontSize="32"
+                                                   Foreground="{DynamicResource TextTertiary}"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,12"/>
+                                    <TextBlock Text="No parameters defined for this test"
+                                               Style="{DynamicResource TextBody}"
+                                               Foreground="{DynamicResource TextTertiary}"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                 </Border>
             </StackPanel>
         </ScrollViewer>
 
         <!-- Action Buttons -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0,20,20">
-            <Button Content="_Cancel"
-                    Command="{Binding CancelCommand}"
-                    Margin="0,0,10,0"
-                    Padding="20,10"
-                    Background="#F5F5F5"
-                    BorderBrush="#DDDDDD"
-                    TabIndex="99"/>
-            <Button Content="_Save Changes"
-                    Command="{Binding SaveCommand}"
-                    Padding="20,10"
-                    Background="#0078D4"
-                    Foreground="White"
-                    TabIndex="100"
-                    IsDefault="True"/>
-        </StackPanel>
+        <Border Grid.Row="2"
+                Background="{DynamicResource BackgroundSurface}"
+                BorderBrush="{DynamicResource BorderSubtle}"
+                BorderThickness="0,1,0,0"
+                Margin="-32,24,-32,-32"
+                Padding="32,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Cancel on the left -->
+                <Button Grid.Column="0"
+                        Style="{StaticResource GhostButton}"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        HorizontalAlignment="Left"
+                        TabIndex="99"/>
+
+                <!-- Save on the right -->
+                <Button Grid.Column="1"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding SaveCommand}"
+                        TabIndex="100"
+                        IsDefault="True">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Save24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Save Changes"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
     </Grid>
 </Page>

@@ -3,52 +3,226 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:controls="clr-namespace:ReqChecker.App.Controls"
       mc:Ignorable="d"
+      Background="{DynamicResource BackgroundBase}"
       FocusManager.FocusedElement="{Binding ElementName=RunAllTestsButton}">
-    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+
+    <Page.Resources>
+        <!-- Staggered entrance animation for test cards -->
+        <Style x:Key="AnimatedTestCard" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform X="30"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                             From="30" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Test type to icon converter logic via DataTriggers -->
+        <Style x:Key="TestTypeIcon" TargetType="ui:SymbolIcon">
+            <Setter Property="Symbol" Value="Beaker24"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextTertiary}"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,10,20,10">
-            <TextBlock Text="Test List" FontSize="24" FontWeight="Bold"/>
-            <Button x:Name="RunAllTestsButton" Content="_Run All Tests" Command="{Binding RunAllTestsCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="1"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Test List -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding CurrentProfile.Tests}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="10" Padding="15" Focusable="True">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
-                            </Border.InputBindings>
-                            <StackPanel>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon Symbol="Beaker24"
+                               FontSize="24"
+                               Foreground="{DynamicResource AccentPrimary}"
+                               Margin="0,0,12,0"/>
+                <TextBlock Text="Tests"
+                           Style="{DynamicResource TextH1}"
+                           Foreground="{DynamicResource TextPrimary}"/>
+                <Border Background="{DynamicResource BackgroundElevated}"
+                        CornerRadius="10"
+                        Padding="10,4"
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CurrentProfile.Tests.Count}"
+                               Style="{DynamicResource TextCaption}"
+                               Foreground="{DynamicResource TextSecondary}"/>
+                </Border>
+            </StackPanel>
 
-                                    <!-- Test Name -->
-                                    <TextBlock Grid.Column="0" Text="{Binding DisplayName}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/>
+            <!-- Run All Tests Button with Gradient -->
+            <Button x:Name="RunAllTestsButton"
+                    Style="{StaticResource PrimaryButtonLarge}"
+                    Command="{Binding RunAllTestsCommand}"
+                    TabIndex="1">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,10,0"/>
+                    <TextBlock Text="Run All Tests" FontSize="15"/>
+                </StackPanel>
+            </Button>
+        </Grid>
 
-                                    <!-- Status Badge -->
-                                    <Border Grid.Column="1" Background="{Binding Status, Converter={StaticResource TestStatusToColorConverter}}" CornerRadius="12" Padding="8,4">
-                                        <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="Bold" Foreground="White"/>
-                                    </Border>
-                                </Grid>
+        <!-- Test List with virtualization -->
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding CurrentProfile.Tests}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 VirtualizingPanel.ScrollUnit="Pixel"
+                 SelectionMode="Single"
+                 SelectedItem="{Binding SelectedTest, Mode=TwoWay}"
+                 AutomationProperties.Name="Test list">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,12"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisualStyle}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <ContentPresenter/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource AnimatedTestCard}"
+                            Cursor="Hand"
+                            AutomationProperties.Name="{Binding DisplayName}">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick"
+                                          Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                          CommandParameter="{Binding}"/>
+                            <KeyBinding Key="Enter"
+                                        Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"/>
+                        </Border.InputBindings>
 
-                                <!-- Test Details -->
-                                <TextBlock Text="{Binding Type}" FontSize="12" Foreground="#666666" Margin="0,10,0,0"/>
-                            </StackPanel>
+                        <Border Background="{DynamicResource BackgroundSurface}"
+                                BorderBrush="{DynamicResource BorderDefault}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20,16">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Test Type Icon -->
+                                <Border Grid.Column="0"
+                                        Width="44"
+                                        Height="44"
+                                        Background="{DynamicResource BackgroundElevated}"
+                                        CornerRadius="8"
+                                        Margin="0,0,16,0">
+                                    <ui:SymbolIcon Style="{StaticResource TestTypeIcon}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+
+                                <!-- Test Info -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               Style="{DynamicResource TextBody}"
+                                               Foreground="{DynamicResource TextPrimary}"
+                                               FontWeight="Medium"
+                                               TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                        <TextBlock Text="{Binding Type}"
+                                                   Style="{DynamicResource TextCaption}"
+                                                   Foreground="{DynamicResource TextTertiary}"/>
+                                        <TextBlock Text=" • "
+                                                   Foreground="{DynamicResource TextTertiary}"
+                                                   Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        <ui:SymbolIcon Symbol="Shield24"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource StatusSkip}"
+                                                       Margin="0,0,4,0"
+                                                       Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        <TextBlock Text="Requires Admin"
+                                                   Style="{DynamicResource TextCaption}"
+                                                   Foreground="{DynamicResource StatusSkip}"
+                                                   Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Status Badge -->
+                                <controls:TestStatusBadge Grid.Column="2"
+                                                          Status="{Binding Status}"
+                                                          ShowIcon="True"
+                                                          VerticalAlignment="Center"
+                                                          Margin="16,0"/>
+
+                                <!-- Chevron -->
+                                <ui:SymbolIcon Grid.Column="3"
+                                               Symbol="ChevronRight24"
+                                               FontSize="16"
+                                               Foreground="{DynamicResource TextTertiary}"
+                                               VerticalAlignment="Center"/>
+                            </Grid>
                         </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Page>

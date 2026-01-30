@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.App.Services;
+using Wpf.Ui.Controls;
 
 namespace ReqChecker.App.ViewModels;
 
@@ -52,6 +53,13 @@ public partial class MainViewModel : ObservableObject
     /// </summary>
     public string ThemeLabel => ThemeService?.CurrentTheme == AppTheme.Dark ? "Light Mode" : "Dark Mode";
 
+    /// <summary>
+    /// Gets the theme icon based on current theme.
+    /// </summary>
+    public SymbolRegular ThemeIcon => ThemeService?.CurrentTheme == AppTheme.Dark
+        ? SymbolRegular.WeatherSunny24
+        : SymbolRegular.WeatherMoon24;
+
     partial void OnCurrentProfileChanged(Profile? value)
     {
         OnPropertyChanged(nameof(HasProfile));
@@ -73,10 +81,12 @@ public partial class MainViewModel : ObservableObject
                 if (e.PropertyName == nameof(ThemeService.CurrentTheme))
                 {
                     OnPropertyChanged(nameof(ThemeLabel));
+                    OnPropertyChanged(nameof(ThemeIcon));
                 }
             };
         }
         OnPropertyChanged(nameof(ThemeLabel));
+        OnPropertyChanged(nameof(ThemeIcon));
     }
 
     [RelayCommand]
