@@ -1,3 +1,4 @@
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
@@ -16,7 +17,7 @@ public class HttpPostTest : ITest
     private static readonly HttpClient _httpClient = new();
 
     /// <inheritdoc/>
-    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, CancellationToken cancellationToken = default)
+    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, TestExecutionContext? context, CancellationToken cancellationToken = default)
     {
         var result = new TestResult
         {

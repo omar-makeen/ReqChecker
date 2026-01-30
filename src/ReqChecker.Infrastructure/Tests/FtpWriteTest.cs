@@ -1,3 +1,4 @@
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
@@ -14,7 +15,7 @@ namespace ReqChecker.Infrastructure.Tests;
 public class FtpWriteTest : ITest
 {
     /// <inheritdoc/>
-    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, CancellationToken cancellationToken = default)
+    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, TestExecutionContext? context, CancellationToken cancellationToken = default)
     {
         var result = new TestResult
         {
@@ -32,8 +33,8 @@ public class FtpWriteTest : ITest
             // Get parameters
             var host = testDefinition.Parameters["host"]?.ToString() ?? string.Empty;
             var port = testDefinition.Parameters["port"]?.GetValue<int>() ?? 21;
-            var username = testDefinition.Parameters["username"]?.ToString();
-            var password = testDefinition.Parameters["password"]?.ToString();
+            var username = context?.Username ?? testDefinition.Parameters["username"]?.ToString();
+            var password = context?.Password ?? testDefinition.Parameters["password"]?.ToString();
             var remotePath = testDefinition.Parameters["remotePath"]?.ToString() ?? string.Empty;
             var content = testDefinition.Parameters["content"]?.ToString() ?? string.Empty;
             var encoding = testDefinition.Parameters["encoding"]?.ToString() ?? "utf-8";

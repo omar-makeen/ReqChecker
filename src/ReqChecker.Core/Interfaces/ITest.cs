@@ -1,3 +1,4 @@
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Models;
 using System.Text.Json.Nodes;
 
@@ -12,7 +13,8 @@ public interface ITest
     /// Executes the test asynchronously.
     /// </summary>
     /// <param name="definition">The test definition containing parameters.</param>
+    /// <param name="context">The execution context containing transient credentials.</param>
     /// <param name="cancellationToken">Cancellation token for aborting the test.</param>
     /// <returns>The test result.</returns>
-    Task<TestResult> ExecuteAsync(TestDefinition definition, CancellationToken cancellationToken);
+    Task<TestResult> ExecuteAsync(TestDefinition definition, TestExecutionContext? context, CancellationToken cancellationToken);
 }

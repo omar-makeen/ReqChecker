@@ -58,14 +58,14 @@
 
 **Purpose**: Fix credential handling and security issues
 
-- [ ] T017 [M9] Change CRED_PERSIST_LOCAL_MACHINE to CRED_PERSIST_ENTERPRISE in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
-- [ ] T018 [M9] Add constant for CRED_PERSIST_ENTERPRISE (0x00000003) in WindowsCredentialProvider.NativeMethods
-- [ ] T019 [M9] Zero password byte arrays after use in StoreCredentialsAsync in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
-- [ ] T020 [M9] Zero password byte arrays after use in GetCredentialsAsync in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
-- [ ] T021 [M10] Create TestExecutionContext class to hold transient credentials in src/ReqChecker.Infrastructure/Execution/TestExecutionContext.cs
-- [ ] T022 [M10] Update ITest.ExecuteAsync to accept TestExecutionContext in src/ReqChecker.Core/Interfaces/ITest.cs
-- [ ] T023 [M10] Update all test implementations to use TestExecutionContext instead of Parameters in src/ReqChecker.Infrastructure/Tests/
-- [ ] T024 [M10] Update SequentialTestRunner to pass credentials via TestExecutionContext, not Parameters in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs
+- [X] T017 [M9] Change CRED_PERSIST_LOCAL_MACHINE to CRED_PERSIST_ENTERPRISE in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
+- [X] T018 [M9] Add constant for CRED_PERSIST_ENTERPRISE (0x00000003) in WindowsCredentialProvider.NativeMethods
+- [X] T019 [M9] Zero password byte arrays after use in StoreCredentialsAsync in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
+- [X] T020 [M9] Zero password byte arrays after use in GetCredentialsAsync in src/ReqChecker.Infrastructure/Security/WindowsCredentialProvider.cs
+- [X] T021 [M10] Create TestExecutionContext class to hold transient credentials in src/ReqChecker.Core/Execution/TestExecutionContext.cs
+- [X] T022 [M10] Update ITest.ExecuteAsync to accept TestExecutionContext in src/ReqChecker.Core/Interfaces/ITest.cs
+- [X] T023 [M10] Update all test implementations to use TestExecutionContext instead of Parameters in src/ReqChecker.Infrastructure/Tests/
+- [X] T024 [M10] Update SequentialTestRunner to pass credentials via TestExecutionContext, not Parameters in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs
 
 **Checkpoint**: Credentials stored per-user; password bytes zeroed; credentials not in Parameters dictionary
 

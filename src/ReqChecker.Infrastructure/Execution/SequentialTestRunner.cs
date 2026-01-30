@@ -1,3 +1,4 @@
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
@@ -104,10 +105,10 @@ public class SequentialTestRunner : ITestRunner
             }
 
             // Check for PromptAtRun fields and prompt for credentials if needed
-            await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
-
+            var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
+            
             // Execute test with retry policy
-            var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, cancellationToken);
+            var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
         }
@@ -144,7 +145,8 @@ public class SequentialTestRunner : ITestRunner
     /// <summary>
     /// Prompts for credentials if any test parameter has PromptAtRun policy.
     /// </summary>
-    private async Task PromptForCredentialsIfNeededAsync(TestDefinition testDefinition, CancellationToken cancellationToken)
+    /// <returns>The execution context with credentials, or null if no credentials needed.</returns>
+    private async Task<TestExecutionContext?> PromptForCredentialsIfNeededAsync(TestDefinition testDefinition, CancellationToken cancellationToken)
     {
         if (testDefinition.Parameters == null)
             return;
@@ -193,11 +195,12 @@ public class SequentialTestRunner : ITestRunner
                     }
                 }
 
-                // Store credentials in test parameters
-                testDefinition.Parameters["username"] = username ?? string.Empty;
-                testDefinition.Parameters["password"] = password ?? string.Empty;
+                // Return credentials in execution context (not in Parameters)
+                return new TestExecutionContext(username ?? string.Empty, password ?? string.Empty);
             }
         }
+
+        return null;
     }
 
     /// <summary>

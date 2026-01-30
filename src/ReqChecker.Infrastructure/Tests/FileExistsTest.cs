@@ -1,3 +1,4 @@
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
@@ -12,7 +13,7 @@ namespace ReqChecker.Infrastructure.Tests;
 public class FileExistsTest : ITest
 {
     /// <inheritdoc/>
-    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, CancellationToken cancellationToken = default)
+    public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, TestExecutionContext? context, CancellationToken cancellationToken = default)
     {
         var result = new TestResult
         {

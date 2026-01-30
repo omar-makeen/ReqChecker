@@ -1,4 +1,5 @@
 using ReqChecker.Core.Enums;
+using ReqChecker.Core.Execution;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 
@@ -19,6 +20,7 @@ public static class RetryPolicy
     public static async Task<TestResult> ExecuteWithRetryAsync(
         ITest test,
         TestDefinition testDefinition,
+        TestExecutionContext? context,
         CancellationToken cancellationToken = default)
     {
         var retryCount = testDefinition.RetryCount ?? 0;
@@ -35,7 +37,7 @@ public static class RetryPolicy
             cancellationToken.ThrowIfCancellationRequested();
 
             // Execute the test
-            var result = await test.ExecuteAsync(testDefinition, cancellationToken);
+            var result = await test.ExecuteAsync(testDefinition, context, cancellationToken);
             lastResult = result;
 
             // If test passed, return immediately

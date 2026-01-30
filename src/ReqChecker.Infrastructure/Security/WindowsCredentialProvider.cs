@@ -46,8 +46,16 @@ public class WindowsCredentialProvider : ICredentialProvider
                 if (credential.CredentialBlobSize > 0 && credential.CredentialBlob != IntPtr.Zero)
                 {
                     byte[] passwordBytes = new byte[credential.CredentialBlobSize];
-                    Marshal.Copy(credential.CredentialBlob, passwordBytes, 0, (int)credential.CredentialBlobSize);
-                    password = Encoding.Unicode.GetString(passwordBytes);
+                    try
+                    {
+                        Marshal.Copy(credential.CredentialBlob, passwordBytes, 0, (int)credential.CredentialBlobSize);
+                        password = Encoding.Unicode.GetString(passwordBytes);
+                    }
+                    finally
+                    {
+                        // Zero out password bytes from memory after use
+                        Array.Clear(passwordBytes, 0, passwordBytes.Length);
+                    }
                 }
 
                 return (username, password);
@@ -81,7 +89,7 @@ public class WindowsCredentialProvider : ICredentialProvider
                 LastWritten = DateTime.Now.ToFileTime(),
                 CredentialBlobSize = (uint)passwordBytes.Length,
                 CredentialBlob = Marshal.AllocHGlobal(passwordBytes.Length),
-                Persist = NativeMethods.CRED_PERSIST_LOCAL_MACHINE,
+                Persist = NativeMethods.CRED_PERSIST_ENTERPRISE,
                 UserName = Marshal.StringToHGlobalUni(username)
             };
 
@@ -96,6 +104,9 @@ public class WindowsCredentialProvider : ICredentialProvider
                     throw new InvalidOperationException(
                         $"Failed to store credentials. Windows error code: {error}");
                 }
+
+                // Zero out password bytes from memory after use
+                Array.Clear(passwordBytes, 0, passwordBytes.Length);
             }
             finally
             {
@@ -145,6 +156,7 @@ public class WindowsCredentialProvider : ICredentialProvider
     {
         public const uint CRED_TYPE_GENERIC = 0x00000001;
         public const uint CRED_PERSIST_LOCAL_MACHINE = 0x00000002;
+        public const uint CRED_PERSIST_ENTERPRISE = 0x00000003;
 
         [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool CredRead(
