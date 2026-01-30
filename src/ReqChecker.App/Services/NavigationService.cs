@@ -65,6 +65,26 @@ public class NavigationService
     }
 
     /// <summary>
+    /// Navigates to test list view with a specific profile.
+    /// Sets the profile in AppState before navigation.
+    /// </summary>
+    /// <param name="profile">The profile to load.</param>
+    public void NavigateToTestListWithProfile(ProfileModel profile)
+    {
+        if (profile == null)
+        {
+            throw new ArgumentNullException(nameof(profile));
+        }
+
+        // Set the profile in app state
+        var appState = _serviceProvider.GetRequiredService<IAppState>();
+        appState.SetCurrentProfile(profile);
+
+        // Navigate to test list
+        NavigateToTestList();
+    }
+
+    /// <summary>
     /// Navigates to run progress view.
     /// </summary>
     public void NavigateToRunProgress()
