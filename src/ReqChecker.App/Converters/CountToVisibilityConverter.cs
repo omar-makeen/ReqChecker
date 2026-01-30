@@ -15,7 +15,8 @@ public class CountToVisibilityConverter : IValueConverter
     {
         if (value is int count)
         {
-            return count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            var invert = parameter is string p && p.Equals("Invert", StringComparison.OrdinalIgnoreCase);
+            return (count == 0) ^ invert ? Visibility.Visible : Visibility.Collapsed;
         }
 
         return Visibility.Collapsed;

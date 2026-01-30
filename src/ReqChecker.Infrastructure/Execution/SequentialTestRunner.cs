@@ -127,6 +127,7 @@ public class SequentialTestRunner : ITestRunner
         // Build report
         var report = new RunReport
         {
+            RunId = Guid.NewGuid().ToString("N"),
             ProfileId = profile.Id,
             ProfileName = profile.Name,
             StartTime = DateTime.UtcNow - stopwatch.Elapsed,

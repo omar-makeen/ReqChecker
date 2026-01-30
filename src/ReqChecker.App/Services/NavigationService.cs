@@ -113,6 +113,9 @@ public class NavigationService
     /// </summary>
     private void TrackViewModel(object? viewModel)
     {
+        // Dispose the previous ViewModel first
+        _currentViewModel?.Dispose();
+
         if (viewModel is IDisposable disposable)
         {
             _currentViewModel = disposable;

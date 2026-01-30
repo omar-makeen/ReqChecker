@@ -41,14 +41,14 @@
 
 **Purpose**: Fix data integrity and migration issues
 
-- [ ] T009 [M1] Set RunId = Guid.NewGuid().ToString("N") when building RunReport in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs
-- [ ] T010 [M2] Update CurrentSchemaVersion from 1 to 2 in src/ReqChecker.Infrastructure/Profile/ProfileMigrationPipeline.cs
-- [ ] T011 [M3] Implement ConverterParameter="Invert" handling in src/ReqChecker.App/Converters/CountToVisibilityConverter.cs
-- [ ] T012 [P] [M4] Create NullToVisibilityConverter in src/ReqChecker.App/Converters/NullToVisibilityConverter.cs
-- [ ] T013 [M4] Update CredentialPromptDialog.xaml to use NullToVisibilityConverter for CredentialRef and ErrorMessage in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
-- [ ] T014 [M4] Register NullToVisibilityConverter as resource in src/ReqChecker.App/App.xaml or CredentialPromptDialog.xaml
-- [ ] T015 [M5] Add ValidatesOnExceptions=True and UpdateSourceTrigger=LostFocus to Timeout TextBox in src/ReqChecker.App/Views/TestConfigView.xaml
-- [ ] T016 [M5] Add ValidatesOnExceptions=True and UpdateSourceTrigger=LostFocus to RetryCount TextBox in src/ReqChecker.App/Views/TestConfigView.xaml
+- [X] T009 [M1] Set RunId = Guid.NewGuid().ToString("N") when building RunReport in src/ReqChecker.Infrastructure/Execution/SequentialTestRunner.cs
+- [X] T010 [M2] Update CurrentSchemaVersion from 1 to 2 in src/ReqChecker.Infrastructure/Profile/ProfileMigrationPipeline.cs
+- [X] T011 [M3] Implement ConverterParameter="Invert" handling in src/ReqChecker.App/Converters/CountToVisibilityConverter.cs
+- [X] T012 [P] [M4] Create NullToVisibilityConverter in src/ReqChecker.App/Converters/NullToVisibilityConverter.cs (already exists)
+- [X] T013 [M4] Update CredentialPromptDialog.xaml to use NullToVisibilityConverter for CredentialRef and ErrorMessage in src/ReqChecker.App/Views/CredentialPromptDialog.xaml
+- [X] T014 [M4] Register NullToVisibilityConverter as resource in src/ReqChecker.App/App.xaml or CredentialPromptDialog.xaml (already registered)
+- [X] T015 [M5] Add ValidatesOnExceptions=True and UpdateSourceTrigger=LostFocus to Timeout TextBox in src/ReqChecker.App/Views/TestConfigView.xaml
+- [X] T016 [M5] Add ValidatesOnExceptions=True and UpdateSourceTrigger=LostFocus to RetryCount TextBox in src/ReqChecker.App/Views/TestConfigView.xaml
 
 **Checkpoint**: Reports have unique RunId; V1 profiles migrate; visibility converters work correctly; input validation present
 

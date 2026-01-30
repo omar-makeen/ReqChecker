@@ -205,11 +205,11 @@
                                        Foreground="{DynamicResource TextSecondary}"
                                        VerticalAlignment="Center"
                                        Target="TimeoutTextBox"/>
-                                <TextBox x:Name="TimeoutTextBox"
-                                         Grid.Column="1"
-                                         Style="{StaticResource InputField}"
-                                         Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
-                                         TabIndex="2"/>
+                                 <TextBox x:Name="TimeoutTextBox"
+                                          Grid.Column="1"
+                                          Style="{StaticResource InputField}"
+                                          Text="{Binding Timeout, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
+                                          TabIndex="2"/>
                             </Grid>
 
                             <!-- Retries -->
@@ -224,11 +224,11 @@
                                        Foreground="{DynamicResource TextSecondary}"
                                        VerticalAlignment="Center"
                                        Target="RetryCountTextBox"/>
-                                <TextBox x:Name="RetryCountTextBox"
-                                         Grid.Column="1"
-                                         Style="{StaticResource InputField}"
-                                         Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
-                                         TabIndex="3"/>
+                                 <TextBox x:Name="RetryCountTextBox"
+                                          Grid.Column="1"
+                                          Style="{StaticResource InputField}"
+                                          Text="{Binding RetryCount, UpdateSourceTrigger=LostFocus, ValidatesOnExceptions=True}"
+                                          TabIndex="3"/>
                             </Grid>
                         </StackPanel>
                     </Border>
