@@ -10,6 +10,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (UI-only fix) (005-fix-run-progress)
 - C# 12 / .NET 8.0-windows (net8.0-windows) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2 (006-test-progress-delay)
 - `%APPDATA%/ReqChecker/preferences.json` (JSON via System.Text.Json) (006-test-progress-delay)
+- N/A (removing preferences, using hardcoded default) (007-remove-demo-delay)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -29,9 +30,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 007-remove-demo-delay: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 006-test-progress-delay: Added C# 12 / .NET 8.0-windows (net8.0-windows) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 - 005-fix-run-progress: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
-- 004-auto-load-config: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
 
 
 

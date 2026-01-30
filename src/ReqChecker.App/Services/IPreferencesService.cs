@@ -16,16 +16,6 @@ public interface IPreferencesService
     bool SidebarExpanded { get; set; }
 
     /// <summary>
-    /// Gets or sets whether test progress delay is enabled.
-    /// </summary>
-    bool TestProgressDelayEnabled { get; set; }
-
-    /// <summary>
-    /// Gets or sets the test progress delay duration in milliseconds.
-    /// </summary>
-    int TestProgressDelayMs { get; set; }
-
-    /// <summary>
     /// Loads preferences from storage.
     /// </summary>
     void Load();

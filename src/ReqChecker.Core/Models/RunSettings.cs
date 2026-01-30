@@ -35,5 +35,5 @@ public class RunSettings
     /// <summary>
     /// Delay in milliseconds between test completions. 0 = no delay.
     /// </summary>
-    public int InterTestDelayMs { get; set; } = 0;
+    public int InterTestDelayMs { get; set; } = 500;
 }
