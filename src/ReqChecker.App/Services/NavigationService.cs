@@ -20,12 +20,6 @@ public class NavigationService
         _serviceProvider = serviceProvider;
     }
 
-    private void DisposeCurrentViewModel()
-    {
-        _currentViewModel?.Dispose();
-        _currentViewModel = null;
-    }
-
     /// <summary>
     /// Initializes the navigation service with a frame.
     /// </summary>
@@ -39,8 +33,8 @@ public class NavigationService
     /// </summary>
     public void NavigateToProfileSelector()
     {
-        DisposeCurrentViewModel();
         var viewModel = _serviceProvider.GetRequiredService<ProfileSelectorViewModel>();
+        TrackViewModel(viewModel);
         var view = new Views.ProfileSelectorView(viewModel);
         _frame?.Navigate(view);
     }
@@ -52,8 +46,8 @@ public class NavigationService
     {
         if (test != null)
         {
-            DisposeCurrentViewModel();
             var viewModel = new TestConfigViewModel(test);
+            TrackViewModel(viewModel);
             var view = new Views.TestConfigView(viewModel);
             _frame?.Navigate(view);
         }
@@ -64,9 +58,8 @@ public class NavigationService
     /// </summary>
     public void NavigateToTestList()
     {
-        DisposeCurrentViewModel();
         var viewModel = _serviceProvider.GetRequiredService<TestListViewModel>();
-        _currentViewModel = viewModel;
+        TrackViewModel(viewModel);
         var view = new Views.TestListView(viewModel);
         _frame?.Navigate(view);
     }
@@ -76,8 +69,8 @@ public class NavigationService
     /// </summary>
     public void NavigateToRunProgress()
     {
-        DisposeCurrentViewModel();
         var viewModel = _serviceProvider.GetRequiredService<RunProgressViewModel>();
+        TrackViewModel(viewModel);
         var view = new Views.RunProgressView(viewModel);
         _frame?.Navigate(view);
     }
@@ -87,8 +80,8 @@ public class NavigationService
     /// </summary>
     public void NavigateToResults()
     {
-        DisposeCurrentViewModel();
         var viewModel = _serviceProvider.GetRequiredService<ResultsViewModel>();
+        TrackViewModel(viewModel);
         var view = new Views.ResultsView(viewModel);
         _frame?.Navigate(view);
     }
@@ -109,9 +102,24 @@ public class NavigationService
     /// </summary>
     public void NavigateToDiagnostics()
     {
-        DisposeCurrentViewModel();
         var viewModel = _serviceProvider.GetRequiredService<DiagnosticsViewModel>();
+        TrackViewModel(viewModel);
         var view = new Views.DiagnosticsView(viewModel);
         _frame?.Navigate(view);
+    }
+
+    /// <summary>
+    /// Tracks and disposes ViewModels that implement IDisposable.
+    /// </summary>
+    private void TrackViewModel(object? viewModel)
+    {
+        if (viewModel is IDisposable disposable)
+        {
+            _currentViewModel = disposable;
+        }
+        else
+        {
+            _currentViewModel = null;
+        }
     }
 }
