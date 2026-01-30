@@ -44,6 +44,61 @@ public partial class App : System.Windows.Application
         // Configure app state with logs path
         var appState = Services.GetRequiredService<IAppState>();
         appState.SetLogsPath(Path.Combine(AppDataPath, "Logs"));
+
+        // Initialize theme service
+        var themeService = Services.GetRequiredService<ThemeService>();
+
+        // Register global exception handler
+        this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+    }
+
+    private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        // Log the exception
+        Serilog.Log.Error(e.Exception, "Unhandled dispatcher exception: {Message}", e.Exception.Message);
+
+        // Show user-friendly error message
+        ShowErrorDialog(
+            "An unexpected error occurred",
+            "The application encountered an error and needs to close. " +
+            "Please check the logs folder for more details.",
+            e.Exception);
+
+        // Prevent default unhandled exception processing
+        e.Handled = true;
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        // Log the exception
+        Serilog.Log.Error(e.ExceptionObject as Exception, "Unhandled domain exception: {Message}",
+            e.ExceptionObject?.ToString() ?? "Unknown error");
+
+        // Show user-friendly error message
+        if (e.IsTerminating)
+        {
+            ShowErrorDialog(
+                "Critical Error",
+                "The application encountered a critical error and will close. " +
+                "Please check the logs folder for more details.",
+                e.ExceptionObject as Exception);
+        }
+    }
+
+    private void ShowErrorDialog(string title, string message, Exception? exception)
+    {
+        var errorMessage = message;
+        if (exception != null)
+        {
+            errorMessage += $"\n\nError: {exception.Message}";
+        }
+
+        System.Windows.MessageBox.Show(
+            errorMessage,
+            title,
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Error);
     }
 
     private void ConfigureServices()
@@ -96,6 +151,7 @@ public partial class App : System.Windows.Application
             new NavigationService(sp));
         services.AddSingleton<DialogService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
+        services.AddSingleton<ThemeService>();
 
         // Register ViewModels
         services.AddTransient<MainViewModel>();

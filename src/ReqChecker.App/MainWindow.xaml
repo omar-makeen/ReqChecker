@@ -7,11 +7,13 @@
         Title="ReqChecker - Desktop Application"
         Height="600"
         Width="900"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        FocusManager.FocusedElement="{Binding ElementName=ProfilesButton}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header/Navigation -->
@@ -27,15 +29,35 @@
 
                 <!-- Navigation Buttons -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="Profiles" Command="{Binding NavigateToProfilesCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0"/>
-                    <Button Content="Tests" Command="{Binding NavigateToTestsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0"/>
-                    <Button Content="Results" Command="{Binding NavigateToResultsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0"/>
-                    <Button Content="Diagnostics" Command="{Binding NavigateToDiagnosticsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0"/>
+                    <Button x:Name="ProfilesButton" Content="_Profiles" Command="{Binding NavigateToProfilesCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0" TabIndex="1"/>
+                    <Button Content="_Tests" Command="{Binding NavigateToTestsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0" TabIndex="2"/>
+                    <Button Content="_Results" Command="{Binding NavigateToResultsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0" TabIndex="3"/>
+                    <Button Content="_Diagnostics" Command="{Binding NavigateToDiagnosticsCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0" TabIndex="4"/>
+                    <Button Content="🌓" Command="{Binding ToggleThemeCommand}" Margin="5,0,10,5" Padding="10,5" Background="Transparent" Foreground="White" BorderThickness="0" TabIndex="5" ToolTip="Toggle Dark/Light Theme"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Content Frame -->
         <Frame x:Name="ContentFrame" Grid.Row="1" Background="White" NavigationUIVisibility="Hidden"/>
+
+        <!-- Footer with Version Info -->
+        <Border Grid.Row="2" Background="#F5F5F5" Padding="10,5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Version Information -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="ReqChecker " FontSize="11" Foreground="#666666"/>
+                    <TextBlock Text="v1.0.0" FontSize="11" FontWeight="SemiBold" Foreground="#666666"/>
+                </StackPanel>
+
+                <!-- Copyright -->
+                <TextBlock Grid.Column="1" Text="© 2026 ReqChecker" FontSize="11" Foreground="#666666"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

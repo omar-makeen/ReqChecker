@@ -3,8 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
-    <Grid>
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=RefreshButton}">
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -14,15 +15,15 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,20,20,10">
             <TextBlock Text="Select Profile" FontSize="24" FontWeight="Bold"/>
-            <Button Content="Refresh" Command="{Binding LoadProfilesCommand}" Margin="10,0,0,10" Padding="15,5"/>
-            <Button Content="Import Profile" Command="{Binding ImportProfileCommand}" Margin="10,0,0,10" Padding="15,5"/>
+            <Button x:Name="RefreshButton" Content="_Refresh" Command="{Binding LoadProfilesCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="1"/>
+            <Button Content="_Import Profile" Command="{Binding ImportProfileCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="2"/>
         </StackPanel>
 
         <!-- Error Message -->
         <Border Grid.Row="1" Background="#FFEBEE" BorderBrush="#FFC5C5" CornerRadius="4" Padding="15" Margin="20,10,20,10" Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding ErrorMessage}" Foreground="#B71C1C" TextWrapping="Wrap" Margin="0,0,10,0"/>
-                <Button Content="Dismiss" Command="{Binding ClearErrorCommand}" HorizontalAlignment="Right" Margin="10,10,0,0" Padding="10,5"/>
+                <Button Content="_Dismiss" Command="{Binding ClearErrorCommand}" HorizontalAlignment="Right" Margin="10,10,0,0" Padding="10,5" TabIndex="3"/>
             </StackPanel>
         </Border>
 
@@ -57,13 +58,14 @@
 
                                     <!-- Select Button -->
                                     <Button Grid.Row="1" Grid.ColumnSpan="2"
-                                            Content="Select"
+                                            Content="_Select"
                                             Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                             CommandParameter="{Binding}"
                                             Margin="10,0,0,0"
                                             Padding="20,8"
                                             HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"
+                                            TabIndex="10"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

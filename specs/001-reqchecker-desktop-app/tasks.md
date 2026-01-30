@@ -268,26 +268,26 @@ Based on plan.md layered architecture:
 
 ### Accessibility & UX
 
-- [ ] T109 [P] Add keyboard navigation to all views in src/ReqChecker.App/Views/*.xaml (update all)
-- [ ] T110 [P] Add focus states and tab order to all interactive elements
-- [ ] T111 Implement dark/light theme toggle in settings
-- [ ] T112 Add version information display to About section in src/ReqChecker.App/MainWindow.xaml (update)
+- [X] T109 [P] Add keyboard navigation to all views in src/ReqChecker.App/Views/*.xaml (update all)
+- [X] T110 [P] Add focus states and tab order to all interactive elements
+- [X] T111 Implement dark/light theme toggle in settings
+- [X] T112 Add version information display to About section in src/ReqChecker.App/MainWindow.xaml (update)
 
 ### Error Handling
 
-- [ ] T113 Add global exception handler in src/ReqChecker.App/App.xaml.cs (update)
-- [ ] T114 Add user-friendly error messages for all failure scenarios
+- [X] T113 Add global exception handler in src/ReqChecker.App/App.xaml.cs (update)
+- [X] T114 Add user-friendly error messages for all failure scenarios
 
 ### Distribution
 
-- [ ] T115 Configure self-contained publish in src/ReqChecker.App/ReqChecker.App.csproj (update)
-- [ ] T116 Create WiX installer project in installer/ReqChecker.wxs
-- [ ] T117 Add application icon and branding assets in src/ReqChecker.App/Resources/Icons/
+- [X] T115 Configure self-contained publish in src/ReqChecker.App/ReqChecker.App.csproj (update)
+- [X] T116 Create WiX installer project in installer/ReqChecker.wxs
+- [X] T117 Add application icon and branding assets in src/ReqChecker.App/Resources/Icons/
 
 ### Validation
 
-- [ ] T118 Run quickstart.md validation - verify all setup steps work
-- [ ] T119 Verify all acceptance scenarios from spec.md pass manually
+- [X] T118 Run quickstart.md validation - verify all setup steps work
+- [X] T119 Verify all acceptance scenarios from spec.md pass manually
 
 ---
 

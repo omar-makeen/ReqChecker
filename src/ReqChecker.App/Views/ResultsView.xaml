@@ -4,11 +4,12 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:converters="clr-namespace:ReqChecker.App.Converters"
-      mc:Ignorable="d">
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=BackToTestsButton}">
     <Page.Resources>
         <converters:CredentialMaskConverter x:Key="CredentialMaskConverter"/>
     </Page.Resources>
-    <Grid>
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -19,9 +20,9 @@
         <StackPanel Grid.Row="0" Margin="20,10,20,10">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Results" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button Content="Back to Tests" Command="{Binding NavigateToTestListCommand}" Margin="20,0,0,0" Padding="15,5"/>
-                <Button Content="Export JSON" Command="{Binding ExportToJsonCommand}" IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}" Margin="10,0,0,0" Padding="15,5"/>
-                <Button Content="Export CSV" Command="{Binding ExportToCsvCommand}" IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}" Margin="10,0,0,0" Padding="15,5"/>
+                <Button x:Name="BackToTestsButton" Content="_Back to Tests" Command="{Binding NavigateToTestListCommand}" Margin="20,0,0,0" Padding="15,5" TabIndex="1"/>
+                <Button Content="Export _JSON" Command="{Binding ExportToJsonCommand}" IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}" Margin="10,0,0,0" Padding="15,5" TabIndex="2"/>
+                <Button Content="Export _CSV" Command="{Binding ExportToCsvCommand}" IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}" Margin="10,0,0,0" Padding="15,5" TabIndex="3"/>
             </StackPanel>
             <!-- Status Message -->
             <Border Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}}"

@@ -3,8 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
-    <Grid>
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=CancelButton}">
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -13,7 +14,7 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,10,20,10">
             <TextBlock Text="Run Progress" FontSize="24" FontWeight="Bold"/>
-            <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="20,0,0,0" Padding="15,5"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Command="{Binding CancelCommand}" Margin="20,0,0,0" Padding="15,5" TabIndex="1" IsCancel="True"/>
         </StackPanel>
 
         <!-- Progress Display -->

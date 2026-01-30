@@ -6,13 +6,14 @@
       xmlns:converters="clr-namespace:ReqChecker.App.Converters"
       xmlns:controls="clr-namespace:ReqChecker.App.Controls"
       xmlns:viewmodels="clr-namespace:ReqChecker.App.ViewModels"
-      mc:Ignorable="d">
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=CancelButton}">
     <Page.Resources>
         <converters:FieldPolicyToVisibilityConverter x:Key="FieldPolicyToVisibilityConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Page.Resources>
 
-    <Grid>
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -21,7 +22,7 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,20,20,10">
-            <Button Content="← Back" Command="{Binding CancelCommand}" Margin="0,0,10,10" Padding="15,5"/>
+            <Button x:Name="CancelButton" Content="← _Back" Command="{Binding CancelCommand}" Margin="0,0,10,10" Padding="15,5" TabIndex="1"/>
             <TextBlock Text="Test Configuration" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
         </StackPanel>
 
@@ -76,9 +77,9 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Timeout (ms)" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <TextBox Grid.Column="1" Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}" 
-                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1"/>
+                            <Label Grid.Column="0" Content="_Timeout (ms)" VerticalAlignment="Center" FontWeight="SemiBold" Target="TimeoutTextBox"/>
+                            <TextBox x:Name="TimeoutTextBox" Grid.Column="1" Text="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1" TabIndex="2"/>
                         </Grid>
 
                         <!-- Retries (Editable) -->
@@ -87,9 +88,9 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Retries" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                            <TextBox Grid.Column="1" Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
-                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1"/>
+                            <Label Grid.Column="0" Content="_Retries" VerticalAlignment="Center" FontWeight="SemiBold" Target="RetryCountTextBox"/>
+                            <TextBox x:Name="RetryCountTextBox" Grid.Column="1" Text="{Binding RetryCount, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="8" BorderBrush="#DDDDDD" BorderThickness="1" TabIndex="3"/>
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -155,17 +156,20 @@
 
         <!-- Action Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0,20,20">
-            <Button Content="Cancel" 
-                    Command="{Binding CancelCommand}" 
-                    Margin="0,0,10,0" 
+            <Button Content="_Cancel"
+                    Command="{Binding CancelCommand}"
+                    Margin="0,0,10,0"
                     Padding="20,10"
                     Background="#F5F5F5"
-                    BorderBrush="#DDDDDD"/>
-            <Button Content="Save Changes" 
-                    Command="{Binding SaveCommand}" 
+                    BorderBrush="#DDDDDD"
+                    TabIndex="99"/>
+            <Button Content="_Save Changes"
+                    Command="{Binding SaveCommand}"
                     Padding="20,10"
                     Background="#0078D4"
-                    Foreground="White"/>
+                    Foreground="White"
+                    TabIndex="100"
+                    IsDefault="True"/>
         </StackPanel>
     </Grid>
 </Page>

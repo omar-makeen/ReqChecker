@@ -3,8 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
-    <Grid>
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=RunAllTestsButton}">
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -13,7 +14,7 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,10,20,10">
             <TextBlock Text="Test List" FontSize="24" FontWeight="Bold"/>
-            <Button Content="Run All Tests" Command="{Binding RunAllTestsCommand}" Margin="10,0,0,10" Padding="15,5"/>
+            <Button x:Name="RunAllTestsButton" Content="_Run All Tests" Command="{Binding RunAllTestsCommand}" Margin="10,0,0,10" Padding="15,5" TabIndex="1"/>
         </StackPanel>
 
         <!-- Test List -->
@@ -21,7 +22,10 @@
             <ItemsControl ItemsSource="{Binding CurrentProfile.Tests}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="10" Padding="15">
+                        <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="10" Padding="15" Focusable="True">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}"/>
+                            </Border.InputBindings>
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>

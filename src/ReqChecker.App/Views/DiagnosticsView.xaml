@@ -3,8 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
-    <Grid>
+      mc:Ignorable="d"
+      FocusManager.FocusedElement="{Binding ElementName=OpenLogsButton}">
+    <Grid KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -15,8 +16,8 @@
         <StackPanel Grid.Row="0" Margin="20,10,20,10">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Diagnostics" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button Content="Open Logs Folder" Command="{Binding OpenLogsFolderCommand}" Margin="20,0,0,0" Padding="15,5"/>
-                <Button Content="Copy Details" Command="{Binding CopyDetailsCommand}" IsEnabled="{Binding HasLastRun}" Margin="10,0,0,0" Padding="15,5"/>
+                <Button x:Name="OpenLogsButton" Content="Open _Logs Folder" Command="{Binding OpenLogsFolderCommand}" Margin="20,0,0,0" Padding="15,5" TabIndex="1"/>
+                <Button Content="_Copy Details" Command="{Binding CopyDetailsCommand}" IsEnabled="{Binding HasLastRun}" Margin="10,0,0,0" Padding="15,5" TabIndex="2"/>
             </StackPanel>
             <!-- Status Message -->
             <Border Visibility="{Binding StatusMessage, Converter={StaticResource NullToVisibilityConverter}}"

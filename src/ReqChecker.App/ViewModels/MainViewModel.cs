@@ -23,6 +23,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private DialogService? _dialogService;
 
+    [ObservableProperty]
+    private ThemeService? _themeService;
+
     [RelayCommand]
     private void NavigateToProfiles()
     {
@@ -45,5 +48,11 @@ public partial class MainViewModel : ObservableObject
     private void NavigateToDiagnostics()
     {
         NavigationService?.NavigateToDiagnostics();
+    }
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        ThemeService?.ToggleTheme();
     }
 }

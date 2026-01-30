@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- Product Information -->
+  <Product Id="*"
+           Name="ReqChecker"
+           Language="1033"
+           Version="1.0.0.0"
+           Manufacturer="ReqChecker"
+           UpgradeCode="12345678-90AB-CDEF-1234-567890ABCDEF">
+
+    <!-- Package Information -->
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perUser"
+             Platform="x64"
+             Description="ReqChecker Desktop Application - Environment Readiness Testing Tool"
+             Comments="Tests system and network readiness with configurable profiles"
+             />
+
+    <!-- Media -->
+    <MediaTemplate EmbedCab="yes"/>
+
+    <!-- Major Upgrade: Remove previous versions -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of ReqChecker is already installed."
+                  AllowSameVersionUpgrades="yes"/>
+
+    <!-- Features -->
+    <Feature Id="ProductFeature" Title="ReqChecker" Level="1">
+      <ComponentRef Id="MainExecutable"/>
+      <ComponentRef Id="StartMenuShortcut"/>
+      <ComponentRef Id="DesktopShortcut"/>
+    </Feature>
+
+    <!-- Directory Structure -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="ReqChecker">
+        <!-- Main executable -->
+        <Component Id="MainExecutable" Guid="*">
+          <File Id="ReqCheckerExe"
+                Source="..\src\ReqChecker.App\bin\Release\net8.0-windows\win-x64\publish\ReqChecker.exe"
+                KeyPath="yes"/>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <!-- Start Menu Shortcut -->
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="ReqChecker">
+        <Component Id="StartMenuShortcut" Guid="*">
+          <Shortcut Id="ApplicationShortcut"
+                    Name="ReqChecker"
+                    Description="Environment Readiness Testing Tool"
+                    Target="[INSTALLFOLDER]ReqChecker.exe"
+                    WorkingDirectory="INSTALLFOLDER"/>
+          <RemoveFolder Id="CleanupStartMenuFolder" On="uninstall"/>
+          <RegistryValue Root="HKCU"
+                         Key="Software\ReqChecker"
+                         Name="StartMenuShortcut"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes"/>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+
+    <!-- Desktop Shortcut -->
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="*">
+        <Shortcut Id="DesktopShortcutItem"
+                  Name="ReqChecker"
+                  Description="Environment Readiness Testing Tool"
+                  Target="[INSTALLFOLDER]ReqChecker.exe"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RegistryValue Root="HKCU"
+                       Key="Software\ReqChecker"
+                       Name="DesktopShortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"/>
+      </Component>
+    </StandardDirectory>
+
+    <!-- Icons -->
+    <!-- TODO: Uncomment when app.ico is created in Resources/Icons/ -->
+    <!-- <Icon Id="AppIcon" SourceFile="..\src\ReqChecker.App\Resources\Icons\app.ico"/> -->
+    <!-- <Property Id="ARPPRODUCTICON" Value="AppIcon"/> -->
+
+    <!-- UI Configuration -->
+    <UIRef Id="WixUI_InstallDir"/>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+
+    <!-- License -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf"/>
+
+  </Product>
+</Wix>
