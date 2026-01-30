@@ -365,7 +365,7 @@
 
                 <!-- Empty State (when no results yet) -->
                 <Border Grid.Row="1"
-                        Visibility="{Binding HasResults, Converter={StaticResource InverseBoolConverter}}"
+                        Visibility="{Binding HasResults, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"
                         Background="{DynamicResource BackgroundSurface}"
                         BorderBrush="{DynamicResource BorderSubtle}"
                         BorderThickness="1"

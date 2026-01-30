@@ -54,6 +54,10 @@ public partial class RunProgressViewModel : ObservableObject
         OnPropertyChanged(nameof(ProgressPercentage));
     }
 
+    partial void OnIsRunningChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
+    partial void OnIsCompleteChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
+    partial void OnIsCancellingChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
+
     [ObservableProperty]
     private int _failedTests;
 
