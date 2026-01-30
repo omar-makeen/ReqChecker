@@ -1,0 +1,80 @@
+{
+  "id": "sample-diagnostics-001",
+  "name": "Sample Diagnostics",
+  "schemaVersion": 2,
+  "source": "Bundled",
+  "runSettings": {
+    "defaultTimeout": 30000,
+    "defaultRetryCount": 0,
+    "retryBackoff": "None",
+    "adminBehavior": "SkipWithReason"
+  },
+  "tests": [
+    {
+      "id": "sample-001",
+      "type": "Ping",
+      "displayName": "Network Connectivity Check",
+      "description": "Pings Google DNS to verify basic network connectivity.",
+      "parameters": {
+        "host": "8.8.8.8",
+        "timeout": 5000
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "timeout": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "sample-002",
+      "type": "HttpGet",
+      "displayName": "HTTPS Connectivity Check",
+      "description": "Verifies HTTPS connectivity to example.com.",
+      "parameters": {
+        "url": "https://www.example.com",
+        "expectedStatusCodes": [200],
+        "validateSsl": true
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "expectedStatusCodes": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "sample-003",
+      "type": "DnsLookup",
+      "displayName": "DNS Resolution Check",
+      "description": "Verifies DNS can resolve google.com.",
+      "parameters": {
+        "hostname": "www.google.com"
+      },
+      "fieldPolicy": {
+        "hostname": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    },
+    {
+      "id": "sample-004",
+      "type": "FileExists",
+      "displayName": "System File Check",
+      "description": "Verifies Windows hosts file exists.",
+      "parameters": {
+        "path": "C:\\Windows\\System32\\drivers\\etc\\hosts"
+      },
+      "fieldPolicy": {
+        "path": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false
+    }
+  ],
+  "signature": null
+}

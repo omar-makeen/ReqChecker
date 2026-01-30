@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Infrastructure.Tests;
 using ReqChecker.Infrastructure.Execution;
@@ -38,7 +39,7 @@ public partial class App : System.Windows.Application
         ConfigureServices();
     }
 
-    protected override void OnStartup(System.Windows.StartupEventArgs e)
+    protected override async void OnStartup(System.Windows.StartupEventArgs e)
     {
         base.OnStartup(e);
 
@@ -52,6 +53,22 @@ public partial class App : System.Windows.Application
         // Register global exception handler
         this.DispatcherUnhandledException += App_DispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+        // Check for startup profile
+        var startupProfileService = Services.GetRequiredService<IStartupProfileService>();
+        var startupResult = await startupProfileService.TryLoadStartupProfileAsync();
+
+        if (startupResult.Success && startupResult.Profile != null)
+        {
+            // Set the startup profile in app state
+            appState.SetCurrentProfile(startupResult.Profile);
+            Log.Information("Startup profile loaded: {ProfileName}", startupResult.Profile.Name);
+        }
+        else if (startupResult.FileFound && !string.IsNullOrEmpty(startupResult.ErrorMessage))
+        {
+            // Startup profile file exists but is invalid - show error dialog
+            ShowStartupProfileError(startupResult.ErrorMessage);
+        }
 
         // Create and show main window AFTER theme is applied
         var mainWindow = new MainWindow();
@@ -112,6 +129,16 @@ public partial class App : System.Windows.Application
             System.Windows.MessageBoxImage.Error);
     }
 
+    private void ShowStartupProfileError(string errorMessage)
+    {
+        var result = System.Windows.MessageBox.Show(
+            $"The startup configuration could not be loaded.\n\n{errorMessage}\n\n" +
+            "Click Continue to open the profile selector and choose a different configuration.",
+            "Startup Configuration Error",
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Warning);
+    }
+
     private void ConfigureServices()
     {
         var services = new ServiceCollection();
@@ -123,6 +150,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<IProfileLoader, JsonProfileLoader>();
         services.AddSingleton<IProfileValidator, FluentProfileValidator>();
         services.AddSingleton<ReqChecker.Core.Interfaces.IProfileStorageService, ReqChecker.Infrastructure.Profile.ProfileStorageService>();
+        services.AddSingleton<IStartupProfileService, StartupProfileService>();
 
         // Register individual migrators as IProfileMigrator (for collection resolution)
         services.AddSingleton<IProfileMigrator, V1ToV2Migration>();

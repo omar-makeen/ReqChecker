@@ -36,6 +36,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Profiles\default-profile.json" />
     <EmbeddedResource Include="Profiles\default-profile.json.sig" />
+    <EmbeddedResource Include="Profiles\sample-diagnostics.json" />
   </ItemGroup>
 
 </Project>

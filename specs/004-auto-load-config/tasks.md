@@ -24,8 +24,8 @@
 
 **Purpose**: Create new interfaces and models required by multiple user stories
 
-- [ ] T001 [P] Create StartupProfileResult model in src/ReqChecker.Core/Models/StartupProfileResult.cs
-- [ ] T002 [P] Create IStartupProfileService interface in src/ReqChecker.Core/Interfaces/IStartupProfileService.cs
+- [X] T001 [P] Create StartupProfileResult model in src/ReqChecker.Core/Models/StartupProfileResult.cs
+- [X] T002 [P] Create IStartupProfileService interface in src/ReqChecker.Core/Interfaces/IStartupProfileService.cs
 
 **Checkpoint**: Core contracts defined, ready for infrastructure implementation
 
@@ -37,8 +37,8 @@
 
 **⚠️ CRITICAL**: User stories 1-3 cannot proceed without the service implementation
 
-- [ ] T003 Implement StartupProfileService in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T004 Register IStartupProfileService in DI container in src/ReqChecker.App/App.xaml.cs
+- [X] T003 Implement StartupProfileService in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T004 Register IStartupProfileService in DI container in src/ReqChecker.App/App.xaml.cs
 
 **Checkpoint**: Foundation ready - StartupProfileService available for injection
 
@@ -52,10 +52,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Add startup profile check logic in App.OnStartup in src/ReqChecker.App/App.xaml.cs
-- [ ] T006 [US1] Add NavigateToTestListWithProfile method to NavigationService in src/ReqChecker.App/Services/NavigationService.cs
-- [ ] T007 [US1] Update MainWindow to check AppState.CurrentProfile on load and navigate accordingly in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T008 [US1] Add Serilog logging for successful startup profile load in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T005 [US1] Add startup profile check logic in App.OnStartup in src/ReqChecker.App/App.xaml.cs
+- [X] T006 [US1] Add NavigateToTestListWithProfile method to NavigationService in src/ReqChecker.App/Services/NavigationService.cs
+- [X] T007 [US1] Update MainWindow to check AppState.CurrentProfile on load and navigate accordingly in src/ReqChecker.App/MainWindow.xaml.cs
+- [X] T008 [US1] Add Serilog logging for successful startup profile load in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
 
 **Checkpoint**: App auto-loads startup-profile.json and shows test list immediately
 
@@ -69,9 +69,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T009 [US2] Ensure StartupProfileService.TryLoadStartupProfileAsync returns NotFound (not error) when file missing in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T010 [US2] Verify App.OnStartup falls through to profile selector when result.Success is false and result.FileFound is false in src/ReqChecker.App/App.xaml.cs
-- [ ] T011 [US2] Add Serilog logging (Information level) when startup profile not found in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T009 [US2] Ensure StartupProfileService.TryLoadStartupProfileAsync returns NotFound (not error) when file missing in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T010 [US2] Verify App.OnStartup falls through to profile selector when result.Success is false and result.FileFound is false in src/ReqChecker.App/App.xaml.cs
+- [X] T011 [US2] Add Serilog logging (Information level) when startup profile not found in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
 
 **Checkpoint**: App starts normally with profile selector when no startup-profile.json exists
 
@@ -85,12 +85,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T012 [US3] Add error handling for invalid JSON in StartupProfileService.TryLoadStartupProfileAsync in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T013 [US3] Add error handling for schema validation failures in StartupProfileService in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T014 [US3] Add error handling for empty files (0 bytes) - treat as NotFound in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T015 [US3] Add error handling for files with no tests - treat as NotFound in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
-- [ ] T016 [US3] Create ShowStartupProfileError method in App.xaml.cs with Continue button in src/ReqChecker.App/App.xaml.cs
-- [ ] T017 [US3] Add Serilog logging (Warning level) for startup profile errors in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T012 [US3] Add error handling for invalid JSON in StartupProfileService.TryLoadStartupProfileAsync in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T013 [US3] Add error handling for schema validation failures in StartupProfileService in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T014 [US3] Add error handling for empty files (0 bytes) - treat as NotFound in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T015 [US3] Add error handling for files with no tests - treat as NotFound in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
+- [X] T016 [US3] Create ShowStartupProfileError method in App.xaml.cs with Continue button in src/ReqChecker.App/App.xaml.cs
+- [X] T017 [US3] Add Serilog logging (Warning level) for startup profile errors in src/ReqChecker.Infrastructure/Profile/StartupProfileService.cs
 
 **Checkpoint**: Invalid startup profiles show user-friendly error with path to continue
 
@@ -104,9 +104,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T018 [US4] Create sample-diagnostics.json with 4 test definitions in src/ReqChecker.App/Profiles/sample-diagnostics.json
-- [ ] T019 [US4] Add sample-diagnostics.json as EmbeddedResource in src/ReqChecker.App/ReqChecker.App.csproj
-- [ ] T020 [US4] Verify ProfileSelectorViewModel loads sample-diagnostics.json from embedded resources (existing LoadBundledProfilesAsync should work)
+- [X] T018 [US4] Create sample-diagnostics.json with 4 test definitions in src/ReqChecker.App/Profiles/sample-diagnostics.json
+- [X] T019 [US4] Add sample-diagnostics.json as EmbeddedResource in src/ReqChecker.App/ReqChecker.App.csproj
+- [X] T020 [US4] Verify ProfileSelectorViewModel loads sample-diagnostics.json from embedded resources (existing LoadBundledProfilesAsync should work)
 
 **Checkpoint**: Sample Diagnostics profile visible and exportable for client distribution
 
@@ -116,12 +116,12 @@
 
 **Purpose**: Final validation and documentation updates
 
-- [ ] T021 [P] Update quickstart.md with final testing instructions in specs/004-auto-load-config/quickstart.md
-- [ ] T022 [P] Verify all logging messages are consistent and useful for troubleshooting
-- [ ] T023 Run manual end-to-end test: valid startup-profile.json auto-loads
-- [ ] T024 Run manual end-to-end test: missing startup-profile.json shows profile selector
-- [ ] T025 Run manual end-to-end test: invalid startup-profile.json shows error then profile selector
-- [ ] T026 Run manual end-to-end test: Sample Diagnostics appears in bundled profiles
+- [X] T021 [P] Update quickstart.md with final testing instructions in specs/004-auto-load-config/quickstart.md
+- [X] T022 [P] Verify all logging messages are consistent and useful for troubleshooting
+- [X] T023 Run manual end-to-end test: valid startup-profile.json auto-loads
+- [X] T024 Run manual end-to-end test: missing startup-profile.json shows profile selector
+- [X] T025 Run manual end-to-end test: invalid startup-profile.json shows error then profile selector
+- [X] T026 Run manual end-to-end test: Sample Diagnostics appears in bundled profiles
 
 ---
 

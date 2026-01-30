@@ -48,11 +48,20 @@ public partial class MainWindow : FluentWindow
             ApplyWindowFadeIn();
         }
 
-        // Navigate to default view
-        _navigationService.NavigateToTestList();
-
-        // Navigate sets the active navigation item via the NavigationView
-        NavTests.IsActive = true;
+        // Check if a startup profile was loaded
+        var appState = App.Services.GetRequiredService<IAppState>();
+        if (appState.CurrentProfile != null)
+        {
+            // Startup profile was loaded, navigate directly to test list
+            _navigationService.NavigateToTestList();
+            NavTests.IsActive = true;
+        }
+        else
+        {
+            // No startup profile, show profile selector
+            _navigationService.NavigateToProfileSelector();
+            NavProfiles.IsActive = true;
+        }
     }
 
     private void ApplyWindowFadeIn()
