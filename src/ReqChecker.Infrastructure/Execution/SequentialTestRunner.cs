@@ -48,13 +48,15 @@ public class SequentialTestRunner : ITestRunner
     public async Task<RunReport> RunTestsAsync(
         ProfileModel profile,
         IProgress<TestResult> progress,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        RunSettings? runSettings = null)
     {
         var stopwatch = Stopwatch.StartNew();
         var results = new List<TestResult>();
         var machineInfo = ReqChecker.Infrastructure.Platform.MachineInfoCollector.Collect();
 
-        var runSettings = new RunSettings(); // Use default settings
+        // Use provided settings or create default
+        runSettings ??= new RunSettings();
 
         foreach (var testDefinition in profile.Tests)
         {
@@ -113,6 +115,12 @@ public class SequentialTestRunner : ITestRunner
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
+
+            // Apply inter-test delay (skip after last test)
+            if (runSettings.InterTestDelayMs > 0 && profile.Tests.IndexOf(testDefinition) < profile.Tests.Count - 1)
+            {
+                await Task.Delay(runSettings.InterTestDelayMs, cancellationToken);
+            }
         }
 
         stopwatch.Stop();

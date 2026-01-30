@@ -31,4 +31,9 @@ public class RunSettings
     /// How to handle tests requiring admin privileges (default: SkipWithReason).
     /// </summary>
     public AdminBehavior AdminBehavior { get; set; } = AdminBehavior.SkipWithReason;
+
+    /// <summary>
+    /// Delay in milliseconds between test completions. 0 = no delay.
+    /// </summary>
+    public int InterTestDelayMs { get; set; } = 0;
 }

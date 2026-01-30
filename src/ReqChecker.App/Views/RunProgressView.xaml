@@ -141,6 +141,31 @@
                     </controls:ProgressRing.Effect>
                 </controls:ProgressRing>
 
+                <!-- Demo Mode Controls -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,16,0,0">
+                    <ui:ToggleSwitch IsChecked="{Binding TestProgressDelayEnabled, Mode=TwoWay}"
+                                     OnContent="Demo Mode"
+                                     OffContent="Demo Mode"
+                                     VerticalAlignment="Center"/>
+                    <Slider Value="{Binding TestProgressDelayMs, Mode=TwoWay}"
+                            Minimum="0"
+                            Maximum="3000"
+                            Width="120"
+                            Margin="16,0,8,0"
+                            IsEnabled="{Binding TestProgressDelayEnabled}"
+                            TickFrequency="500"
+                            IsSnapToTickEnabled="False"
+                            VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TestProgressDelayMs, StringFormat={}{0} ms}"
+                               Style="{DynamicResource TextCaption}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               VerticalAlignment="Center"
+                               Width="60"
+                               TextAlignment="Center"/>
+                </StackPanel>
+
                 <!-- Current Test Card -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,32,0,0"

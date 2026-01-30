@@ -16,6 +16,7 @@ public partial class RunProgressViewModel : ObservableObject
     private readonly IAppState _appState;
     private readonly ITestRunner _testRunner;
     private readonly NavigationService _navigationService;
+    private readonly IPreferencesService _preferencesService;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -98,11 +99,32 @@ public partial class RunProgressViewModel : ObservableObject
     [ObservableProperty]
     private RunReport? _runReport;
 
-    public RunProgressViewModel(IAppState appState, ITestRunner testRunner, NavigationService navigationService)
+    /// <summary>
+    /// Gets or sets whether test progress delay is enabled.
+    /// Delegates to PreferencesService for persistence.
+    /// </summary>
+    public bool TestProgressDelayEnabled
+    {
+        get => _preferencesService.TestProgressDelayEnabled;
+        set => _preferencesService.TestProgressDelayEnabled = value;
+    }
+
+    /// <summary>
+    /// Gets or sets the test progress delay duration in milliseconds.
+    /// Delegates to PreferencesService for persistence.
+    /// </summary>
+    public int TestProgressDelayMs
+    {
+        get => _preferencesService.TestProgressDelayMs;
+        set => _preferencesService.TestProgressDelayMs = value;
+    }
+
+    public RunProgressViewModel(IAppState appState, ITestRunner testRunner, NavigationService navigationService, IPreferencesService preferencesService)
     {
         _appState = appState;
         _testRunner = testRunner;
         _navigationService = navigationService;
+        _preferencesService = preferencesService;
 
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
@@ -137,7 +159,11 @@ public partial class RunProgressViewModel : ObservableObject
         try
         {
             var progress = new Progress<TestResult>(OnTestCompleted);
-            RunReport = await _testRunner.RunTestsAsync(CurrentProfile, progress, Cts.Token);
+            var runSettings = new RunSettings
+            {
+                InterTestDelayMs = TestProgressDelayEnabled ? TestProgressDelayMs : 0
+            };
+            RunReport = await _testRunner.RunTestsAsync(CurrentProfile, progress, Cts.Token, runSettings);
         }
         catch (OperationCanceledException)
         {

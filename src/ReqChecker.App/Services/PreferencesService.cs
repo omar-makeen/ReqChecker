@@ -11,6 +11,8 @@ public class UserPreferences
 {
     public string Theme { get; set; } = "Dark";
     public bool SidebarExpanded { get; set; } = true;
+    public bool TestProgressDelayEnabled { get; set; } = true;
+    public int TestProgressDelayMs { get; set; } = 500;
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 }
 
@@ -36,6 +38,12 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
     [ObservableProperty]
     private bool _sidebarExpanded = true;
 
+    [ObservableProperty]
+    private bool _testProgressDelayEnabled = true;
+
+    [ObservableProperty]
+    private int _testProgressDelayMs = 500;
+
     public PreferencesService()
     {
         Load();
@@ -60,6 +68,8 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
                         Theme = theme;
                     }
                     SidebarExpanded = prefs.SidebarExpanded;
+                    TestProgressDelayEnabled = prefs.TestProgressDelayEnabled;
+                    TestProgressDelayMs = Math.Clamp(prefs.TestProgressDelayMs, 0, 3000);
                 }
             }
         }
@@ -89,6 +99,8 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
             {
                 Theme = Theme.ToString(),
                 SidebarExpanded = SidebarExpanded,
+                TestProgressDelayEnabled = TestProgressDelayEnabled,
+                TestProgressDelayMs = TestProgressDelayMs,
                 LastUpdated = DateTime.UtcNow
             };
 
@@ -107,6 +119,16 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
     }
 
     partial void OnSidebarExpandedChanged(bool value)
+    {
+        Save();
+    }
+
+    partial void OnTestProgressDelayEnabledChanged(bool value)
+    {
+        Save();
+    }
+
+    partial void OnTestProgressDelayMsChanged(int value)
     {
         Save();
     }
