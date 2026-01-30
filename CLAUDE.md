@@ -24,6 +24,8 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 003-code-quality-fixes: Bug fixes and architecture improvements (exception handling, DI, security)
+
 - 002-ui-ux-redesign: Added C# 12 / .NET 8.0 LTS + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 - 001-reqchecker-desktop-app: Added C# 12 / .NET 8.0 LTS
