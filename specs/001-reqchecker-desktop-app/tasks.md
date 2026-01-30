@@ -206,15 +206,15 @@ Based on plan.md layered architecture:
 
 ### Export Infrastructure
 
-- [ ] T093 [P] [US4] Implement JsonExporter with System.Text.Json in src/ReqChecker.Infrastructure/Export/JsonExporter.cs
-- [ ] T094 [P] [US4] Implement CsvExporter with CsvHelper in src/ReqChecker.Infrastructure/Export/CsvExporter.cs
-- [ ] T095 [US4] Create JSON serialization context for AOT in src/ReqChecker.Infrastructure/Export/AppJsonContext.cs
+- [X] T093 [P] [US4] Implement JsonExporter with System.Text.Json in src/ReqChecker.Infrastructure/Export/JsonExporter.cs
+- [X] T094 [P] [US4] Implement CsvExporter with CsvHelper in src/ReqChecker.Infrastructure/Export/CsvExporter.cs
+- [X] T095 [US4] Create JSON serialization context for AOT in src/ReqChecker.Infrastructure/Export/AppJsonContext.cs
 
 ### Export UI
 
-- [ ] T096 [US4] Add export commands to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs (update)
-- [ ] T097 [US4] Add Export buttons (JSON/CSV) to ResultsView in src/ReqChecker.App/Views/ResultsView.xaml (update)
-- [ ] T098 [US4] Add save file dialog for export location in src/ReqChecker.App/Services/DialogService.cs (update)
+- [X] T096 [US4] Add export commands to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs (update)
+- [X] T097 [US4] Add Export buttons (JSON/CSV) to ResultsView in src/ReqChecker.App/Views/ResultsView.xaml (update)
+- [X] T098 [US4] Add save file dialog for export location in src/ReqChecker.App/Services/DialogService.cs (update)
 
 **Checkpoint**: User Story 4 complete - results can be exported
 

@@ -16,6 +16,8 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:TestStatusToColorConverter x:Key="TestStatusToColorConverter" />
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -4,6 +4,7 @@ using ReqChecker.Infrastructure.Tests;
 using ReqChecker.Infrastructure.Execution;
 using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.Infrastructure.ProfileManagement.Migrations;
+using ReqChecker.Infrastructure.Export;
 using ReqChecker.App.ViewModels;
 using System.Reflection;
 
@@ -56,6 +57,12 @@ public partial class App : System.Windows.Application
             var tests = sp.GetServices<ITest>();
             return new SequentialTestRunner(tests);
         });
+
+        // Register exporters (both as interface for collection resolution and concrete for direct injection)
+        services.AddSingleton<JsonExporter>();
+        services.AddSingleton<CsvExporter>();
+        services.AddSingleton<IExporter>(sp => sp.GetRequiredService<JsonExporter>());
+        services.AddSingleton<IExporter>(sp => sp.GetRequiredService<CsvExporter>());
 
         // Register services
         services.AddSingleton<Services.NavigationService>(sp =>
