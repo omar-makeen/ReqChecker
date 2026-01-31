@@ -272,7 +272,7 @@
                 Padding="48"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Visibility="{Binding HasReport, Converter={StaticResource InverseBoolConverter}, FallbackValue=Visible}">
+                Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Visible}">
             <StackPanel HorizontalAlignment="Center">
                 <ui:SymbolIcon Symbol="CheckmarkCircle24"
                                FontSize="48"
