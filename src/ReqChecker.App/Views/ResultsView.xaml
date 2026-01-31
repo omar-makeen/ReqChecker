@@ -255,7 +255,7 @@
 
                     <controls:SummaryCard Value="{Binding Report.Summary.Skipped}"
                                           Label="Skipped"
-                                          Icon="ArrowForwardCircle24"
+                                          Icon="ArrowRight24"
                                           ShowIcon="False"
                                           AccentColor="#F59E0B"/>
                 </StackPanel>
