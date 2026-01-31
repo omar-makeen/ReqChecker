@@ -85,6 +85,8 @@ public partial class ResultsViewModel : ObservableObject
             _appState.SetLastRunReport(value);
             SetupFilteredResults();
         }
+        // Notify that CanExport has changed (depends on Report)
+        OnPropertyChanged(nameof(CanExport));
     }
 
     /// <summary>

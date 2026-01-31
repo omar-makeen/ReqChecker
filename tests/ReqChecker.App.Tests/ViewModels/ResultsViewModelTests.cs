@@ -408,4 +408,104 @@ public class ResultsViewModelTests
         // Assert
         Assert.False(canExport);
     }
+
+    [Fact]
+    public void SettingReport_RaisesPropertyChangedForCanExport()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            mockAppState.Object);
+
+        var propertyChangedEvents = new List<string>();
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName != null)
+                propertyChangedEvents.Add(args.PropertyName);
+        };
+
+        // Act
+        viewModel.Report = report;
+
+        // Assert
+        Assert.Contains(nameof(viewModel.CanExport), propertyChangedEvents);
+    }
+
+    [Fact]
+    public void SettingReportToNull_RaisesPropertyChangedForCanExport()
+    {
+        // Arrange - simulates NavigationService loading Report from AppState when null
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            mockAppState.Object);
+
+        // Set initial report
+        viewModel.Report = new RunReport { RunId = "initial" };
+
+        var propertyChangedEvents = new List<string>();
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName != null)
+                propertyChangedEvents.Add(args.PropertyName);
+        };
+
+        // Act - Set to null (simulates navigating when no report in AppState)
+        viewModel.Report = null;
+
+        // Assert - CanExport should update even when set to null
+        Assert.Contains(nameof(viewModel.CanExport), propertyChangedEvents);
+        Assert.False(viewModel.CanExport);
+    }
+
+    [Fact]
+    public void SettingReportFromAppState_ConfiguresViewModelCorrectly()
+    {
+        // Arrange - simulates what NavigationService.NavigateToResults() does
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var expectedReport = new RunReport
+        {
+            RunId = "from-appstate",
+            Results = new List<TestResult>
+            {
+                new TestResult { DisplayName = "Test 1", Status = TestStatus.Pass }
+            }
+        };
+
+        // Simulate AppState having a report (set before navigation)
+        mockAppState.SetupGet(x => x.LastRunReport).Returns(expectedReport);
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            mockAppState.Object);
+
+        // Act - Simulate what NavigationService does: assign Report from AppState
+        viewModel.Report = mockAppState.Object.LastRunReport;
+
+        // Assert - Verify the integration behavior
+        Assert.Equal(expectedReport, viewModel.Report);
+        Assert.Equal("from-appstate", viewModel.Report?.RunId);
+        Assert.True(viewModel.CanExport);
+        Assert.NotNull(viewModel.FilteredResults);
+        Assert.Single(viewModel.FilteredResults.Cast<TestResult>());
+    }
 }
