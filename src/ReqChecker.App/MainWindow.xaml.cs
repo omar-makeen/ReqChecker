@@ -30,6 +30,7 @@ public partial class MainWindow : FluentWindow
 
         // Initialize navigation with the content frame
         _navigationService.Initialize(ContentFrame);
+        _navigationService.Navigated += OnNavigationServiceNavigated;
 
         // Set up ViewModel with services
         _viewModel.NavigationService = _navigationService;
@@ -57,13 +58,11 @@ public partial class MainWindow : FluentWindow
         {
             // Startup profile was loaded, navigate directly to test list
             _navigationService.NavigateToTestList();
-            SetNavigationSelection("Tests");
         }
         else
         {
             // No startup profile, show profile selector
             _navigationService.NavigateToProfileSelector();
-            SetNavigationSelection("Profiles");
         }
     }
 
@@ -101,6 +100,14 @@ public partial class MainWindow : FluentWindow
                 NavDiagnostics.IsActive = true;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Handles NavigationService.Navigated event to sync sidebar selection.
+    /// </summary>
+    private void OnNavigationServiceNavigated(string viewName)
+    {
+        SetNavigationSelection(viewName);
     }
 
     private void ApplyWindowFadeIn()
@@ -156,9 +163,6 @@ public partial class MainWindow : FluentWindow
 
         try
         {
-            // Update sidebar selection immediately for visual feedback
-            SetNavigationSelection(tag);
-
             // Apply fade-out animation if not reduced motion
             if (!_themeService.IsReducedMotionEnabled)
             {

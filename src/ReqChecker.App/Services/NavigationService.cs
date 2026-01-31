@@ -16,6 +16,11 @@ public class NavigationService
     private Frame? _frame;
     private IDisposable? _currentViewModel;
 
+    /// <summary>
+    /// Raised after navigation completes with the view name for sidebar synchronization.
+    /// </summary>
+    public event Action<string>? Navigated;
+
     public NavigationService(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
@@ -46,6 +51,7 @@ public class NavigationService
         var view = new Views.ProfileSelectorView(viewModel);
         var result = _frame.Navigate(view);
         Log.Information("NavigateToProfileSelector: Navigate result={Result}", result);
+        RaiseNavigated("Profiles");
     }
 
     /// <summary>
@@ -85,6 +91,7 @@ public class NavigationService
         var view = new Views.TestListView(viewModel);
         var result = _frame.Navigate(view);
         Log.Information("NavigateToTestList: Navigate result={Result}", result);
+        RaiseNavigated("Tests");
     }
 
     /// <summary>
@@ -147,6 +154,7 @@ public class NavigationService
         var view = new Views.ResultsView(viewModel);
         var result = _frame.Navigate(view);
         Log.Information("NavigateToResults: Navigate result={Result}", result);
+        RaiseNavigated("Results");
     }
 
     /// <summary>
@@ -176,6 +184,7 @@ public class NavigationService
         var view = new Views.DiagnosticsView(viewModel);
         var result = _frame.Navigate(view);
         Log.Information("NavigateToDiagnostics: Navigate result={Result}", result);
+        RaiseNavigated("Diagnostics");
     }
 
     /// <summary>
@@ -194,5 +203,13 @@ public class NavigationService
         {
             _currentViewModel = null;
         }
+    }
+
+    /// <summary>
+    /// Raises the Navigated event with the specified view name.
+    /// </summary>
+    private void RaiseNavigated(string viewName)
+    {
+        Navigated?.Invoke(viewName);
     }
 }
