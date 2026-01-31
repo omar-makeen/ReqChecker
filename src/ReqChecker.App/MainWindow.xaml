@@ -81,7 +81,6 @@
                         Tag="Tests"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Beaker24}"
-                        IsActive="True"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">

@@ -193,7 +193,7 @@
         <Border Grid.Row="2"
                 Style="{StaticResource Card}"
                 Margin="0,0,0,24"
-                Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}">
+                Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -272,7 +272,7 @@
                 Padding="48"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Visible}">
+                Visibility="{Binding HasReport, Converter={StaticResource InverseBoolConverter}, FallbackValue=Visible}">
             <StackPanel HorizontalAlignment="Center">
                 <ui:SymbolIcon Symbol="CheckmarkCircle24"
                                FontSize="48"
@@ -301,7 +301,8 @@
                 CornerRadius="8"
                 Padding="4"
                 Margin="0,0,0,16"
-                HorizontalAlignment="Left">
+                HorizontalAlignment="Left"
+                Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <StackPanel Orientation="Horizontal">
                 <RadioButton Style="{StaticResource FilterTabButton}"
                              Content="All"
@@ -349,7 +350,8 @@
                  VirtualizingPanel.VirtualizationMode="Recycling"
                  VirtualizingPanel.ScrollUnit="Pixel"
                  SelectionMode="Single"
-                 AutomationProperties.Name="Test results list">
+                 AutomationProperties.Name="Test results list"
+                 Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>

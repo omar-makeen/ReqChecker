@@ -57,13 +57,49 @@ public partial class MainWindow : FluentWindow
         {
             // Startup profile was loaded, navigate directly to test list
             _navigationService.NavigateToTestList();
-            NavTests.IsActive = true;
+            SetNavigationSelection("Tests");
         }
         else
         {
             // No startup profile, show profile selector
             _navigationService.NavigateToProfileSelector();
-            NavProfiles.IsActive = true;
+            SetNavigationSelection("Profiles");
+        }
+    }
+
+    /// <summary>
+    /// Clears the selection state of all navigation items.
+    /// </summary>
+    private void ClearNavigationSelection()
+    {
+        NavProfiles.IsActive = false;
+        NavTests.IsActive = false;
+        NavResults.IsActive = false;
+        NavDiagnostics.IsActive = false;
+    }
+
+    /// <summary>
+    /// Sets the navigation selection to the specified tag.
+    /// Clears all other selections before setting the new one.
+    /// </summary>
+    /// <param name="tag">The navigation tag to select (Profiles, Tests, Results, Diagnostics)</param>
+    private void SetNavigationSelection(string tag)
+    {
+        ClearNavigationSelection();
+        switch (tag)
+        {
+            case "Profiles":
+                NavProfiles.IsActive = true;
+                break;
+            case "Tests":
+                NavTests.IsActive = true;
+                break;
+            case "Results":
+                NavResults.IsActive = true;
+                break;
+            case "Diagnostics":
+                NavDiagnostics.IsActive = true;
+                break;
         }
     }
 
@@ -120,6 +156,9 @@ public partial class MainWindow : FluentWindow
 
         try
         {
+            // Update sidebar selection immediately for visual feedback
+            SetNavigationSelection(tag);
+
             // Apply fade-out animation if not reduced motion
             if (!_themeService.IsReducedMotionEnabled)
             {
@@ -146,7 +185,6 @@ public partial class MainWindow : FluentWindow
                     break;
                 case "Results":
                     _navigationService.NavigateToResults();
-                    NavResults.IsActive = true;
                     break;
                 case "Diagnostics":
                     _navigationService.NavigateToDiagnostics();

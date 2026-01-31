@@ -57,6 +57,11 @@ public partial class ResultsViewModel : ObservableObject
     /// </summary>
     public bool CanExport => Report != null;
 
+    /// <summary>
+    /// Gets whether a report is available (not null).
+    /// </summary>
+    public bool HasReport => Report != null;
+
     private readonly JsonExporter _jsonExporter;
     private readonly CsvExporter _csvExporter;
     private readonly IAppState _appState;
@@ -85,8 +90,9 @@ public partial class ResultsViewModel : ObservableObject
             _appState.SetLastRunReport(value);
             SetupFilteredResults();
         }
-        // Notify that CanExport has changed (depends on Report)
+        // Notify that CanExport and HasReport have changed (depend on Report)
         OnPropertyChanged(nameof(CanExport));
+        OnPropertyChanged(nameof(HasReport));
     }
 
     /// <summary>

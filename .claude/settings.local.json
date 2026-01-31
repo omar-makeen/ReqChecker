@@ -19,7 +19,12 @@
       "Bash(tasklist:*)",
       "Bash(findstr:*)",
       "Bash(powershell -Command:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "WebSearch",
+      "WebFetch(domain:wpfui.lepo.co)",
+      "WebFetch(domain:github.com)",
+      "Bash(timeout 8 dotnet run:*)",
+      "Bash(dir \"%APPDATA%\\\\ReqChecker\\\\Logs\")"
     ]
   }
 }

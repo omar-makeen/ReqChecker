@@ -25,10 +25,10 @@
 
 **Purpose**: Verify current state and prepare for modifications
 
-- [ ] T001 Read current MainWindow.xaml.cs to understand existing navigation logic in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T002 [P] Read current MainWindow.xaml to identify IsActive settings in src/ReqChecker.App/MainWindow.xaml
-- [ ] T003 [P] Read current ResultsView.xaml to understand empty state bindings in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T004 [P] Read current ResultsViewModel.cs to check Report property implementation in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
+- [x] T001 Read current MainWindow.xaml.cs to understand existing navigation logic in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T002 [P] Read current MainWindow.xaml to identify IsActive settings in src/ReqChecker.App/MainWindow.xaml
+- [x] T003 [P] Read current ResultsView.xaml to understand empty state bindings in src/ReqChecker.App/Views/ResultsView.xaml
+- [x] T004 [P] Read current ResultsViewModel.cs to check Report property implementation in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
 
 ---
 
@@ -38,8 +38,8 @@
 
 **⚠️ CRITICAL**: User story implementations depend on this infrastructure
 
-- [ ] T005 Add ClearNavigationSelection() helper method to MainWindow.xaml.cs that sets IsActive=false on NavProfiles, NavTests, NavResults, NavDiagnostics
-- [ ] T006 Add SetNavigationSelection(string tag) helper method to MainWindow.xaml.cs that calls ClearNavigationSelection() then sets IsActive=true for matching nav item
+- [x] T005 Add ClearNavigationSelection() helper method to MainWindow.xaml.cs that sets IsActive=false on NavProfiles, NavTests, NavResults, NavDiagnostics
+- [x] T006 Add SetNavigationSelection(string tag) helper method to MainWindow.xaml.cs that calls ClearNavigationSelection() then sets IsActive=true for matching nav item
 
 **Checkpoint**: Selection helpers ready - user story implementation can now begin
 
@@ -53,11 +53,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Investigate NullToVisibilityConverter behavior in src/ReqChecker.App/Views/ResultsView.xaml - check if empty state visibility binding works correctly
-- [ ] T008 [US1] Add HasReport computed property (returns Report != null) to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
-- [ ] T009 [US1] Add OnPropertyChanged("HasReport") call in Report setter in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
-- [ ] T010 [US1] Update ResultsView.xaml empty state visibility to use HasReport property with inverted BoolToVisibilityConverter in src/ReqChecker.App/Views/ResultsView.xaml
-- [ ] T011 [US1] Ensure main results content area hides when HasReport is false in src/ReqChecker.App/Views/ResultsView.xaml
+- [x] T007 [US1] Investigate NullToVisibilityConverter behavior in src/ReqChecker.App/Views/ResultsView.xaml - check if empty state visibility binding works correctly
+- [x] T008 [US1] Add HasReport computed property (returns Report != null) to ResultsViewModel in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
+- [x] T009 [US1] Add OnPropertyChanged("HasReport") call in Report setter in src/ReqChecker.App/ViewModels/ResultsViewModel.cs
+- [x] T010 [US1] Update ResultsView.xaml empty state visibility to use HasReport property with inverted BoolToVisibilityConverter in src/ReqChecker.App/Views/ResultsView.xaml
+- [x] T011 [US1] Ensure main results content area hides when HasReport is false in src/ReqChecker.App/Views/ResultsView.xaml
 
 **Checkpoint**: User Story 1 complete - empty state displays correctly when no results exist
 
@@ -71,11 +71,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Remove hardcoded IsActive="True" from NavTests in src/ReqChecker.App/MainWindow.xaml
-- [ ] T013 [US2] Update NavItem_Click handler to call SetNavigationSelection(tag) at start (before navigation) in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T014 [US2] Update OnWindowLoaded to call SetNavigationSelection("Tests") instead of direct NavTests.IsActive=true in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T015 [US2] Update OnWindowLoaded to call SetNavigationSelection("Profiles") instead of direct NavProfiles.IsActive=true in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T016 [US2] Remove inline NavResults.IsActive=true from NavigateWithAnimation Results case (now handled by SetNavigationSelection) in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T012 [US2] Remove hardcoded IsActive="True" from NavTests in src/ReqChecker.App/MainWindow.xaml
+- [x] T013 [US2] Update NavItem_Click handler to call SetNavigationSelection(tag) at start (before navigation) in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T014 [US2] Update OnWindowLoaded to call SetNavigationSelection("Tests") instead of direct NavTests.IsActive=true in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T015 [US2] Update OnWindowLoaded to call SetNavigationSelection("Profiles") instead of direct NavProfiles.IsActive=true in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T016 [US2] Remove inline NavResults.IsActive=true from NavigateWithAnimation Results case (now handled by SetNavigationSelection) in src/ReqChecker.App/MainWindow.xaml.cs
 
 **Checkpoint**: User Story 2 complete - exactly one nav item selected at all times when clicking sidebar
 
@@ -89,8 +89,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Verify SetNavigationSelection is called in NavigateWithAnimation for all cases (Profiles, Tests, Results, Diagnostics) in src/ReqChecker.App/MainWindow.xaml.cs
-- [ ] T018 [US3] Add NavigationService event or callback mechanism for sidebar sync when ViewModel triggers navigation (optional - evaluate if T017 covers all paths)
+- [x] T017 [US3] Verify SetNavigationSelection is called in NavigateWithAnimation for all cases (Profiles, Tests, Results, Diagnostics) in src/ReqChecker.App/MainWindow.xaml.cs
+- [x] T018 [US3] Add NavigationService event or callback mechanism for sidebar sync when ViewModel triggers navigation (optional - evaluate if T017 covers all paths) - T017 covers all paths
 - [ ] T019 [US3] Test "Back to Tests" button from ResultsView updates sidebar to Tests selection
 
 **Checkpoint**: User Story 3 complete - sidebar always reflects current view regardless of navigation source
@@ -101,12 +101,12 @@
 
 **Purpose**: Final verification and cleanup
 
-- [ ] T020 Build project to verify no compilation errors: dotnet build src/ReqChecker.App
+- [x] T020 Build project to verify no compilation errors: dotnet build src/ReqChecker.App
 - [ ] T021 Manual test: Launch app, click Results without running tests, verify empty state message
 - [ ] T022 Manual test: Click through all nav items (Profiles, Tests, Results, Diagnostics), verify only one selected
 - [ ] T023 Manual test: Run tests, click "View Results" button, verify Results selected in sidebar
 - [ ] T024 Manual test: Click "Back to Tests" button, verify Tests selected in sidebar
-- [ ] T025 Code cleanup: Remove any commented-out or dead code related to old IsActive handling
+- [x] T025 Code cleanup: Remove any commented-out or dead code related to old IsActive handling
 
 ---
 
