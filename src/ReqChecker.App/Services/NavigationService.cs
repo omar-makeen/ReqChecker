@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ReqChecker.App.ViewModels;
 using ReqChecker.Core.Models;
+using Serilog;
 using ProfileModel = ReqChecker.Core.Models.Profile;
 
 namespace ReqChecker.App.Services;
@@ -26,6 +27,7 @@ public class NavigationService
     public void Initialize(Frame frame)
     {
         _frame = frame;
+        Log.Information("NavigationService.Initialize: Frame set, IsNull={IsNull}", frame == null);
     }
 
     /// <summary>
@@ -33,10 +35,17 @@ public class NavigationService
     /// </summary>
     public void NavigateToProfileSelector()
     {
+        Log.Information("NavigateToProfileSelector: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to ProfileSelector: Frame not initialized");
+            return;
+        }
         var viewModel = _serviceProvider.GetRequiredService<ProfileSelectorViewModel>();
         TrackViewModel(viewModel);
         var view = new Views.ProfileSelectorView(viewModel);
-        _frame?.Navigate(view);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToProfileSelector: Navigate result={Result}", result);
     }
 
     /// <summary>
@@ -44,12 +53,19 @@ public class NavigationService
     /// </summary>
     public void NavigateToTestConfig(TestDefinition test)
     {
+        Log.Information("NavigateToTestConfig: Frame null={FrameNull}, test null={TestNull}", _frame == null, test == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to TestConfig: Frame not initialized");
+            return;
+        }
         if (test != null)
         {
             var viewModel = new TestConfigViewModel(test);
             TrackViewModel(viewModel);
             var view = new Views.TestConfigView(viewModel);
-            _frame?.Navigate(view);
+            var result = _frame.Navigate(view);
+            Log.Information("NavigateToTestConfig: Navigate result={Result}", result);
         }
     }
 
@@ -58,10 +74,17 @@ public class NavigationService
     /// </summary>
     public void NavigateToTestList()
     {
+        Log.Information("NavigateToTestList: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to TestList: Frame not initialized");
+            return;
+        }
         var viewModel = _serviceProvider.GetRequiredService<TestListViewModel>();
         TrackViewModel(viewModel);
         var view = new Views.TestListView(viewModel);
-        _frame?.Navigate(view);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToTestList: Navigate result={Result}", result);
     }
 
     /// <summary>
@@ -89,10 +112,17 @@ public class NavigationService
     /// </summary>
     public void NavigateToRunProgress()
     {
+        Log.Information("NavigateToRunProgress: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to RunProgress: Frame not initialized");
+            return;
+        }
         var viewModel = _serviceProvider.GetRequiredService<RunProgressViewModel>();
         TrackViewModel(viewModel);
         var view = new Views.RunProgressView(viewModel);
-        _frame?.Navigate(view);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToRunProgress: Navigate result={Result}", result);
     }
 
     /// <summary>
@@ -101,15 +131,22 @@ public class NavigationService
     /// </summary>
     public void NavigateToResults()
     {
+        Log.Information("NavigateToResults: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to Results: Frame not initialized");
+            return;
+        }
         var viewModel = _serviceProvider.GetRequiredService<ResultsViewModel>();
         var appState = _serviceProvider.GetRequiredService<IAppState>();
-        
+
         // Load the last run report from AppState
         viewModel.Report = appState.LastRunReport;
-        
+
         TrackViewModel(viewModel);
         var view = new Views.ResultsView(viewModel);
-        _frame?.Navigate(view);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToResults: Navigate result={Result}", result);
     }
 
     /// <summary>
@@ -128,10 +165,17 @@ public class NavigationService
     /// </summary>
     public void NavigateToDiagnostics()
     {
+        Log.Information("NavigateToDiagnostics: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to Diagnostics: Frame not initialized");
+            return;
+        }
         var viewModel = _serviceProvider.GetRequiredService<DiagnosticsViewModel>();
         TrackViewModel(viewModel);
         var view = new Views.DiagnosticsView(viewModel);
-        _frame?.Navigate(view);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToDiagnostics: Navigate result={Result}", result);
     }
 
     /// <summary>
