@@ -362,4 +362,50 @@ public class ResultsViewModelTests
         // Assert
         Assert.Equal(ResultsFilter.Failed, viewModel.ActiveFilter);
     }
+
+    [Fact]
+    public void CanExport_ReturnsTrueWhenReportIsSet()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            mockAppState.Object);
+
+        // Act
+        viewModel.Report = report;
+
+        // Assert
+        Assert.True(viewModel.CanExport);
+    }
+
+    [Fact]
+    public void CanExport_ReturnsFalseWhenReportIsNull()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            mockAppState.Object);
+
+        // Act - Report is null by default
+        var canExport = viewModel.CanExport;
+
+        // Assert
+        Assert.False(canExport);
+    }
 }

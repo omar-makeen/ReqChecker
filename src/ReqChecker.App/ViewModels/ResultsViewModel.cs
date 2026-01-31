@@ -52,6 +52,11 @@ public partial class ResultsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isExporting;
 
+    /// <summary>
+    /// Gets whether export is available (when Report is set).
+    /// </summary>
+    public bool CanExport => Report != null;
+
     private readonly JsonExporter _jsonExporter;
     private readonly CsvExporter _csvExporter;
     private readonly IAppState _appState;

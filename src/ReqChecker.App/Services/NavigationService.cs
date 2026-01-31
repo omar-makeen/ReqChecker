@@ -97,10 +97,16 @@ public class NavigationService
 
     /// <summary>
     /// Navigates to results view.
+    /// Loads the last run report from AppState and sets it on the ViewModel.
     /// </summary>
     public void NavigateToResults()
     {
         var viewModel = _serviceProvider.GetRequiredService<ResultsViewModel>();
+        var appState = _serviceProvider.GetRequiredService<IAppState>();
+        
+        // Load the last run report from AppState
+        viewModel.Report = appState.LastRunReport;
+        
         TrackViewModel(viewModel);
         var view = new Views.ResultsView(viewModel);
         _frame?.Navigate(view);

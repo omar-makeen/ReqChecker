@@ -142,6 +142,7 @@ public partial class MainWindow : FluentWindow
                     break;
                 case "Results":
                     _navigationService.NavigateToResults();
+                    NavResults.IsActive = true;
                     break;
                 case "Diagnostics":
                     _navigationService.NavigateToDiagnostics();

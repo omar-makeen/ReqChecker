@@ -117,21 +117,21 @@
                     </StackPanel>
                 </Button>
 
-                <Button Style="{StaticResource SecondaryButton}"
-                        Command="{Binding ExportToJsonCommand}"
-                        IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}"
-                        TabIndex="2"
-                        Margin="0,0,8,0">
+                 <Button Style="{StaticResource SecondaryButton}"
+                         Command="{Binding ExportToJsonCommand}"
+                         IsEnabled="{Binding CanExport}"
+                         TabIndex="2"
+                         Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
                         <TextBlock Text="JSON"/>
                     </StackPanel>
                 </Button>
 
-                <Button Style="{StaticResource SecondaryButton}"
-                        Command="{Binding ExportToCsvCommand}"
-                        IsEnabled="{Binding IsExporting, Converter={StaticResource InverseBoolConverter}}"
-                        TabIndex="3">
+                 <Button Style="{StaticResource SecondaryButton}"
+                         Command="{Binding ExportToCsvCommand}"
+                         IsEnabled="{Binding CanExport}"
+                         TabIndex="3">
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,8,0"/>
                         <TextBlock Text="CSV"/>
@@ -192,7 +192,8 @@
         <!-- Summary Dashboard -->
         <Border Grid.Row="2"
                 Style="{StaticResource Card}"
-                Margin="0,0,0,24">
+                Margin="0,0,0,24"
+                Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -260,6 +261,38 @@
                                           AccentColor="#F59E0B"/>
                 </StackPanel>
             </Grid>
+        </Border>
+
+        <!-- Empty state when no report (no prior test run) -->
+        <Border Grid.Row="4"
+                Background="{DynamicResource BackgroundSurface}"
+                BorderBrush="{DynamicResource BorderSubtle}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="48"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="{Binding Report, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Visible}">
+            <StackPanel HorizontalAlignment="Center">
+                <ui:SymbolIcon Symbol="CheckmarkCircle24"
+                               FontSize="48"
+                               Foreground="{DynamicResource TextTertiary}"
+                               HorizontalAlignment="Center"/>
+                <TextBlock Text="No test results available"
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextSecondary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,16,0,8"/>
+                <TextBlock Text="Run tests to see results here"
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextTertiary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+                <Button Style="{StaticResource GhostButton}"
+                        Content="Go to Tests"
+                        Command="{Binding NavigateToTestListCommand}"
+                        HorizontalAlignment="Center"/>
+            </StackPanel>
         </Border>
 
         <!-- Filter Tabs -->
