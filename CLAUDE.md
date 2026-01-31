@@ -12,6 +12,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - `%APPDATA%/ReqChecker/preferences.json` (JSON via System.Text.Json) (006-test-progress-delay)
 - N/A (removing preferences, using hardcoded default) (007-remove-demo-delay)
 - In-memory (session-only via IAppState) (008-fix-results-window)
+- N/A (UI-only fix, state is in-memory via IAppState) (009-nav-selection-sync)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -31,9 +32,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 009-nav-selection-sync: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
 - 008-fix-results-window: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
 - 007-remove-demo-delay: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 006-test-progress-delay: Added C# 12 / .NET 8.0-windows (net8.0-windows) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 
 
 
