@@ -142,9 +142,8 @@
                                            Foreground="{DynamicResource TextTertiary}"
                                            Margin="0,4,0,0"
                                            Visibility="{Binding AttemptCount, ElementName=Root, Converter={StaticResource RetryCountVisibilityConverter}}">
-                                    <Run Text="Retry: "/>
+                                    <Run Text="Retries: "/>
                                     <Run Text="{Binding AttemptCount, ElementName=Root}"/>
-                                    <Run Text=" attempts"/>
                                 </TextBlock>
                             </StackPanel>
                         </Grid>
