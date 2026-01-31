@@ -211,7 +211,7 @@
                                                                Foreground="{DynamicResource TextTertiary}"
                                                                Margin="0,0,6,0"/>
                                                 <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
-                                                    <Run Text="{Binding Tests.Count}"/>
+                                                    <Run Text="{Binding Tests.Count, Mode=OneWay}"/>
                                                     <Run Text="tests"/>
                                                 </TextBlock>
 
@@ -226,7 +226,7 @@
                                                                Margin="0,0,6,0"/>
                                                 <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
                                                     <Run Text="v"/>
-                                                    <Run Text="{Binding SchemaVersion}"/>
+                                                    <Run Text="{Binding SchemaVersion, Mode=OneWay}"/>
                                                 </TextBlock>
                                             </StackPanel>
 
