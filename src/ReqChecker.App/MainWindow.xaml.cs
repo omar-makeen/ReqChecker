@@ -36,6 +36,9 @@ public partial class MainWindow : FluentWindow
         _viewModel.ThemeService = _themeService;
         DataContext = _viewModel;
 
+        // Click events are wired in XAML on each NavigationViewItem
+        // This is more reliable than ItemInvoked/SelectionChanged with custom navigation
+
         // Navigate to test list by default with fade animation
         Loaded += OnWindowLoaded;
     }
@@ -80,16 +83,16 @@ public partial class MainWindow : FluentWindow
         }
     }
 
-    private void NavigationView_SelectionChanged(NavigationView sender, RoutedEventArgs args)
+    private void NavItem_Click(object sender, RoutedEventArgs args)
     {
-        Serilog.Log.Information("NavigationView_SelectionChanged called");
-        
+        Serilog.Log.Information("NavItem_Click called");
+
         if (_isNavigating) return;
 
-        var selectedItem = sender.SelectedItem as NavigationViewItem;
-        var tag = selectedItem?.Tag?.ToString();
-        Serilog.Log.Information("Selected item tag: {Tag}", tag);
-        
+        var clickedItem = sender as NavigationViewItem;
+        var tag = clickedItem?.Tag?.ToString();
+        Serilog.Log.Information("Clicked item tag: {Tag}", tag);
+
         if (string.IsNullOrEmpty(tag)) return;
 
         // Handle theme toggle separately - it's an action, not a navigation
@@ -100,9 +103,9 @@ public partial class MainWindow : FluentWindow
 
             // Deselect the theme item so it can be clicked again
             // Mark it as not active since it's not a navigation destination
-            if (selectedItem != null)
+            if (clickedItem != null)
             {
-                selectedItem.IsActive = false;
+                clickedItem.IsActive = false;
             }
             return;
         }
@@ -112,6 +115,7 @@ public partial class MainWindow : FluentWindow
 
     private async void NavigateWithAnimation(string tag)
     {
+        Log.Information("NavigateWithAnimation: tag={Tag}, _isNavigating={IsNav}", tag, _isNavigating);
         _isNavigating = true;
 
         try
@@ -188,7 +192,11 @@ public partial class MainWindow : FluentWindow
     {
         var tcs = new TaskCompletionSource<bool>();
 
-        var storyboard = (Storyboard)FindResource("ViewFadeOut");
+        var storyboard = FindResource("ViewFadeOut") as Storyboard;
+        if (storyboard == null)
+        {
+            Log.Warning("ViewFadeOut storyboard NOT FOUND");
+        }
         if (storyboard != null)
         {
             var clone = storyboard.Clone();
