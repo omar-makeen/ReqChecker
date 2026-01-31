@@ -380,8 +380,10 @@
                                            Title="{Binding DisplayName}"
                                            Subtitle="{Binding Duration, StringFormat='{}{0:N0}ms'}"
                                            Status="{Binding Status}"
-                                           Summary="{Binding HumanSummary}"
-                                           TechnicalDetails="{Binding TechnicalDetails, Converter={StaticResource CredentialMaskConverter}}"
+                                           TestDuration="{Binding Duration}"
+                                           AttemptCount="{Binding AttemptCount}"
+                                           Summary="{Binding Converter={StaticResource TestResultSummaryConverter}}"
+                                           TechnicalDetails="{Binding Converter={StaticResource TechnicalDetailsConverter}}"
                                            ErrorMessage="{Binding Error.Message}"
                                            AutomationProperties.Name="{Binding DisplayName}"/>
                 </DataTemplate>

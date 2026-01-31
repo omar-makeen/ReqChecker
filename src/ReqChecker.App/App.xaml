@@ -3,7 +3,8 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
               xmlns:local="clr-namespace:ReqChecker.App"
-              xmlns:converters="clr-namespace:ReqChecker.App.Converters">
+              xmlns:converters="clr-namespace:ReqChecker.App.Converters"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,6 +28,14 @@
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
             <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+            <converters:TestResultSummaryConverter x:Key="TestResultSummaryConverter" />
+            <converters:TestResultDetailsConverter x:Key="TestResultDetailsConverter" />
+            <converters:CredentialMaskConverter x:Key="CredentialMaskConverter" />
+            <converters:ChainedConverter x:Key="TechnicalDetailsConverter"
+                                            FirstConverter="{StaticResource TestResultDetailsConverter}"
+                                            SecondConverter="{StaticResource CredentialMaskConverter}" />
+            <converters:DurationFormatConverter x:Key="DurationFormatConverter" />
+            <converters:RetryCountVisibilityConverter x:Key="RetryCountVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

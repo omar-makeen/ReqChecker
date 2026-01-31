@@ -60,6 +60,20 @@ public partial class ExpanderCard : UserControl
             typeof(ExpanderCard),
             new PropertyMetadata(null));
 
+    public static readonly DependencyProperty TestDurationProperty =
+        DependencyProperty.Register(
+            nameof(TestDuration),
+            typeof(TimeSpan),
+            typeof(ExpanderCard),
+            new PropertyMetadata(TimeSpan.Zero));
+
+    public static readonly DependencyProperty AttemptCountProperty =
+        DependencyProperty.Register(
+            nameof(AttemptCount),
+            typeof(int),
+            typeof(ExpanderCard),
+            new PropertyMetadata(1));
+
     public static readonly DependencyProperty IsExpandedProperty =
         DependencyProperty.Register(
             nameof(IsExpanded),
@@ -107,6 +121,18 @@ public partial class ExpanderCard : UserControl
     {
         get => (string?)GetValue(ErrorMessageProperty);
         set => SetValue(ErrorMessageProperty, value);
+    }
+
+    public TimeSpan TestDuration
+    {
+        get => (TimeSpan)GetValue(TestDurationProperty);
+        set => SetValue(TestDurationProperty, value);
+    }
+
+    public int AttemptCount
+    {
+        get => (int)GetValue(AttemptCountProperty);
+        set => SetValue(AttemptCountProperty, value);
     }
 
     public bool IsExpanded

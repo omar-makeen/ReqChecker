@@ -119,6 +119,37 @@
                                TextWrapping="Wrap"
                                Visibility="{Binding Summary, ElementName=Root, Converter={StaticResource NullToVisibilityConverter}}"/>
 
+                    <!-- Metadata section -->
+                    <Border Background="{DynamicResource BackgroundBase}"
+                            CornerRadius="4"
+                            Padding="12"
+                            Margin="0,12,0,0">
+                        <Grid>
+                            <!-- Accent left border -->
+                            <Border Width="4"
+                                    HorizontalAlignment="Left"
+                                    Margin="-12,0,0,0"
+                                    Background="{DynamicResource AccentPrimary}"/>
+                            <StackPanel Margin="4,0,0,0">
+                                <!-- Duration -->
+                                <TextBlock Style="{DynamicResource TextCaption}"
+                                           Foreground="{DynamicResource TextTertiary}">
+                                    <Run Text="Duration: "/>
+                                    <Run Text="{Binding TestDuration, ElementName=Root, Converter={StaticResource DurationFormatConverter}}"/>
+                                </TextBlock>
+                                <!-- Retry count (only shown when > 1) -->
+                                <TextBlock Style="{DynamicResource TextCaption}"
+                                           Foreground="{DynamicResource TextTertiary}"
+                                           Margin="0,4,0,0"
+                                           Visibility="{Binding AttemptCount, ElementName=Root, Converter={StaticResource RetryCountVisibilityConverter}}">
+                                    <Run Text="Retry: "/>
+                                    <Run Text="{Binding AttemptCount, ElementName=Root}"/>
+                                    <Run Text=" attempts"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
                     <!-- Technical details -->
                     <Border x:Name="TechnicalBorder"
                             Background="{DynamicResource BackgroundBase}"
@@ -126,33 +157,46 @@
                             Padding="12"
                             Margin="0,12,0,0"
                             Visibility="{Binding TechnicalDetails, ElementName=Root, Converter={StaticResource NullToVisibilityConverter}}">
-                        <TextBlock Text="{Binding TechnicalDetails, ElementName=Root}"
-                                   FontFamily="Cascadia Code,Consolas,Courier New"
-                                   FontSize="12"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   TextWrapping="Wrap"/>
+                        <Grid>
+                            <!-- Accent gradient left border -->
+                            <Border Width="4"
+                                    HorizontalAlignment="Left"
+                                    Margin="-12,0,0,0"
+                                    Background="{DynamicResource AccentGradient}"/>
+                            <TextBlock Text="{Binding TechnicalDetails, ElementName=Root}"
+                                       FontFamily="Cascadia Code,Consolas,Courier New"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       TextWrapping="Wrap"
+                                       Margin="4,0,0,0"/>
+                        </Grid>
                     </Border>
 
                     <!-- Error message -->
                     <Border x:Name="ErrorBorder"
-                            Background="#1AEF4444"
-                            BorderBrush="{DynamicResource StatusFail}"
-                            BorderThickness="1"
+                            Background="{DynamicResource BackgroundBase}"
                             CornerRadius="4"
                             Padding="12"
                             Margin="0,12,0,0"
                             Visibility="{Binding ErrorMessage, ElementName=Root, Converter={StaticResource NullToVisibilityConverter}}">
-                        <StackPanel Orientation="Horizontal">
-                            <ui:SymbolIcon Symbol="ErrorCircle24"
-                                           FontSize="16"
-                                           Foreground="{DynamicResource StatusFail}"
-                                           Margin="0,0,8,0"
-                                           VerticalAlignment="Top"/>
-                            <TextBlock Text="{Binding ErrorMessage, ElementName=Root}"
-                                       Foreground="{DynamicResource StatusFail}"
-                                       TextWrapping="Wrap"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <Grid>
+                            <!-- Red left border -->
+                            <Border Width="4"
+                                    HorizontalAlignment="Left"
+                                    Margin="-12,0,0,0"
+                                    Background="{DynamicResource StatusFail}"/>
+                            <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
+                                <ui:SymbolIcon Symbol="ErrorCircle24"
+                                               FontSize="16"
+                                               Foreground="{DynamicResource StatusFail}"
+                                               Margin="0,0,8,0"
+                                               VerticalAlignment="Top"/>
+                                <TextBlock Text="{Binding ErrorMessage, ElementName=Root}"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
                     </Border>
                 </StackPanel>
             </Border>
