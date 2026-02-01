@@ -331,6 +331,22 @@
         </Setter>
     </Style>
 
+    <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->
+    <Style x:Key="PromptAtRunIndicator" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource AccentSecondary}"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{DynamicResource AccentSecondaryColor}"
+                                  BlurRadius="8"
+                                  ShadowDepth="0"
+                                  Opacity="0.3"
+                                  Direction="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- ============================================ -->
     <!-- DIAGNOSTICS CARD STYLES                      -->
     <!-- ============================================ -->
@@ -366,22 +382,6 @@
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="16"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
-    </Style>
-
-    <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->
-    <Style x:Key="PromptAtRunIndicator" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource AccentSecondary}"/>
-        <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource AccentSecondaryColor}"
-                                  BlurRadius="8"
-                                  ShadowDepth="0"
-                                  Opacity="0.3"
-                                  Direction="0"/>
-            </Setter.Value>
-        </Setter>
     </Style>
 
     <!-- ============================================ -->
