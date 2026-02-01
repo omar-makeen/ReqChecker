@@ -10,6 +10,8 @@ namespace ReqChecker.App.Converters;
 /// </summary>
 public class TestTypeToColorConverter : IValueConverter
 {
+    private static readonly SolidColorBrush FallbackBrush = new(Colors.Gray);
+
     /// <inheritdoc/>
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -18,15 +20,15 @@ public class TestTypeToColorConverter : IValueConverter
             return testType switch
             {
                 "Ping" or "HttpGet" or "DnsLookup" =>
-                    Application.Current.FindResource("StatusInfo") as SolidColorBrush ?? new SolidColorBrush(Colors.Gray),
+                    Application.Current.FindResource("StatusInfo") as SolidColorBrush ?? FallbackBrush,
                 "FileExists" or "DirectoryExists" =>
-                    Application.Current.FindResource("StatusSkip") as SolidColorBrush ?? new SolidColorBrush(Colors.Gray),
+                    Application.Current.FindResource("StatusSkip") as SolidColorBrush ?? FallbackBrush,
                 "ProcessList" or "RegistryRead" =>
-                    Application.Current.FindResource("AccentSecondary") as SolidColorBrush ?? new SolidColorBrush(Colors.Gray),
-                _ => Application.Current.FindResource("TextTertiary") as SolidColorBrush ?? new SolidColorBrush(Colors.Gray)
+                    Application.Current.FindResource("AccentSecondary") as SolidColorBrush ?? FallbackBrush,
+                _ => Application.Current.FindResource("TextTertiary") as SolidColorBrush ?? FallbackBrush
             };
         }
-        return Application.Current.FindResource("TextTertiary") as SolidColorBrush ?? new SolidColorBrush(Colors.Gray);
+        return Application.Current.FindResource("TextTertiary") as SolidColorBrush ?? FallbackBrush;
     }
 
     /// <inheritdoc/>

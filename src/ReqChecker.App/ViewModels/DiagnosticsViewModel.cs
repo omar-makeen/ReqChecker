@@ -36,6 +36,8 @@ public partial class DiagnosticsViewModel : ObservableObject
     [ObservableProperty]
     private MachineInfo? _currentMachineInfo;
 
+    partial void OnCurrentMachineInfoChanged(MachineInfo? value) => UpdateSummaries();
+
     private readonly IClipboardService _clipboardService;
     private readonly IAppState _appState;
 
@@ -117,13 +119,11 @@ public partial class DiagnosticsViewModel : ObservableObject
         try
         {
             CurrentMachineInfo = MachineInfoCollector.Collect();
-            UpdateSummaries();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to collect machine info");
             CurrentMachineInfo = null;
-            UpdateSummaries();
         }
     }
 
