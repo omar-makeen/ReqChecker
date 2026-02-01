@@ -50,70 +50,99 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Play24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="Test Execution"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <!-- Cancel button - shown when running -->
-            <Button x:Name="CancelButton"
-                    Grid.Column="1"
-                    Style="{StaticResource SecondaryButton}"
-                    Command="{Binding CancelCommand}"
-                    IsEnabled="{Binding IsRunning}"
-                    IsCancel="True"
-                    TabIndex="1"
-                    Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Symbol="Dismiss24" FontSize="16" Margin="0,0,8,0"/>
-                    <TextBlock Text="Cancel">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsCancelling}" Value="True">
-                                        <Setter Property="Text" Value="Cancelling..."/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </StackPanel>
-            </Button>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Navigation buttons - shown when complete or cancelled -->
-            <StackPanel Grid.Column="1"
-                       Orientation="Horizontal"
-                       Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Button Style="{StaticResource PrimaryButton}"
-                        Command="{Binding NavigateToTestListCommand}"
-                        TabIndex="1"
-                        Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Back to Tests"/>
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Play24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Test Execution"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="{Binding HeaderSubtitle}"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
-                </Button>
-                <Button Style="{StaticResource SecondaryButton}"
-                        Command="{Binding ViewResultsCommand}"
-                        TabIndex="2">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="DataHistogram24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="View Results"/>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <!-- Cancel button - shown when running -->
+                        <Button x:Name="CancelButton"
+                                Style="{StaticResource SecondaryButton}"
+                                Command="{Binding CancelCommand}"
+                                IsEnabled="{Binding IsRunning}"
+                                IsCancel="True"
+                                TabIndex="1"
+                                Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Dismiss24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Cancel">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsCancelling}" Value="True">
+                                                    <Setter Property="Text" Value="Cancelling..."/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Navigation buttons - shown when complete or cancelled -->
+                        <StackPanel Orientation="Horizontal"
+                                   Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Button Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding NavigateToTestListCommand}"
+                                    TabIndex="1"
+                                    Margin="0,0,8,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Back to Tests"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding ViewResultsCommand}"
+                                    TabIndex="2">
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:SymbolIcon Symbol="DataHistogram24" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="View Results"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
-                </Button>
-            </StackPanel>
-        </Grid>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Main Content -->
         <Grid Grid.Row="1">
@@ -315,8 +344,8 @@
                             <DataTemplate>
                                 <Border Style="{StaticResource AnimatedTestResultItem}"
                                         Background="{DynamicResource BackgroundSurface}"
-                                        BorderBrush="{DynamicResource BorderDefault}"
-                                        BorderThickness="1"
+                                        BorderBrush="{Binding Status, Converter={StaticResource TestStatusToColorConverter}}"
+                                        BorderThickness="4,1,1,1"
                                         CornerRadius="8"
                                         Padding="16,12"
                                         Margin="0,0,0,8">
@@ -344,7 +373,9 @@
                                         <controls:TestStatusBadge Grid.Column="1"
                                                                   Status="{Binding Status}"
                                                                   ShowIcon="True"
-                                                                  VerticalAlignment="Center"/>
+                                                                  VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Right"
+                                                                  Margin="12,0,0,0"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>

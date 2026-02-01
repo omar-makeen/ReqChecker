@@ -53,10 +53,26 @@ public partial class RunProgressViewModel : ObservableObject
     partial void OnTotalTestsChanged(int value)
     {
         OnPropertyChanged(nameof(ProgressPercentage));
+        OnPropertyChanged(nameof(HeaderSubtitle));
     }
 
-    partial void OnIsRunningChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
-    partial void OnIsCompleteChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
+    partial void OnCurrentTestIndexChanged(int value)
+    {
+        OnPropertyChanged(nameof(HeaderSubtitle));
+    }
+
+    partial void OnIsRunningChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsTestRunning));
+        OnPropertyChanged(nameof(HeaderSubtitle));
+    }
+
+    partial void OnIsCompleteChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsTestRunning));
+        OnPropertyChanged(nameof(HeaderSubtitle));
+    }
+
     partial void OnIsCancellingChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
 
     [ObservableProperty]
@@ -74,6 +90,15 @@ public partial class RunProgressViewModel : ObservableObject
     /// Gets whether a test is actively executing (not just IsRunning).
     /// </summary>
     public bool IsTestRunning => IsRunning && !IsComplete && !IsCancelling;
+
+    /// <summary>
+    /// Gets the header subtitle showing current execution status.
+    /// </summary>
+    public string HeaderSubtitle => IsComplete
+        ? $"{TotalTests} tests completed"
+        : IsRunning
+            ? $"Running {CurrentTestIndex + 1} of {TotalTests} tests"
+            : "Ready to run";
 
     [ObservableProperty]
     private TestStatus? _currentStatus;
