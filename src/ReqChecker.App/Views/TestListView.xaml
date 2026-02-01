@@ -62,45 +62,78 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Beaker24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="Test Suite"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-                <Border Background="{DynamicResource BackgroundElevated}"
-                        CornerRadius="10"
-                        Padding="10,4"
-                        Margin="12,0,0,0"
-                        VerticalAlignment="Center"
-                        Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-                    <TextBlock Text="{Binding CurrentProfile.Tests.Count, FallbackValue=0}"
-                               Style="{DynamicResource TextCaption}"
-                               Foreground="{DynamicResource TextSecondary}"/>
-                </Border>
-            </StackPanel>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <!-- Run All Tests Button with Gradient -->
-            <Button x:Name="RunAllTestsButton"
-                    Grid.Column="1"
-                    Style="{StaticResource PrimaryButtonLarge}"
-                    Command="{Binding RunAllTestsCommand}"
-                    IsEnabled="{Binding CurrentProfile, Converter={StaticResource NullToBoolConverter}}"
-                    TabIndex="1">
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,10,0"/>
-                    <TextBlock Text="Run All Tests" FontSize="15"/>
-                </StackPanel>
-            </Button>
-        </Grid>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Beaker24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Test Suite"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Run diagnostics and verify requirements"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <!-- Enhanced Count Badge -->
+                        <Border Background="{DynamicResource AccentPrimary}"
+                                CornerRadius="16"
+                                Padding="16,8"
+                                Margin="0,0,12,0"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Foreground="White" FontWeight="SemiBold">
+                                <Run Text="{Binding CurrentProfile.Tests.Count, FallbackValue=0, Mode=OneWay}"/>
+                                <Run Text=" tests"/>
+                            </TextBlock>
+                        </Border>
+
+                        <!-- Run All Tests Button -->
+                        <Button x:Name="RunAllTestsButton"
+                                Style="{StaticResource PrimaryButtonLarge}"
+                                Command="{Binding RunAllTestsCommand}"
+                                IsEnabled="{Binding CurrentProfile, Converter={StaticResource NullToBoolConverter}}"
+                                TabIndex="1">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
+                                <TextBlock Text="Run All Tests" FontSize="15"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Empty State - No Profile Loaded -->
         <Border Grid.Row="1"
@@ -145,7 +178,7 @@
                         HorizontalAlignment="Center"
                         Padding="24,0">
                     <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,10,0"/>
+                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
                         <TextBlock Text="Load Profile"/>
                     </StackPanel>
                 </Button>

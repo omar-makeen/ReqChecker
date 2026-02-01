@@ -50,46 +50,74 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Stethoscope24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="System Diagnostics"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <!-- Action Buttons -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="OpenLogsButton"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding OpenLogsFolderCommand}"
-                        TabIndex="1"
-                        Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Open Logs"/>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Stethoscope24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="System Diagnostics"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="System information and logs"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
-                </Button>
 
-                <Button Style="{StaticResource PrimaryButton}"
-                        Command="{Binding CopyDetailsCommand}"
-                        IsEnabled="{Binding HasLastRun}"
-                        TabIndex="2">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="Copy24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Copy Details"/>
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button x:Name="OpenLogsButton"
+                                Style="{StaticResource SecondaryButton}"
+                                Command="{Binding OpenLogsFolderCommand}"
+                                TabIndex="1"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Open Logs"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource PrimaryButton}"
+                                Command="{Binding CopyDetailsCommand}"
+                                IsEnabled="{Binding HasLastRun}"
+                                TabIndex="2">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Copy24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Copy Details"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                </Button>
-            </StackPanel>
-        </Grid>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Status Message -->
         <Border Grid.Row="1"
@@ -111,7 +139,7 @@
                 </Style>
             </Border.Style>
             <StackPanel Orientation="Horizontal">
-                <ui:SymbolIcon FontSize="18" Margin="0,0,12,0">
+                <ui:SymbolIcon FontSize="18" Margin="0,0,8,0">
                     <ui:SymbolIcon.Style>
                         <Style TargetType="ui:SymbolIcon">
                             <Setter Property="Symbol" Value="CheckmarkCircle24"/>

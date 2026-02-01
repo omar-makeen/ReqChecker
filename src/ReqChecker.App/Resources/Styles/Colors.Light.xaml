@@ -26,6 +26,7 @@
     <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>
     <SolidColorBrush x:Key="TextTertiary" Color="{StaticResource TextTertiaryColor}"/>
+    <SolidColorBrush x:Key="TextDisabled" Color="{StaticResource TextTertiaryColor}"/>
 
     <!-- Border Colors -->
     <Color x:Key="BorderSubtleColor">#e5e7eb</Color>

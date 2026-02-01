@@ -50,47 +50,75 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Folder24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="Profile Manager"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <!-- Action Buttons -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="RefreshButton"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding LoadProfilesCommand}"
-                        TabIndex="1"
-                        Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="ArrowSync24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Refresh"/>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Folder24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Profile Manager"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Manage and import test profiles"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
-                </Button>
 
-                <!-- Import Button with drag-drop styling -->
-                <Button Style="{StaticResource PrimaryButton}"
-                        Command="{Binding ImportProfileCommand}"
-                        TabIndex="2"
-                        AllowDrop="True">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="ArrowUpload24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Import Profile"/>
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button x:Name="RefreshButton"
+                                Style="{StaticResource SecondaryButton}"
+                                Command="{Binding LoadProfilesCommand}"
+                                TabIndex="1"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowSync24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Refresh"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Import Button with drag-drop styling -->
+                        <Button Style="{StaticResource PrimaryButton}"
+                                Command="{Binding ImportProfileCommand}"
+                                TabIndex="2"
+                                AllowDrop="True">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowUpload24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Import Profile"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                </Button>
-            </StackPanel>
-        </Grid>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Error Message -->
         <Border Grid.Row="1"

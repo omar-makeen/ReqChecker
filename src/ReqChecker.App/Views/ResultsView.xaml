@@ -14,37 +14,6 @@
     <Page.Resources>
         <converters:CredentialMaskConverter x:Key="CredentialMaskConverter"/>
 
-        <!-- Filter button style -->
-        <Style x:Key="FilterTabButton" TargetType="RadioButton">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="16,8"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="Border"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource BackgroundElevated}"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentPrimary}"/>
-                                <Setter Property="Foreground" Value="White"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Staggered entrance animation for result items -->
         <Style x:Key="AnimatedResultItem" TargetType="controls:ExpanderCard">
             <Setter Property="Opacity" Value="0"/>
@@ -88,57 +57,85 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Poll24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="Results Dashboard"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <!-- Action buttons -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="BackToTestsButton"
-                        Style="{StaticResource SecondaryButton}"
-                        Command="{Binding NavigateToTestListCommand}"
-                        TabIndex="1"
-                        Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="Back to Tests"/>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Poll24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Results Dashboard"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="View test execution results"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
-                </Button>
 
-                 <Button Style="{StaticResource SecondaryButton}"
-                         Command="{Binding ExportToJsonCommand}"
-                         IsEnabled="{Binding CanExport}"
-                         TabIndex="2"
-                         Margin="0,0,8,0">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="JSON"/>
-                    </StackPanel>
-                </Button>
+                    <!-- Action Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button x:Name="BackToTestsButton"
+                                Style="{StaticResource SecondaryButton}"
+                                Command="{Binding NavigateToTestListCommand}"
+                                TabIndex="1"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="Back to Tests"/>
+                            </StackPanel>
+                        </Button>
 
-                 <Button Style="{StaticResource SecondaryButton}"
-                         Command="{Binding ExportToCsvCommand}"
-                         IsEnabled="{Binding CanExport}"
-                         TabIndex="3">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="CSV"/>
+                         <Button Style="{StaticResource SecondaryButton}"
+                                 Command="{Binding ExportToJsonCommand}"
+                                 IsEnabled="{Binding CanExport}"
+                                 TabIndex="2"
+                                 Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="JSON"/>
+                            </StackPanel>
+                        </Button>
+
+                         <Button Style="{StaticResource SecondaryButton}"
+                                 Command="{Binding ExportToCsvCommand}"
+                                 IsEnabled="{Binding CanExport}"
+                                 TabIndex="3">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="CSV"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                </Button>
-            </StackPanel>
-        </Grid>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Status Message -->
         <Border Grid.Row="1"
@@ -304,12 +301,12 @@
                 HorizontalAlignment="Left"
                 Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <StackPanel Orientation="Horizontal">
-                <RadioButton Style="{StaticResource FilterTabButton}"
+                <RadioButton Style="{StaticResource FilterTab}"
                              Content="All"
                              IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static vm:ResultsFilter.All}}"
                              Command="{Binding SetFilterCommand}"
                              CommandParameter="{x:Static vm:ResultsFilter.All}"/>
-                <RadioButton Style="{StaticResource FilterTabButton}"
+                <RadioButton Style="{StaticResource FilterTab}"
                              Margin="4,0,0,0"
                              Command="{Binding SetFilterCommand}"
                              CommandParameter="{x:Static vm:ResultsFilter.Passed}">
@@ -318,7 +315,7 @@
                         <TextBlock Text="Passed"/>
                     </StackPanel>
                 </RadioButton>
-                <RadioButton Style="{StaticResource FilterTabButton}"
+                <RadioButton Style="{StaticResource FilterTab}"
                              Margin="4,0,0,0"
                              Command="{Binding SetFilterCommand}"
                              CommandParameter="{x:Static vm:ResultsFilter.Failed}">
@@ -327,7 +324,7 @@
                         <TextBlock Text="Failed"/>
                     </StackPanel>
                 </RadioButton>
-                <RadioButton Style="{StaticResource FilterTabButton}"
+                <RadioButton Style="{StaticResource FilterTab}"
                              Margin="4,0,0,0"
                              Command="{Binding SetFilterCommand}"
                              CommandParameter="{x:Static vm:ResultsFilter.Skipped}">
