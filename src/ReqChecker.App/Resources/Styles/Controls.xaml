@@ -331,6 +331,43 @@
         </Setter>
     </Style>
 
+    <!-- ============================================ -->
+    <!-- DIAGNOSTICS CARD STYLES                      -->
+    <!-- ============================================ -->
+
+    <!-- Standard diagnostic card with enhanced spacing -->
+    <Style x:Key="DiagnosticCard" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="Margin" Value="0,0,0,16"/>
+        <Setter Property="CornerRadius" Value="12"/>
+    </Style>
+
+    <!-- Highlighted diagnostic card with accent border and enhanced glow -->
+    <Style x:Key="DiagnosticCardHighlight" TargetType="Border" BasedOn="{StaticResource DiagnosticCard}">
+        <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
+                                  BlurRadius="15"
+                                  ShadowDepth="0"
+                                  Opacity="0.3"
+                                  Direction="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Compact card for individual network interface items -->
+    <Style x:Key="NetworkInterfaceCard" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtle}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+
     <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->
     <Style x:Key="PromptAtRunIndicator" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource AccentSecondary}"/>
