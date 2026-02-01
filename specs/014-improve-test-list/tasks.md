@@ -29,8 +29,8 @@
 
 ### Converter Implementation
 
-- [ ] T001 [P] Create `TestTypeToIconConverter.cs` in `src/ReqChecker.App/Converters/` - Maps test Type string to SymbolRegular icon (Ping→Signal24, HttpGet→Globe24, etc.)
-- [ ] T002 [P] Create `TestTypeToColorConverter.cs` in `src/ReqChecker.App/Converters/` - Maps test Type string to category color brush (Network→StatusInfo, FileSystem→StatusSkip, System→AccentSecondary)
+- [x] T001 [P] Create `TestTypeToIconConverter.cs` in `src/ReqChecker.App/Converters/` - Maps test Type string to SymbolRegular icon (Ping→Signal24, HttpGet→Globe24, etc.)
+- [x] T002 [P] Create `TestTypeToColorConverter.cs` in `src/ReqChecker.App/Converters/` - Maps test Type string to category color brush (Network→StatusInfo, FileSystem→StatusSkip, System→AccentSecondary)
 
 **Checkpoint**: Both converters compile and are ready for use in XAML
 
@@ -44,9 +44,9 @@
 
 ### Implementation for User Story 1 & 3
 
-- [ ] T003 [US1] Add converter resource declarations to Page.Resources in `src/ReqChecker.App/Views/TestListView.xaml`
-- [ ] T004 [US1] [US3] Update SymbolIcon binding in TestListView.xaml to use TestTypeToIconConverter for Symbol property
-- [ ] T005 [US3] Update SymbolIcon binding in TestListView.xaml to use TestTypeToColorConverter for Foreground property
+- [x] T003 [US1] Add converter resource declarations to Page.Resources in `src/ReqChecker.App/Views/TestListView.xaml`
+- [x] T004 [US1] [US3] Update SymbolIcon binding in TestListView.xaml to use TestTypeToIconConverter for Symbol property
+- [x] T005 [US3] Update SymbolIcon binding in TestListView.xaml to use TestTypeToColorConverter for Foreground property
 
 **Checkpoint**: Each test type displays its designated icon with category color. Unknown types show beaker with gray.
 
@@ -60,9 +60,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T006 [US2] Add description TextBlock to test info StackPanel in `src/ReqChecker.App/Views/TestListView.xaml` - positioned between DisplayName and Type row
-- [ ] T007 [US2] Configure description TextBlock with TextTrimming="CharacterEllipsis" and MaxHeight="32" for 2-line truncation
-- [ ] T008 [US2] Add Visibility binding to description TextBlock using existing NullToVisibilityConverter to hide when Description is null/empty
+- [x] T006 [US2] Add description TextBlock to test info StackPanel in `src/ReqChecker.App/Views/TestListView.xaml` - positioned between DisplayName and Type row
+- [x] T007 [US2] Configure description TextBlock with TextTrimming="CharacterEllipsis" and MaxHeight="32" for 2-line truncation
+- [x] T008 [US2] Add Visibility binding to description TextBlock using existing NullToVisibilityConverter to hide when Description is null/empty
 
 **Checkpoint**: Descriptions display below test names. Long descriptions truncate. Empty descriptions show no space.
 
@@ -74,7 +74,7 @@
 
 ### Build & Test
 
-- [ ] T009 Build application with `dotnet build src/ReqChecker.App`
+- [x] T009 Build application with `dotnet build src/ReqChecker.App`
 - [ ] T010 Run application and verify all acceptance criteria from spec.md
 
 ### Verification Checklist - US1 (Icons)
