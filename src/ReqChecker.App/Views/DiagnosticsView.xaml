@@ -61,7 +61,7 @@
                                FontSize="24"
                                Foreground="{DynamicResource AccentPrimary}"
                                Margin="0,0,12,0"/>
-                <TextBlock Text="Diagnostics"
+                <TextBlock Text="System Diagnostics"
                            Style="{DynamicResource TextH1}"
                            Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>

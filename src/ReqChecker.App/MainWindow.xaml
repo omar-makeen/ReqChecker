@@ -33,7 +33,7 @@
             CanMaximize="True">
             <ui:TitleBar.Header>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
-                    <ui:SymbolIcon Symbol="CheckmarkCircle24" FontSize="18" Foreground="{DynamicResource AccentPrimaryBrush}"/>
+                    <ui:SymbolIcon Symbol="Shield24" FontSize="18" Foreground="{DynamicResource AccentPrimaryBrush}"/>
                     <TextBlock Text="ReqChecker" Margin="8,0,0,0" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </StackPanel>
             </ui:TitleBar.Header>
@@ -64,7 +64,7 @@
                 <ui:NavigationView.MenuItems>
                     <ui:NavigationViewItem
                         x:Name="NavProfiles"
-                        Content="Profiles"
+                        Content="Profile Manager"
                         Tag="Profiles"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon FolderOpen24}"
@@ -72,12 +72,12 @@
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
                         <ui:NavigationViewItem.ToolTip>
-                            <ToolTip Style="{StaticResource ModernToolTip}" Content="Select and manage profiles"/>
+                            <ToolTip Style="{StaticResource ModernToolTip}" Content="Manage test profiles"/>
                         </ui:NavigationViewItem.ToolTip>
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
                         x:Name="NavTests"
-                        Content="Tests"
+                        Content="Test Suite"
                         Tag="Tests"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Beaker24}"
@@ -90,7 +90,7 @@
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
                         x:Name="NavResults"
-                        Content="Results"
+                        Content="Results Dashboard"
                         Tag="Results"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon DataBarVertical24}"
@@ -103,15 +103,15 @@
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
                         x:Name="NavDiagnostics"
-                        Content="Diagnostics"
+                        Content="System Diagnostics"
                         Tag="Diagnostics"
                         Click="NavItem_Click"
-                        Icon="{ui:SymbolIcon Bug24}"
+                        Icon="{ui:SymbolIcon Stethoscope24}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
                         <ui:NavigationViewItem.ToolTip>
-                            <ToolTip Style="{StaticResource ModernToolTip}" Content="View diagnostic information"/>
+                            <ToolTip Style="{StaticResource ModernToolTip}" Content="View system diagnostics"/>
                         </ui:NavigationViewItem.ToolTip>
                     </ui:NavigationViewItem>
                 </ui:NavigationView.MenuItems>

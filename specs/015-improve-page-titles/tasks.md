@@ -31,17 +31,17 @@
 
 ### Implementation for User Story 1 & 2
 
-- [ ] T001 [US1] [US2] Update window title bar icon from CheckmarkCircle24 to ShieldCheckmark24 in `src/ReqChecker.App/MainWindow.xaml` (line 36)
-- [ ] T002 [US1] [US2] Update Profiles navigation item: Icon to Folder24, Content to "Profile Manager", Tooltip to "Manage test profiles" in `src/ReqChecker.App/MainWindow.xaml` (lines 65-77)
-- [ ] T003 [US1] [US2] Update Tests navigation item: Icon to ClipboardTaskList24, Content to "Test Suite", keep tooltip in `src/ReqChecker.App/MainWindow.xaml` (lines 78-90)
-- [ ] T004 [US1] [US2] Update Results navigation item: Icon to Poll24, Content to "Results Dashboard", keep tooltip in `src/ReqChecker.App/MainWindow.xaml` (lines 91-103)
-- [ ] T005 [US1] [US2] Update Diagnostics navigation item: Icon to HeartPulse24, Content to "System Diagnostics", Tooltip to "View system diagnostics" in `src/ReqChecker.App/MainWindow.xaml` (lines 104-116)
-- [ ] T006 [P] [US2] Update ProfileSelectorView header: Icon to Folder24, Title to "Profile Manager" in `src/ReqChecker.App/Views/ProfileSelectorView.xaml`
-- [ ] T007 [P] [US2] Update TestListView header: Icon to ClipboardTaskList24, Title to "Test Suite" in `src/ReqChecker.App/Views/TestListView.xaml`
-- [ ] T008 [P] [US2] Update ResultsView header: Icon to Poll24, Title to "Results Dashboard" in `src/ReqChecker.App/Views/ResultsView.xaml`
-- [ ] T009 [P] [US2] Update DiagnosticsView header: Icon to HeartPulse24, Title to "System Diagnostics" in `src/ReqChecker.App/Views/DiagnosticsView.xaml`
-- [ ] T010 [P] [US2] Update TestConfigView header icon to SettingsCog24 in `src/ReqChecker.App/Views/TestConfigView.xaml`
-- [ ] T011 [P] [US2] Update RunProgressView header icon to PlayCircle24 in `src/ReqChecker.App/Views/RunProgressView.xaml`
+- [x] T001 [US1] [US2] Update window title bar icon from CheckmarkCircle24 to ShieldCheckmark24 in `src/ReqChecker.App/MainWindow.xaml` (line 36)
+- [x] T002 [US1] [US2] Update Profiles navigation item: Icon to Folder24, Content to "Profile Manager", Tooltip to "Manage test profiles" in `src/ReqChecker.App/MainWindow.xaml` (lines 65-77)
+- [x] T003 [US1] [US2] Update Tests navigation item: Icon to ClipboardTaskList24, Content to "Test Suite", keep tooltip in `src/ReqChecker.App/MainWindow.xaml` (lines 78-90)
+- [x] T004 [US1] [US2] Update Results navigation item: Icon to Poll24, Content to "Results Dashboard", keep tooltip in `src/ReqChecker.App/MainWindow.xaml` (lines 91-103)
+- [x] T005 [US1] [US2] Update Diagnostics navigation item: Icon to HeartPulse24, Content to "System Diagnostics", Tooltip to "View system diagnostics" in `src/ReqChecker.App/MainWindow.xaml` (lines 104-116)
+- [x] T006 [P] [US2] Update ProfileSelectorView header: Icon to Folder24, Title to "Profile Manager" in `src/ReqChecker.App/Views/ProfileSelectorView.xaml`
+- [x] T007 [P] [US2] Update TestListView header: Icon to ClipboardTaskList24, Title to "Test Suite" in `src/ReqChecker.App/Views/TestListView.xaml`
+- [x] T008 [P] [US2] Update ResultsView header: Icon to Poll24, Title to "Results Dashboard" in `src/ReqChecker.App/Views/ResultsView.xaml`
+- [x] T009 [P] [US2] Update DiagnosticsView header: Icon to HeartPulse24, Title to "System Diagnostics" in `src/ReqChecker.App/Views/DiagnosticsView.xaml`
+- [x] T010 [P] [US2] Update TestConfigView header icon to SettingsCog24 in `src/ReqChecker.App/Views/TestConfigView.xaml`
+- [x] T011 [P] [US2] Update RunProgressView header icon to PlayCircle24 in `src/ReqChecker.App/Views/RunProgressView.xaml`
 
 **Checkpoint**: Navigation sidebar and all page headers display premium icons and professional titles
 
@@ -70,9 +70,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T014 [P] [US4] Update TestListView empty state icon to ClipboardTaskList24 (if present) in `src/ReqChecker.App/Views/TestListView.xaml`
-- [ ] T015 [P] [US4] Update ResultsView empty state icon to Poll24 in `src/ReqChecker.App/Views/ResultsView.xaml`
-- [ ] T016 [P] [US4] Update ProfileSelectorView empty state icon to Folder24 (if present) in `src/ReqChecker.App/Views/ProfileSelectorView.xaml`
+- [x] T014 [P] [US4] Update TestListView empty state icon to ClipboardTaskList24 (if present) in `src/ReqChecker.App/Views/TestListView.xaml`
+- [x] T015 [P] [US4] Update ResultsView empty state icon to Poll24 in `src/ReqChecker.App/Views/ResultsView.xaml`
+- [x] T016 [P] [US4] Update ProfileSelectorView empty state icon to Folder24 (if present) in `src/ReqChecker.App/Views/ProfileSelectorView.xaml`
 
 **Checkpoint**: Empty states display professional, contextually appropriate icons
 
@@ -84,38 +84,38 @@
 
 ### Build & Test
 
-- [ ] T017 Build application with `dotnet build src/ReqChecker.App`
-- [ ] T018 Run application and verify all acceptance criteria from spec.md
+- [x] T017 Build application with `dotnet build src/ReqChecker.App`
+- [ ] T018 Run application and verify all acceptance criteria from spec.md (requires manual testing)
 
-### Verification Checklist - US1 (Navigation Icons)
+### Verification Checklist - US1 (Navigation Icons) - Manual Testing Required
 
-- [ ] T019 Verify Profiles nav shows Folder24 icon with "Profile Manager" label
-- [ ] T020 Verify Tests nav shows ClipboardTaskList24 icon with "Test Suite" label
-- [ ] T021 Verify Results nav shows Poll24 icon with "Results Dashboard" label
-- [ ] T022 Verify Diagnostics nav shows HeartPulse24 icon with "System Diagnostics" label
-- [ ] T023 Verify all navigation tooltips are professional and descriptive
+- [ ] T019 Verify Profiles nav shows Folder24 icon with "Profile Manager" label (manual testing)
+- [ ] T020 Verify Tests nav shows ClipboardTaskList24 icon with "Test Suite" label (manual testing)
+- [ ] T021 Verify Results nav shows Poll24 icon with "Results Dashboard" label (manual testing)
+- [ ] T022 Verify Diagnostics nav shows HeartPulse24 icon with "System Diagnostics" label (manual testing)
+- [ ] T023 Verify all navigation tooltips are professional and descriptive (manual testing)
 
-### Verification Checklist - US2 (Page Headers)
+### Verification Checklist - US2 (Page Headers) - Manual Testing Required
 
-- [ ] T024 Verify ProfileSelectorView header matches navigation (Folder24, "Profile Manager")
-- [ ] T025 Verify TestListView header matches navigation (ClipboardTaskList24, "Test Suite")
-- [ ] T026 Verify ResultsView header matches navigation (Poll24, "Results Dashboard")
-- [ ] T027 Verify DiagnosticsView header matches navigation (HeartPulse24, "System Diagnostics")
-- [ ] T028 Verify TestConfigView header shows SettingsCog24 icon
-- [ ] T029 Verify RunProgressView header shows PlayCircle24 icon
+- [ ] T024 Verify ProfileSelectorView header matches navigation (Folder24, "Profile Manager") (manual testing)
+- [ ] T025 Verify TestListView header matches navigation (ClipboardTaskList24, "Test Suite") (manual testing)
+- [ ] T026 Verify ResultsView header matches navigation (Poll24, "Results Dashboard") (manual testing)
+- [ ] T027 Verify DiagnosticsView header matches navigation (HeartPulse24, "System Diagnostics") (manual testing)
+- [ ] T028 Verify TestConfigView header shows SettingsCog24 icon (manual testing)
+- [ ] T029 Verify RunProgressView header shows PlayCircle24 icon (manual testing)
 
-### Verification Checklist - US3 (Window Branding)
+### Verification Checklist - US3 (Window Branding) - Manual Testing Required
 
-- [ ] T030 Verify window title bar shows ShieldCheckmark24 icon
-- [ ] T031 Verify application is distinguishable in Windows taskbar
-- [ ] T032 Verify application is identifiable in Alt+Tab switcher
+- [ ] T030 Verify window title bar shows ShieldCheckmark24 icon (manual testing)
+- [ ] T031 Verify application is distinguishable in Windows taskbar (manual testing)
+- [ ] T032 Verify application is identifiable in Alt+Tab switcher (manual testing)
 
-### Theme & Functionality
+### Theme & Functionality - Manual Testing Required
 
-- [ ] T033 Verify icons work correctly in dark theme
-- [ ] T034 Verify icons work correctly in light theme (if available)
-- [ ] T035 Verify existing navigation functionality still works
-- [ ] T036 Verify existing keyboard navigation still works
+- [ ] T033 Verify icons work correctly in dark theme (manual testing)
+- [ ] T034 Verify icons work correctly in light theme (if available) (manual testing)
+- [ ] T035 Verify existing navigation functionality still works (manual testing)
+- [ ] T036 Verify existing keyboard navigation still works (manual testing)
 
 ### Finalize
 
@@ -196,6 +196,15 @@ If any icon is unavailable in WPF-UI SymbolRegular:
 | SettingsCog24 | Settings24 |
 | PlayCircle24 | Play24 |
 | ShieldCheckmark24 | Shield24 |
+
+**Note**: Implementation used fallback icons to ensure compatibility with WPF-UI version:
+- Folder24 → FolderOpen24
+- ClipboardTaskList24 → Beaker24
+- Poll24 → DataBarVertical24
+- HeartPulse24 → Stethoscope24
+- SettingsCog24 → Settings24
+- PlayCircle24 → Play24
+- ShieldCheckmark24 → Shield24
 
 ---
 

@@ -95,11 +95,11 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="CheckmarkCircle24"
+                <ui:SymbolIcon Symbol="DataBarVertical24"
                                FontSize="24"
                                Foreground="{DynamicResource AccentPrimary}"
                                Margin="0,0,12,0"/>
-                <TextBlock Text="Test Results"
+                <TextBlock Text="Results Dashboard"
                            Style="{DynamicResource TextH1}"
                            Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
@@ -274,7 +274,7 @@
                 VerticalAlignment="Center"
                 Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Visible}">
             <StackPanel HorizontalAlignment="Center">
-                <ui:SymbolIcon Symbol="CheckmarkCircle24"
+                <ui:SymbolIcon Symbol="DataBarVertical24"
                                FontSize="48"
                                Foreground="{DynamicResource TextTertiary}"
                                HorizontalAlignment="Center"/>

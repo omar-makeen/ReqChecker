@@ -112,8 +112,8 @@
 
 ### Finalize
 
-- [ ] T032 Commit changes with descriptive message
-- [ ] T033 Push to feature branch
+- [x] T032 Commit changes with descriptive message
+- [x] T033 Push to feature branch
 
 ---
 

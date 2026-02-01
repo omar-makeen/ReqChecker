@@ -105,8 +105,8 @@
 
 ### Finalize
 
-- [ ] T020 Commit changes with descriptive message
-- [ ] T021 Push to feature branch
+- [X] T020 Commit changes with descriptive message
+- [X] T021 Push to feature branch
 
 ---
 

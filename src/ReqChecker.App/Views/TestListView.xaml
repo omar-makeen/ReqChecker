@@ -73,7 +73,7 @@
                                FontSize="24"
                                Foreground="{DynamicResource AccentPrimary}"
                                Margin="0,0,12,0"/>
-                <TextBlock Text="Tests"
+                <TextBlock Text="Test Suite"
                            Style="{DynamicResource TextH1}"
                            Foreground="{DynamicResource TextPrimary}"/>
                 <Border Background="{DynamicResource BackgroundElevated}"
@@ -116,7 +116,7 @@
                         Height="100"
                         HorizontalAlignment="Center"
                         Margin="0,0,0,32">
-                    <ui:SymbolIcon Symbol="FolderOpen24"
+                    <ui:SymbolIcon Symbol="Beaker24"
                                    FontSize="48"
                                    Foreground="{DynamicResource AccentPrimary}"
                                    HorizontalAlignment="Center"
