@@ -67,7 +67,7 @@ public class NavigationService
         }
         if (test != null)
         {
-            var viewModel = new TestConfigViewModel(test);
+            var viewModel = new TestConfigViewModel(test, this);
             TrackViewModel(viewModel);
             var view = new Views.TestConfigView(viewModel);
             var result = _frame.Navigate(view);

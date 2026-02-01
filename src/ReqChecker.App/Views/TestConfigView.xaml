@@ -64,7 +64,7 @@
 
             <Button x:Name="BackButton"
                     Style="{StaticResource GhostButton}"
-                    Command="{Binding CancelCommand}"
+                    Command="{Binding BackCommand}"
                     TabIndex="1"
                     Margin="0,0,16,0">
                 <StackPanel Orientation="Horizontal">

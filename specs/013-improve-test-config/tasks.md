@@ -30,8 +30,8 @@
 
 ### ViewModel Foundation
 
-- [ ] T001 Add `NavigationService` field and constructor parameter to `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs`
-- [ ] T002 Update `src/ReqChecker.App/Services/NavigationService.cs` NavigateToTestConfig method to pass `this` to ViewModel constructor
+- [X] T001 Add `NavigationService` field and constructor parameter to `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs`
+- [X] T002 Update `src/ReqChecker.App/Services/NavigationService.cs` NavigateToTestConfig method to pass `this` to ViewModel constructor
 
 **Checkpoint**: TestConfigViewModel can now access NavigationService for navigation operations
 
@@ -45,8 +45,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T003 [US1] Add `BackCommand` property and `OnBack()` method to `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs`
-- [ ] T004 [US1] Wire Back button to `BackCommand` in `src/ReqChecker.App/Views/TestConfigView.xaml` (change line 67 from CancelCommand to BackCommand)
+- [X] T003 [US1] Add `BackCommand` property and `OnBack()` method to `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs`
+- [X] T004 [US1] Wire Back button to `BackCommand` in `src/ReqChecker.App/Views/TestConfigView.xaml` (change line 67 from CancelCommand to BackCommand)
 
 **Checkpoint**: Back button navigates to Tests list. Cancel button still resets form (unchanged).
 
@@ -60,8 +60,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T005 [US2] Remove hardcoded Timeout/RetryCount/RequiresAdmin additions from `InitializeParameters()` in `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs` (remove lines 68-79)
-- [ ] T006 [US2] Simplify `SaveAsync()` in `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs` - remove special handling for Timeout/RetryCount/RequiresAdmin in the foreach loop (they're saved from ViewModel properties, not Parameters)
+- [X] T005 [US2] Remove hardcoded Timeout/RetryCount/RequiresAdmin additions from `InitializeParameters()` in `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs` (remove lines 68-79)
+- [X] T006 [US2] Simplify `SaveAsync()` in `src/ReqChecker.App/ViewModels/TestConfigViewModel.cs` - remove special handling for Timeout/RetryCount/RequiresAdmin in the foreach loop (they're saved from ViewModel properties, not Parameters)
 
 **Checkpoint**: Test Parameters section shows only profile-defined parameters. Empty state shows when no parameters exist.
 
@@ -75,10 +75,10 @@
 
 ### Verification (No Code Changes - Already Implemented)
 
-- [ ] T007 [US3] Verify Editable parameters show as editable text fields
-- [ ] T008 [US3] Verify Locked parameters show with locked field control
-- [ ] T009 [US3] Verify Hidden parameters are not visible
-- [ ] T010 [US3] Verify PromptAtRun parameters show "Will be prompted during test execution" indicator
+- [X] T007 [US3] Verify Editable parameters show as editable text fields
+- [X] T008 [US3] Verify Locked parameters show with locked field control
+- [X] T009 [US3] Verify Hidden parameters are not visible
+- [X] T010 [US3] Verify PromptAtRun parameters show "Will be prompted during test execution" indicator
 
 **Checkpoint**: All four field policy types render correctly
 
@@ -90,7 +90,7 @@
 
 ### Build & Test
 
-- [ ] T011 Build application with `dotnet build src/ReqChecker.App`
+- [X] T011 Build application with `dotnet build src/ReqChecker.App`
 - [ ] T012 Run application and verify all acceptance criteria from spec.md
 
 ### Verification Checklist

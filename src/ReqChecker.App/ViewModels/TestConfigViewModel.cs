@@ -4,12 +4,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
+using ReqChecker.App.Services;
 
 namespace ReqChecker.App.ViewModels;
 
 public partial class TestConfigViewModel : ObservableObject
 {
     private readonly TestDefinition _testDefinition;
+    private readonly NavigationService _navigationService;
 
     [ObservableProperty]
     private string _testName = string.Empty;
@@ -39,11 +41,13 @@ public partial class TestConfigViewModel : ObservableObject
 
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
+    public ICommand BackCommand { get; }
     public ICommand PromptForCredentialsCommand { get; }
 
-    public TestConfigViewModel(TestDefinition testDefinition)
+    public TestConfigViewModel(TestDefinition testDefinition, NavigationService navigationService)
     {
         _testDefinition = testDefinition ?? throw new ArgumentNullException(nameof(testDefinition));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         TestName = testDefinition.DisplayName;
         TestType = testDefinition.Type;
         RequiresAdmin = testDefinition.RequiresAdmin;
@@ -52,6 +56,7 @@ public partial class TestConfigViewModel : ObservableObject
         InitializeParameters();
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(OnCancel);
+        BackCommand = new RelayCommand(OnBack);
         PromptForCredentialsCommand = new RelayCommand(OnPromptForCredentials);
     }
 
@@ -64,18 +69,6 @@ public partial class TestConfigViewModel : ObservableObject
                 var policy = GetFieldPolicy(param.Key);
                 Parameters.Add(new TestParameterViewModel(param.Key, param.Value?.ToString() ?? string.Empty, policy));
             }
-        }
-        if (!Parameters.Any(p => p.Name == "Timeout"))
-        {
-            Parameters.Add(new TestParameterViewModel("Timeout", Timeout?.ToString() ?? "30000", FieldPolicyType.Editable));
-        }
-        if (!Parameters.Any(p => p.Name == "RetryCount"))
-        {
-            Parameters.Add(new TestParameterViewModel("RetryCount", RetryCount?.ToString() ?? "3", FieldPolicyType.Editable));
-        }
-        if (!Parameters.Any(p => p.Name == "RequiresAdmin"))
-        {
-            Parameters.Add(new TestParameterViewModel("RequiresAdmin", RequiresAdmin.ToString().ToLower(), FieldPolicyType.Locked));
         }
     }
 
@@ -98,22 +91,7 @@ public partial class TestConfigViewModel : ObservableObject
             _testDefinition.RetryCount = RetryCount;
             foreach (var param in Parameters)
             {
-                if (param.Name == "Timeout" && int.TryParse(param.Value, out int timeout))
-                {
-                    _testDefinition.Timeout = timeout;
-                }
-                else if (param.Name == "RetryCount" && int.TryParse(param.Value, out int retryCount))
-                {
-                    _testDefinition.RetryCount = retryCount;
-                }
-                else if (param.Name == "RequiresAdmin" && bool.TryParse(param.Value, out bool requiresAdmin))
-                {
-                    _testDefinition.RequiresAdmin = requiresAdmin;
-                }
-                else
-                {
-                    _testDefinition.Parameters[param.Name] = param.Value;
-                }
+                _testDefinition.Parameters[param.Name] = param.Value;
             }
             await Task.Delay(100);
         }
@@ -129,6 +107,11 @@ public partial class TestConfigViewModel : ObservableObject
         RequiresAdmin = _testDefinition.RequiresAdmin;
         Timeout = _testDefinition.Timeout;
         RetryCount = _testDefinition.RetryCount;
+    }
+
+    private void OnBack()
+    {
+        _navigationService.GoBack();
     }
 
     private void OnPromptForCredentials()
