@@ -240,13 +240,13 @@
                                         Padding="10,4"
                                         Margin="12,0,0,0"
                                         VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding LastRunReport.MachineInfo.NetworkInterfaces.Count}"
+                                    <TextBlock Text="{Binding CurrentMachineInfo.NetworkInterfaces.Count}"
                                                Style="{DynamicResource TextCaption}"
                                                Foreground="{DynamicResource TextSecondary}"/>
                                 </Border>
                             </StackPanel>
 
-                            <ItemsControl ItemsSource="{Binding LastRunReport.MachineInfo.NetworkInterfaces}">
+                            <ItemsControl ItemsSource="{Binding CurrentMachineInfo.NetworkInterfaces}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource NetworkInterfaceCard}">
@@ -360,7 +360,7 @@
                             </ItemsControl>
 
                             <!-- Empty State for Network Interfaces -->
-                            <Border Visibility="{Binding LastRunReport.MachineInfo.NetworkInterfaces.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                            <Border Visibility="{Binding CurrentMachineInfo.NetworkInterfaces.Count, Converter={StaticResource CountToVisibilityConverter}}"
                                     Background="{DynamicResource BackgroundElevated}"
                                     CornerRadius="8"
                                     Padding="24"

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.App.Services;
+using ReqChecker.Infrastructure.Platform;
 using Serilog;
 
 namespace ReqChecker.App.ViewModels;
@@ -31,6 +32,9 @@ public partial class DiagnosticsViewModel : ObservableObject
 
     [ObservableProperty]
     private RunReport? _lastRunReport;
+
+    [ObservableProperty]
+    private MachineInfo? _currentMachineInfo;
 
     private readonly IClipboardService _clipboardService;
     private readonly IAppState _appState;
@@ -67,34 +71,60 @@ public partial class DiagnosticsViewModel : ObservableObject
         if (LastRunReport == null)
         {
             LastRunSummary = "No test runs have been performed yet.";
-            MachineInfoSummary = null;
-            return;
+        }
+        else
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Run ID: {LastRunReport.RunId}");
+            sb.AppendLine($"Profile: {LastRunReport.ProfileName}");
+            sb.AppendLine($"Started: {LastRunReport.StartTime:yyyy-MM-dd HH:mm:ss}");
+            sb.AppendLine($"Duration: {LastRunReport.Duration.TotalSeconds:F2} seconds");
+            sb.AppendLine();
+            sb.AppendLine($"Total Tests: {LastRunReport.Summary.TotalTests}");
+            sb.AppendLine($"Passed: {LastRunReport.Summary.Passed}");
+            sb.AppendLine($"Failed: {LastRunReport.Summary.Failed}");
+            sb.AppendLine($"Skipped: {LastRunReport.Summary.Skipped}");
+            sb.AppendLine($"Pass Rate: {LastRunReport.Summary.PassRate:F1}%");
+
+            LastRunSummary = sb.ToString();
         }
 
-        var sb = new StringBuilder();
-        sb.AppendLine($"Run ID: {LastRunReport.RunId}");
-        sb.AppendLine($"Profile: {LastRunReport.ProfileName}");
-        sb.AppendLine($"Started: {LastRunReport.StartTime:yyyy-MM-dd HH:mm:ss}");
-        sb.AppendLine($"Duration: {LastRunReport.Duration.TotalSeconds:F2} seconds");
-        sb.AppendLine();
-        sb.AppendLine($"Total Tests: {LastRunReport.Summary.TotalTests}");
-        sb.AppendLine($"Passed: {LastRunReport.Summary.Passed}");
-        sb.AppendLine($"Failed: {LastRunReport.Summary.Failed}");
-        sb.AppendLine($"Skipped: {LastRunReport.Summary.Skipped}");
-        sb.AppendLine($"Pass Rate: {LastRunReport.Summary.PassRate:F1}%");
+        // MachineInfoSummary now uses CurrentMachineInfo instead of LastRunReport.MachineInfo
+        if (CurrentMachineInfo == null)
+        {
+            MachineInfoSummary = null;
+        }
+        else
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"Hostname: {CurrentMachineInfo.Hostname}");
+            sb.AppendLine($"OS: {CurrentMachineInfo.OsVersion} (Build {CurrentMachineInfo.OsBuild})");
+            sb.AppendLine($"CPU Cores: {CurrentMachineInfo.ProcessorCount}");
+            sb.AppendLine($"Total RAM: {CurrentMachineInfo.TotalMemoryMB} MB");
+            sb.AppendLine($"User: {CurrentMachineInfo.UserName}");
+            sb.AppendLine($"Elevated: {(CurrentMachineInfo.IsElevated ? "Yes" : "No")}");
+            sb.AppendLine($"Network Interfaces: {CurrentMachineInfo.NetworkInterfaces.Count}");
 
-        LastRunSummary = sb.ToString();
+            MachineInfoSummary = sb.ToString();
+        }
+    }
 
-        sb.Clear();
-        sb.AppendLine($"Hostname: {LastRunReport.MachineInfo.Hostname}");
-        sb.AppendLine($"OS: {LastRunReport.MachineInfo.OsVersion} (Build {LastRunReport.MachineInfo.OsBuild})");
-        sb.AppendLine($"CPU Cores: {LastRunReport.MachineInfo.ProcessorCount}");
-        sb.AppendLine($"Total RAM: {LastRunReport.MachineInfo.TotalMemoryMB} MB");
-        sb.AppendLine($"User: {LastRunReport.MachineInfo.UserName}");
-        sb.AppendLine($"Elevated: {(LastRunReport.MachineInfo.IsElevated ? "Yes" : "No")}");
-        sb.AppendLine($"Network Interfaces: {LastRunReport.MachineInfo.NetworkInterfaces.Count}");
-
-        MachineInfoSummary = sb.ToString();
+    /// <summary>
+    /// Loads current machine information independent of test execution.
+    /// </summary>
+    public void LoadMachineInfo()
+    {
+        try
+        {
+            CurrentMachineInfo = MachineInfoCollector.Collect();
+            UpdateSummaries();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to collect machine info");
+            CurrentMachineInfo = null;
+            UpdateSummaries();
+        }
     }
 
     /// <summary>
@@ -169,17 +199,21 @@ public partial class DiagnosticsViewModel : ObservableObject
             sb.AppendLine("=== Network Interfaces ===");
             sb.AppendLine();
 
-            foreach (var nic in LastRunReport.MachineInfo.NetworkInterfaces)
+            // Use CurrentMachineInfo for network interfaces instead of LastRunReport.MachineInfo
+            if (CurrentMachineInfo != null)
             {
-                sb.AppendLine($"- {nic.Name}");
-                sb.AppendLine($"  Description: {nic.Description}");
-                sb.AppendLine($"  Status: {nic.Status}");
-                sb.AppendLine($"  MAC: {nic.MacAddress}");
-                if (nic.IpAddresses.Count > 0)
+                foreach (var nic in CurrentMachineInfo.NetworkInterfaces)
                 {
-                    sb.AppendLine($"  IPs: {string.Join(", ", nic.IpAddresses)}");
+                    sb.AppendLine($"- {nic.Name}");
+                    sb.AppendLine($"  Description: {nic.Description}");
+                    sb.AppendLine($"  Status: {nic.Status}");
+                    sb.AppendLine($"  MAC: {nic.MacAddress}");
+                    if (nic.IpAddresses.Count > 0)
+                    {
+                        sb.AppendLine($"  IPs: {string.Join(", ", nic.IpAddresses)}");
+                    }
+                    sb.AppendLine();
                 }
-                sb.AppendLine();
             }
 
             var details = sb.ToString();

@@ -11,5 +11,6 @@ public partial class DiagnosticsView
     {
         InitializeComponent();
         DataContext = viewModel;
+        Loaded += (s, e) => viewModel.LoadMachineInfo();
     }
 }
