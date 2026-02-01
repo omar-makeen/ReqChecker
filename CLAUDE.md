@@ -21,6 +21,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (UI-only enhancement) (015-improve-page-titles)
 - N/A (UI-only enhancement, uses existing in-memory data from IAppState) (016-premium-diagnostics-page)
 - N/A (in-memory only, refreshed on navigation) (017-diagnostics-auto-load)
+- N/A (UI-only feature, no data persistence) (019-premium-buttons)
+- N/A (in-memory via IAppState) (020-premium-test-execution)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -40,9 +42,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
-- 017-diagnostics-auto-load: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
-- 016-premium-diagnostics-page: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 015-improve-page-titles: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0 (SymbolRegular Fluent icons), CommunityToolkit.Mvvm 8.4.0
+- 020-premium-test-execution: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
+- 019-premium-buttons: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
+- 018-premium-page-headers: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 
