@@ -119,8 +119,8 @@
 
 ### Finalize
 
-- [ ] T037 Commit changes with descriptive message
-- [ ] T038 Push to feature branch
+- [x] T037 Commit changes with descriptive message
+- [x] T038 Push to feature branch (commit: 004fc89)
 
 ---
 
@@ -197,14 +197,14 @@ If any icon is unavailable in WPF-UI SymbolRegular:
 | PlayCircle24 | Play24 |
 | ShieldCheckmark24 | Shield24 |
 
-**Note**: Implementation used fallback icons to ensure compatibility with WPF-UI version:
-- Folder24 → FolderOpen24
-- ClipboardTaskList24 → Beaker24
-- Poll24 → DataBarVertical24
-- HeartPulse24 → Stethoscope24
-- SettingsCog24 → Settings24
-- PlayCircle24 → Play24
-- ShieldCheckmark24 → Shield24
+**Note**: Final icon choices (after verifying availability in WPF-UI 4.2.0):
+- Folder24 ✓ (available)
+- ClipboardTaskList24 → Beaker24 (fallback - ClipboardTaskList24 not available)
+- Poll24 ✓ (available)
+- HeartPulse24 → Stethoscope24 (fallback - HeartPulse24 not available)
+- SettingsCog24 → Settings24 (fallback - SettingsCog24 not available, Settings24 acceptable)
+- PlayCircle24 → Play24 (fallback - PlayCircle24 not available, Play24 acceptable)
+- ShieldCheckmark24 → Shield24 (fallback - ShieldCheckmark24 not available)
 
 ---
 

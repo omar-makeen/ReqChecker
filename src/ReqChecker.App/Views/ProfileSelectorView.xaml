@@ -57,7 +57,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="FolderOpen24"
+                <ui:SymbolIcon Symbol="Folder24"
                                FontSize="24"
                                Foreground="{DynamicResource AccentPrimary}"
                                Margin="0,0,12,0"/>
@@ -261,7 +261,7 @@
                         <Grid Width="80" Height="80" Margin="0,0,0,24">
                             <Ellipse Fill="{DynamicResource BackgroundElevated}"
                                      Width="80" Height="80"/>
-                            <ui:SymbolIcon Symbol="FolderOpen24"
+                            <ui:SymbolIcon Symbol="Folder24"
                                            FontSize="36"
                                            Foreground="{DynamicResource TextTertiary}"
                                            HorizontalAlignment="Center"

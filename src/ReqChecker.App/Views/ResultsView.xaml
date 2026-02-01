@@ -95,7 +95,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="DataBarVertical24"
+                <ui:SymbolIcon Symbol="Poll24"
                                FontSize="24"
                                Foreground="{DynamicResource AccentPrimary}"
                                Margin="0,0,12,0"/>
@@ -274,7 +274,7 @@
                 VerticalAlignment="Center"
                 Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Visible}">
             <StackPanel HorizontalAlignment="Center">
-                <ui:SymbolIcon Symbol="DataBarVertical24"
+                <ui:SymbolIcon Symbol="Poll24"
                                FontSize="48"
                                Foreground="{DynamicResource TextTertiary}"
                                HorizontalAlignment="Center"/>

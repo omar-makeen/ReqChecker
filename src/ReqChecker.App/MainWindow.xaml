@@ -67,7 +67,7 @@
                         Content="Profile Manager"
                         Tag="Profiles"
                         Click="NavItem_Click"
-                        Icon="{ui:SymbolIcon FolderOpen24}"
+                        Icon="{ui:SymbolIcon Folder24}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -93,7 +93,7 @@
                         Content="Results Dashboard"
                         Tag="Results"
                         Click="NavItem_Click"
-                        Icon="{ui:SymbolIcon DataBarVertical24}"
+                        Icon="{ui:SymbolIcon Poll24}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
