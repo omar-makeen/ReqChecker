@@ -34,7 +34,11 @@
             <ui:TitleBar.Header>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
                     <ui:SymbolIcon Symbol="Shield24" FontSize="18" Foreground="{DynamicResource AccentPrimaryBrush}"/>
-                    <TextBlock Text="ReqChecker" Margin="8,0,0,0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock Text="ReqChecker"
+                               Margin="8,0,0,0"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 </StackPanel>
             </ui:TitleBar.Header>
         </ui:TitleBar>

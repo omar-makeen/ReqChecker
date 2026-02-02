@@ -221,10 +221,13 @@ public partial class ThemeService : ObservableObject
             var existingIndex = -1;
             for (var i = 0; i < merged.Count; i++)
             {
-                if (merged[i] is Wpf.Ui.Markup.ThemesDictionary)
+                // Check by Source URI since type check may not work after loading
+                var source = merged[i].Source;
+                if (merged[i] is Wpf.Ui.Markup.ThemesDictionary ||
+                    (source != null && source.ToString().Contains("Wpf.Ui")))
                 {
                     existingIndex = i;
-                    Serilog.Log.Information("Found ThemesDictionary at index {Index}", i);
+                    Serilog.Log.Information("Found WPF-UI theme dictionary at index {Index}, Source: {Source}", i, source);
                     break;
                 }
             }

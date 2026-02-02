@@ -44,6 +44,10 @@
     <SolidColorBrush x:Key="AccentPrimary" Color="{StaticResource AccentPrimaryColor}"/>
     <SolidColorBrush x:Key="AccentSecondary" Color="{StaticResource AccentSecondaryColor}"/>
 
+    <!-- Brush suffix aliases for WPF-UI naming pattern consistency -->
+    <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}"/>
+    <SolidColorBrush x:Key="AccentSecondaryBrush" Color="{StaticResource AccentSecondaryColor}"/>
+
     <!-- Accent Gradient -->
     <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{StaticResource AccentPrimaryColor}" Offset="0"/>
@@ -98,5 +102,40 @@
     <SolidColorBrush x:Key="SolidBackgroundFillColorSecondaryBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
     <SolidColorBrush x:Key="SolidBackgroundFillColorTertiaryBrush" Color="{StaticResource BackgroundElevatedColor}"/>
     <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="{StaticResource BackgroundSurfaceColor}"/>
+
+    <!-- WPF-UI Text Fill Colors (Light Theme Overrides) -->
+    <!-- These override WPF-UI's default text colors to use dark text for light backgrounds -->
+    <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="TextFillColorTertiaryBrush" Color="{StaticResource TextTertiaryColor}"/>
+    <SolidColorBrush x:Key="TextFillColorDisabledBrush" Color="{StaticResource TextTertiaryColor}"/>
+
+    <!-- WPF-UI NavigationView Item Foreground Colors (Light Theme Overrides) -->
+    <!-- Fix for invisible navigation text in light mode -->
+    <SolidColorBrush x:Key="NavigationViewItemForeground" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="{StaticResource AccentPrimaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemForegroundSelectedPointerOver" Color="{StaticResource AccentPrimaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemForegroundDisabled" Color="{StaticResource TextTertiaryColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemHeaderForeground" Color="{StaticResource TextPrimaryColor}"/>
+
+    <!-- WPF-UI ToggleButton Foreground Override (for NavigationView pane toggle) -->
+    <!-- Ensures dark text visibility on light backgrounds -->
+    <SolidColorBrush x:Key="ToggleButtonForeground" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="ToggleButtonForegroundPointerOver" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="ToggleButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="ToggleButtonForegroundDisabled" Color="{StaticResource TextTertiaryColor}"/>
+
+    <!-- WPF-UI NavigationView Item Background Colors (Light Theme Overrides) -->
+    <!-- Premium navigation panel styling for light mode -->
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="{StaticResource BackgroundElevatedColor}"/>
+    <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="{StaticResource BackgroundSurfaceColor}"/>
+
+    <!-- Elevation Glow/Shadow Colors for Light Theme -->
+    <!-- Using subtle black shadows instead of colored glows for light backgrounds -->
+    <Color x:Key="ElevationGlowColor">#1A000000</Color>
+    <Color x:Key="ElevationGlowHoverColor">#1A000000</Color>
+    <Color x:Key="ElevationGlowModalColor">#26000000</Color>
 
 </ResourceDictionary>
