@@ -176,7 +176,7 @@
         <Border Grid.Row="2"
                 Style="{StaticResource Card}"
                 Margin="0,0,0,16"
-                Visibility="{Binding TrendDataPoints.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}">
+                Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -365,35 +365,51 @@
         </ListBox>
 
         <!-- Empty state when no history -->
-        <Border Grid.Row="4"
-                Background="{DynamicResource BackgroundSurface}"
-                BorderBrush="{DynamicResource BorderSubtle}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Padding="48"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-            <StackPanel HorizontalAlignment="Center">
-                <ui:SymbolIcon Symbol="History24"
-                               FontSize="48"
-                               Foreground="{DynamicResource TextTertiary}"
-                               HorizontalAlignment="Center"/>
-                <TextBlock Text="No test history yet"
+        <Grid Grid.Row="4"
+              Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <!-- Large History Icon -->
+                <Border Width="80" Height="80"
+                        Background="{DynamicResource BackgroundSurface}"
+                        CornerRadius="40"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,24">
+                    <ui:SymbolIcon Symbol="History24"
+                                   FontSize="40"
+                                   Foreground="{DynamicResource TextTertiary}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Heading -->
+                <TextBlock Text="No Test History Yet"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+
+                <!-- Description -->
+                <TextBlock Text="Run your first test to start tracking results over time."
                            Style="{DynamicResource TextBody}"
                            Foreground="{DynamicResource TextSecondary}"
                            HorizontalAlignment="Center"
-                           Margin="0,16,0,8"/>
-                <TextBlock Text="Run tests to build your history"
-                           Style="{DynamicResource TextBody}"
-                           Foreground="{DynamicResource TextTertiary}"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,12"/>
-                <Button Style="{StaticResource GhostButton}"
-                        Content="Run Tests"
+                           TextAlignment="Center"
+                           MaxWidth="300"
+                           Margin="0,0,0,24"/>
+
+                <!-- Call-to-Action Button -->
+                <Button Style="{StaticResource PrimaryButton}"
                         Command="{Binding NavigateToTestListCommand}"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center"
+                        Padding="24,12">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Play24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Run Tests"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
-        </Border>
+        </Grid>
     </Grid>
 </Page>

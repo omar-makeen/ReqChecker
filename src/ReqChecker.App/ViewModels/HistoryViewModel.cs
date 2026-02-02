@@ -121,8 +121,12 @@ public partial class HistoryViewModel : ObservableObject
             // Clear selection to prevent auto-navigation when returning to page
             SelectedRun = null;
 
-            StatusMessage = $"Loaded {HistoryRuns.Count} historical runs";
-            IsStatusError = false;
+            // Only show status message when there's history to display
+            if (HistoryRuns.Count > 0)
+            {
+                StatusMessage = $"Loaded {HistoryRuns.Count} historical runs";
+                IsStatusError = false;
+            }
 
             Log.Information("Loaded {RunCount} historical runs", HistoryRuns.Count);
         }
