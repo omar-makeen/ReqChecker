@@ -9,6 +9,7 @@ using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.Infrastructure.ProfileManagement.Migrations;
 using ReqChecker.Infrastructure.Profile;
 using ReqChecker.Infrastructure.Export;
+using ReqChecker.Infrastructure.History;
 using ReqChecker.Infrastructure.Logging;
 using ReqChecker.Infrastructure.Security;
 using ReqChecker.App.ViewModels;
@@ -208,6 +209,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<DialogService>();
         services.AddSingleton<IClipboardService, ClipboardService>();
         services.AddSingleton<IPreferencesService, PreferencesService>();
+        services.AddSingleton<IHistoryService, HistoryService>();
         services.AddSingleton<ThemeService>(sp =>
             new ThemeService(sp.GetRequiredService<IPreferencesService>()));
 
@@ -217,6 +219,7 @@ public partial class App : System.Windows.Application
         services.AddTransient<TestListViewModel>();
         services.AddTransient<RunProgressViewModel>();
         services.AddTransient<ResultsViewModel>();
+        services.AddTransient<HistoryViewModel>();
         services.AddTransient<DiagnosticsViewModel>();
 
         // Build service provider

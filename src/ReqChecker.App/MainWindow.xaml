@@ -106,6 +106,19 @@
                         </ui:NavigationViewItem.ToolTip>
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
+                        x:Name="NavHistory"
+                        Content="Test History"
+                        Tag="History"
+                        Click="NavItem_Click"
+                        Icon="{ui:SymbolIcon History24}"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.Placement="Right">
+                        <ui:NavigationViewItem.ToolTip>
+                            <ToolTip Style="{StaticResource ModernToolTip}" Content="View test history and trends"/>
+                        </ui:NavigationViewItem.ToolTip>
+                    </ui:NavigationViewItem>
+                    <ui:NavigationViewItem
                         x:Name="NavDiagnostics"
                         Content="System Diagnostics"
                         Tag="Diagnostics"

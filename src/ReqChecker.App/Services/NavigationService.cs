@@ -158,6 +158,30 @@ public class NavigationService
     }
 
     /// <summary>
+    /// Navigates to history view.
+    /// Loads history and sets it on ViewModel.
+    /// </summary>
+    public void NavigateToHistory()
+    {
+        Log.Information("NavigateToHistory: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to History: Frame not initialized");
+            return;
+        }
+        var viewModel = _serviceProvider.GetRequiredService<HistoryViewModel>();
+        
+        // Load history on navigation
+        viewModel.LoadHistoryCommand?.Execute(null);
+        
+        TrackViewModel(viewModel);
+        var view = new Views.HistoryView(viewModel);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToHistory: Navigate result={Result}", result);
+        RaiseNavigated("History");
+    }
+
+    /// <summary>
     /// Navigates back to previous view.
     /// </summary>
     public void GoBack()

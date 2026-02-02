@@ -74,6 +74,7 @@ public partial class MainWindow : FluentWindow
         NavProfiles.IsActive = false;
         NavTests.IsActive = false;
         NavResults.IsActive = false;
+        NavHistory.IsActive = false;
         NavDiagnostics.IsActive = false;
     }
 
@@ -95,6 +96,9 @@ public partial class MainWindow : FluentWindow
                 break;
             case "Results":
                 NavResults.IsActive = true;
+                break;
+            case "History":
+                NavHistory.IsActive = true;
                 break;
             case "Diagnostics":
                 NavDiagnostics.IsActive = true;
@@ -175,6 +179,7 @@ public partial class MainWindow : FluentWindow
                 "Profiles" => "Profile Selector",
                 "Tests" => "Test List",
                 "Results" => "Test Results",
+                "History" => "Test History",
                 "Diagnostics" => "Diagnostics",
                 _ => tag
             };
@@ -189,6 +194,9 @@ public partial class MainWindow : FluentWindow
                     break;
                 case "Results":
                     _navigationService.NavigateToResults();
+                    break;
+                case "History":
+                    _navigationService.NavigateToHistory();
                     break;
                 case "Diagnostics":
                     _navigationService.NavigateToDiagnostics();

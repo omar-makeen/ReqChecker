@@ -4,6 +4,7 @@ using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.App.Services;
+using ReqChecker.Infrastructure.History;
 using System.Collections.ObjectModel;
 
 namespace ReqChecker.App.ViewModels;
@@ -17,6 +18,7 @@ public partial class RunProgressViewModel : ObservableObject
     private readonly ITestRunner _testRunner;
     private readonly NavigationService _navigationService;
     private readonly IPreferencesService _preferencesService;
+    private readonly IHistoryService _historyService;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -124,12 +126,13 @@ public partial class RunProgressViewModel : ObservableObject
     [ObservableProperty]
     private RunReport? _runReport;
 
-    public RunProgressViewModel(IAppState appState, ITestRunner testRunner, NavigationService navigationService, IPreferencesService preferencesService)
+    public RunProgressViewModel(IAppState appState, ITestRunner testRunner, NavigationService navigationService, IPreferencesService preferencesService, IHistoryService historyService)
     {
         _appState = appState;
         _testRunner = testRunner;
         _navigationService = navigationService;
         _preferencesService = preferencesService;
+        _historyService = historyService;
 
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
@@ -225,6 +228,30 @@ public partial class RunProgressViewModel : ObservableObject
             IsCancelling = false;
             CurrentTestName = null;
         });
+
+        // Fire-and-forget with proper error handling
+        _ = SaveToHistoryAsync();
+    }
+
+    /// <summary>
+    /// Saves the run report to history asynchronously.
+    /// </summary>
+    private async Task SaveToHistoryAsync()
+    {
+        if (RunReport == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _historyService.SaveRunAsync(RunReport);
+            Serilog.Log.Information("Auto-saved run {RunId} to history", RunReport.RunId);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, "Failed to auto-save run {RunId} to history", RunReport.RunId);
+        }
     }
 
     /// <summary>
