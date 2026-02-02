@@ -64,17 +64,20 @@ public partial class ResultsViewModel : ObservableObject
 
     private readonly JsonExporter _jsonExporter;
     private readonly CsvExporter _csvExporter;
+    private readonly PdfExporter _pdfExporter;
     private readonly IAppState _appState;
 
     public ResultsViewModel(
         JsonExporter jsonExporter,
         CsvExporter csvExporter,
+        PdfExporter pdfExporter,
         IAppState appState,
         NavigationService? navigationService = null,
         DialogService? dialogService = null)
     {
         _jsonExporter = jsonExporter;
         _csvExporter = csvExporter;
+        _pdfExporter = pdfExporter;
         _appState = appState;
         NavigationService = navigationService;
         DialogService = dialogService;
@@ -195,36 +198,78 @@ public partial class ResultsViewModel : ObservableObject
         await ExportAsync(() => _csvExporter.ExportAsync(Report, filePath), filePath);
     }
 
+    /// <summary>
+    /// Exports test results to PDF format.
+    /// </summary>
+    [RelayCommand]
+    private async Task ExportToPdfAsync()
+    {
+        if (DialogService == null || Report == null)
+        {
+            return;
+        }
+
+        var filePath = DialogService.SaveFileDialog(
+            $"{Report.ProfileName}-{Report.StartTime:yyyy-MM-dd}.pdf",
+            "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*");
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            return;
+        }
+
+        await ExportAsync(() => _pdfExporter.ExportAsync(Report, filePath), filePath);
+    }
+
     private async Task ExportAsync(Func<Task> exportAction, string filePath)
     {
         IsExporting = true;
         StatusMessage = null;
         IsStatusError = false;
+        
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var format = Path.GetExtension(filePath).TrimStart('.').ToUpperInvariant();
+
+        Log.Information("Export started: {Format}, {TestCount} tests",
+            format, Report?.Results?.Count ?? 0);
 
         try
         {
             await exportAction();
+            sw.Stop();
+
+            var fileInfo = new FileInfo(filePath);
+            var fileSize = fileInfo.Length;
+            
             StatusMessage = $"Exported to {Path.GetFileName(filePath)}";
             IsStatusError = false;
-            Log.Information("Export successful: {FilePath}", filePath);
+            
+            Log.Information("Export completed: {Format}, {FilePath}, {FileSize} bytes, {Duration}ms",
+                format, filePath, fileSize, sw.ElapsedMilliseconds);
         }
         catch (UnauthorizedAccessException ex)
         {
+            sw.Stop();
             StatusMessage = "Export failed: Access denied. Check file permissions.";
             IsStatusError = true;
-            Log.Error(ex, "Export failed due to access denied: {FilePath}", filePath);
+            Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: AccessDenied",
+                format, filePath);
         }
         catch (IOException ex)
         {
+            sw.Stop();
             StatusMessage = "Export failed: File may be in use or disk is full.";
             IsStatusError = true;
-            Log.Error(ex, "Export failed due to IO error: {FilePath}", filePath);
+            Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: IOError",
+                format, filePath);
         }
         catch (Exception ex)
         {
+            sw.Stop();
             StatusMessage = $"Export failed: {ex.Message}";
             IsStatusError = true;
-            Log.Error(ex, "Export failed: {FilePath}", filePath);
+            Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: Error",
+                format, filePath);
         }
         finally
         {

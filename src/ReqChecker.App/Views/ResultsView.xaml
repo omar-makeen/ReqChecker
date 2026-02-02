@@ -124,12 +124,23 @@
                         </Button>
 
                          <Button Style="{StaticResource SecondaryButton}"
-                                 Command="{Binding ExportToCsvCommand}"
-                                 IsEnabled="{Binding CanExport}"
-                                 TabIndex="3">
+                                  Command="{Binding ExportToCsvCommand}"
+                                  IsEnabled="{Binding CanExport}"
+                                  TabIndex="3"
+                                  Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,8,0"/>
                                 <TextBlock Text="CSV"/>
+                            </StackPanel>
+                        </Button>
+
+                         <Button Style="{StaticResource SecondaryButton}"
+                                  Command="{Binding ExportToPdfCommand}"
+                                  IsEnabled="{Binding CanExport}"
+                                  TabIndex="4">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Document24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="PDF"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

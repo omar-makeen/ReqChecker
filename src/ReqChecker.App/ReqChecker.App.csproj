@@ -37,6 +37,7 @@
     <EmbeddedResource Include="Profiles\default-profile.json" />
     <EmbeddedResource Include="Profiles\default-profile.json.sig" />
     <EmbeddedResource Include="Profiles\sample-diagnostics.json" />
+    <EmbeddedResource Include="Resources\Images\reqchecker-logo.png" />
   </ItemGroup>
 
 </Project>

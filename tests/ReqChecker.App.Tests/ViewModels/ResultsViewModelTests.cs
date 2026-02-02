@@ -15,6 +15,7 @@ public class ResultsViewModelTests
 {
     private static JsonExporter CreateJsonExporter() => new JsonExporter();
     private static CsvExporter CreateCsvExporter() => new CsvExporter();
+    private static PdfExporter CreatePdfExporter() => new PdfExporter();
 
     [Fact]
     public void Constructor_ShouldInitializeWithDefaultValues()
@@ -28,6 +29,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Assert
@@ -59,6 +61,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Act
@@ -92,6 +95,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
         viewModel.Report = report;
 
@@ -126,6 +130,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
         viewModel.Report = report;
 
@@ -162,6 +167,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
         viewModel.Report = report;
 
@@ -198,6 +204,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
         viewModel.Report = report;
 
@@ -222,6 +229,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Assert
@@ -245,6 +253,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object,
             null); // No dialog service
         viewModel.Report = report;
@@ -270,6 +279,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object,
             navigationService,
             dialogService);
@@ -299,6 +309,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object,
             null); // No dialog service
         viewModel.Report = report;
@@ -324,6 +335,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object,
             navigationService,
             dialogService);
@@ -353,6 +365,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
         viewModel.Report = report;
 
@@ -380,6 +393,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Act
@@ -400,6 +414,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Act - Report is null by default
@@ -426,6 +441,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         var propertyChangedEvents = new List<string>();
@@ -453,6 +469,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Set initial report
@@ -496,6 +513,7 @@ public class ResultsViewModelTests
         var viewModel = new ResultsViewModel(
             jsonExporter,
             csvExporter,
+            CreatePdfExporter(),
             mockAppState.Object);
 
         // Act - Simulate what NavigationService does: assign Report from AppState

@@ -31,7 +31,9 @@
       "Bash(.specify/scripts/powershell/create-new-feature.ps1 -Json -Number 15 -ShortName \"improve-page-titles\" \"Improve all pages title and icon with premium/authentic design\")",
       "Bash(New-Item -ItemType Directory -Path \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\\\\specs\\\\016-premium-diagnostics-page\\\\checklists\" -Force)",
       "Bash(git pull:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }

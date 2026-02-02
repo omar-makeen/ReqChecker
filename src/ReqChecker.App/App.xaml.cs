@@ -197,8 +197,10 @@ public partial class App : System.Windows.Application
         // Register exporters (both as interface for collection resolution and concrete for direct injection)
         services.AddSingleton<JsonExporter>();
         services.AddSingleton<CsvExporter>();
+        services.AddSingleton<PdfExporter>();
         services.AddSingleton<IExporter>(sp => sp.GetRequiredService<JsonExporter>());
         services.AddSingleton<IExporter>(sp => sp.GetRequiredService<CsvExporter>());
+        services.AddSingleton<IExporter>(sp => sp.GetRequiredService<PdfExporter>());
 
         // Register services
         services.AddSingleton<NavigationService>(sp =>
