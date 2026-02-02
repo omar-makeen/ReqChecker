@@ -35,11 +35,9 @@ public class PdfExporter : IExporter
         // Configure QuestPDF license (Community)
         QuestPDF.Settings.License = LicenseType.Community;
 
-        // Generate PDF
+        // Generate PDF on background thread to avoid UI blocking
         var document = CreateDocument(reportToExport);
-        document.GeneratePdf(filePath);
-
-        await Task.CompletedTask; // Async signature for interface compatibility
+        await Task.Run(() => document.GeneratePdf(filePath));
     }
 
     private Document CreateDocument(RunReport report)
@@ -92,7 +90,7 @@ public class PdfExporter : IExporter
     {
         try
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = Assembly.Load("ReqChecker.App");
             var resourceName = "ReqChecker.App.Resources.Images.reqchecker-logo.png";
             
             using var stream = assembly.GetManifestResourceStream(resourceName);

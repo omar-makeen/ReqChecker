@@ -236,20 +236,18 @@ public partial class ResultsViewModel : ObservableObject
         try
         {
             await exportAction();
-            sw.Stop();
 
             var fileInfo = new FileInfo(filePath);
             var fileSize = fileInfo.Length;
-            
+
             StatusMessage = $"Exported to {Path.GetFileName(filePath)}";
             IsStatusError = false;
-            
+
             Log.Information("Export completed: {Format}, {FilePath}, {FileSize} bytes, {Duration}ms",
                 format, filePath, fileSize, sw.ElapsedMilliseconds);
         }
         catch (UnauthorizedAccessException ex)
         {
-            sw.Stop();
             StatusMessage = "Export failed: Access denied. Check file permissions.";
             IsStatusError = true;
             Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: AccessDenied",
@@ -257,7 +255,6 @@ public partial class ResultsViewModel : ObservableObject
         }
         catch (IOException ex)
         {
-            sw.Stop();
             StatusMessage = "Export failed: File may be in use or disk is full.";
             IsStatusError = true;
             Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: IOError",
@@ -265,7 +262,6 @@ public partial class ResultsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            sw.Stop();
             StatusMessage = $"Export failed: {ex.Message}";
             IsStatusError = true;
             Log.Error(ex, "Export failed: {Format}, {FilePath}, Outcome: Error",
@@ -273,6 +269,7 @@ public partial class ResultsViewModel : ObservableObject
         }
         finally
         {
+            sw.Stop();
             IsExporting = false;
         }
     }
