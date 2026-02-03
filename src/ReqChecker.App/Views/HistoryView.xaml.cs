@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using ReqChecker.App.ViewModels;
-using ReqChecker.App.Controls;
 
 namespace ReqChecker.App.Views;
 
@@ -21,7 +20,6 @@ public partial class HistoryView : Page
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
     {
-        // Trigger chart update when page loads
-        _viewModel.UpdateTrendDataPoints();
+        // Page loaded - initialization handled by ViewModel
     }
 }

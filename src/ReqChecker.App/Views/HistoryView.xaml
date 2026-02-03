@@ -4,7 +4,6 @@
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-       xmlns:controls="clr-namespace:ReqChecker.App.Controls"
        xmlns:converters="clr-namespace:ReqChecker.App.Converters"
        xmlns:vm="clr-namespace:ReqChecker.App.ViewModels"
        mc:Ignorable="d"
@@ -48,7 +47,6 @@
 
     <Grid Margin="32">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -172,36 +170,8 @@
             </StackPanel>
         </Border>
 
-        <!-- Trend Chart -->
-        <Border Grid.Row="2"
-                Style="{StaticResource Card}"
-                Margin="0,0,0,16"
-                Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="Pass Rate Trend"
-                           Style="{DynamicResource TextBody}"
-                           Foreground="{DynamicResource TextSecondary}"
-                           Margin="0,0,0,8"/>
-
-                <controls:LineChart Grid.Column="1"
-                                  Width="400"
-                                  Height="200"
-                                  DataPoints="{Binding TrendDataPoints}"
-                                  MinY="0"
-                                  MaxY="100"
-                                  PointColor="{DynamicResource AccentPrimaryBrush}"
-                                  LineColor="{DynamicResource AccentPrimaryBrush}"/>
-            </Grid>
-        </Border>
-
         <!-- Filter Tabs -->
-        <Border Grid.Row="3"
+        <Border Grid.Row="2"
                 Background="Transparent"
                 CornerRadius="8"
                 Padding="4"
@@ -227,7 +197,7 @@
         </Border>
 
         <!-- History List with virtualization -->
-        <ListBox Grid.Row="4"
+        <ListBox Grid.Row="3"
                  ItemsSource="{Binding FilteredHistory}"
                  Background="Transparent"
                  BorderThickness="0"
@@ -365,7 +335,7 @@
         </ListBox>
 
         <!-- Empty state when no history -->
-        <Grid Grid.Row="4"
+        <Grid Grid.Row="3"
               Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">

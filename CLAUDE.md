@@ -29,6 +29,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json (023-test-history)
 - JSON files in `%APPDATA%/ReqChecker/history/` (023-test-history)
 - N/A (UI-only changes) (024-history-empty-state)
+- N/A (code removal) (025-remove-trend-chart)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -48,9 +49,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 025-remove-trend-chart: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 024-history-empty-state: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 023-test-history: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json
-- 022-export-results: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, QuestPDF (for PDF generation)
 
 
 

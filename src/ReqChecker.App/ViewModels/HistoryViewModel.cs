@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ReqChecker.App.Controls;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
 using ReqChecker.Infrastructure.History;
@@ -59,16 +58,6 @@ public partial class HistoryViewModel : ObservableObject
     /// Gets unique profile names from history.
     /// </summary>
     public ObservableCollection<string> ProfileNames { get; } = new();
-
-    /// <summary>
-    /// Gets trend data points for line chart.
-    /// </summary>
-    public ObservableCollection<LineChart.ChartDataPoint> TrendDataPoints { get; } = new();
-
-    /// <summary>
-    /// Gets flaky tests.
-    /// </summary>
-    public ObservableCollection<TestTrendData> FlakyTests { get; } = new();
 
     private readonly IHistoryService _historyService;
 
@@ -148,7 +137,6 @@ public partial class HistoryViewModel : ObservableObject
     partial void OnActiveFilterChanged(string? value)
     {
         FilteredHistory?.Refresh();
-        UpdateTrendDataPoints();
     }
 
     private void SetupFilteredHistory()
@@ -224,83 +212,6 @@ public partial class HistoryViewModel : ObservableObject
     partial void OnHistoryRunsChanged(ObservableCollection<RunReport> value)
     {
         OnPropertyChanged(nameof(IsHistoryEmpty));
-        UpdateTrendDataPoints();
-    }
-
-    /// <summary>
-    /// Updates trend data points for line chart based on current history.
-    /// </summary>
-    public void UpdateTrendDataPoints()
-    {
-        TrendDataPoints.Clear();
-
-        if (HistoryRuns.Count == 0)
-            return;
-
-        // Get filtered runs based on active filter
-        var filteredRuns = (string.IsNullOrEmpty(ActiveFilter) || ActiveFilter == "All")
-            ? HistoryRuns.ToList()
-            : HistoryRuns.Where(r => r.ProfileName == ActiveFilter).ToList();
-
-        // Sort by start time (oldest first for chart)
-        var sortedRuns = filteredRuns.OrderBy(r => r.StartTime).ToList();
-
-        // Create data points for chart
-        for (int i = 0; i < sortedRuns.Count; i++)
-        {
-            var run = sortedRuns[i];
-            TrendDataPoints.Add(new LineChart.ChartDataPoint
-            {
-                Index = i,
-                DateTime = run.StartTime.DateTime,
-                Value = run.Summary.PassRate
-            });
-        }
-
-        // Compute flaky tests
-        ComputeFlakyTests();
-    }
-
-    /// <summary>
-    /// Computes flaky tests from history.
-    /// </summary>
-    private void ComputeFlakyTests()
-    {
-        FlakyTests.Clear();
-
-        if (HistoryRuns.Count == 0)
-            return;
-
-        // Get filtered runs based on active filter
-        var filteredRuns = (string.IsNullOrEmpty(ActiveFilter) || ActiveFilter == "All")
-            ? HistoryRuns.ToList()
-            : HistoryRuns.Where(r => r.ProfileName == ActiveFilter).ToList();
-
-        // Group test results by test ID
-        var testResults = filteredRuns
-            .SelectMany(r => r.Results.Select(t => new { Test = t, Run = r }))
-            .GroupBy(x => x.Test.TestId)
-            .Select(g => new TestTrendData
-            {
-                TestId = g.Key,
-                TestName = g.First().Test.DisplayName,
-                ProfileId = g.First().Run.ProfileId,
-                TotalRuns = g.Count(),
-                PassCount = g.Count(x => x.Test.Status == TestStatus.Pass),
-                FailCount = g.Count(x => x.Test.Status == TestStatus.Fail),
-                SkipCount = g.Count(x => x.Test.Status == TestStatus.Skipped),
-                RecentResults = g.OrderByDescending(x => x.Test.StartTime).Select(x => x.Test.Status).Take(10).ToList()
-            })
-            .Where(t => t.PassCount > 0 && t.FailCount > 0)
-            .OrderBy(t => t.TestName)
-            .ToList();
-
-        foreach (var flakyTest in testResults)
-        {
-            flakyTest.PassRate = flakyTest.TotalRuns > 0 ? (double)flakyTest.PassCount / flakyTest.TotalRuns * 100 : 0;
-            flakyTest.IsFlaky = true;
-            FlakyTests.Add(flakyTest);
-        }
     }
 
     /// <summary>
