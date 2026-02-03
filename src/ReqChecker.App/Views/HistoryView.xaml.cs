@@ -20,6 +20,6 @@ public partial class HistoryView : Page
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
     {
-        // Page loaded - initialization handled by ViewModel
+        _viewModel.LoadHistoryCommand?.Execute(null);
     }
 }

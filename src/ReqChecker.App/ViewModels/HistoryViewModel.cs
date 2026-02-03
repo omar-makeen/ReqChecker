@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
@@ -69,6 +70,13 @@ public partial class HistoryViewModel : ObservableObject
         _historyService = historyService;
         NavigationService = navigationService;
         AppState = appState;
+
+        HistoryRuns.CollectionChanged += OnHistoryRunsCollectionChanged;
+    }
+
+    private void OnHistoryRunsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(IsHistoryEmpty));
     }
 
     /// <summary>
@@ -209,8 +217,14 @@ public partial class HistoryViewModel : ObservableObject
     /// <summary>
     /// Called when HistoryRuns property changes.
     /// </summary>
-    partial void OnHistoryRunsChanged(ObservableCollection<RunReport> value)
+    partial void OnHistoryRunsChanged(ObservableCollection<RunReport>? oldValue, ObservableCollection<RunReport> newValue)
     {
+        if (oldValue != null)
+        {
+            oldValue.CollectionChanged -= OnHistoryRunsCollectionChanged;
+        }
+
+        newValue.CollectionChanged += OnHistoryRunsCollectionChanged;
         OnPropertyChanged(nameof(IsHistoryEmpty));
     }
 

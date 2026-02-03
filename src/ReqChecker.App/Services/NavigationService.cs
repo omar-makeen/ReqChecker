@@ -170,10 +170,7 @@ public class NavigationService
             return;
         }
         var viewModel = _serviceProvider.GetRequiredService<HistoryViewModel>();
-        
-        // Load history on navigation
-        viewModel.LoadHistoryCommand?.Execute(null);
-        
+
         TrackViewModel(viewModel);
         var view = new Views.HistoryView(viewModel);
         var result = _frame.Navigate(view);
