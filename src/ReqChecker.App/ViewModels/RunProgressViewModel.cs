@@ -163,6 +163,7 @@ public partial class RunProgressViewModel : ObservableObject
         SkippedTests = 0;
         CurrentTestIndex = 0;
         TestResults.Clear();
+        CurrentTestName = "Preparing...";
 
         try
         {

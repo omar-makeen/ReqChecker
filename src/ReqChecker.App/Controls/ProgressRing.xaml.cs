@@ -176,7 +176,7 @@ public partial class ProgressRing : UserControl
         // Handle edge case where progress is 0
         if (Progress <= 0)
         {
-            _progressArc.Visibility = Visibility.Hidden;
+            _progressArc.Visibility = Visibility.Collapsed;
             return;
         }
 
@@ -228,7 +228,7 @@ public partial class ProgressRing : UserControl
 
         if (_progressArc != null)
         {
-            _progressArc.Visibility = IsIndeterminate ? Visibility.Collapsed : Visibility.Visible;
+            _progressArc.Visibility = IsIndeterminate ? Visibility.Collapsed : (Progress > 0 ? Visibility.Visible : Visibility.Collapsed);
         }
 
         var percentageText = FindName("PercentageText") as TextBlock;

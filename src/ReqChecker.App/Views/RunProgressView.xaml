@@ -153,9 +153,15 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left: Progress Ring and Current Test -->
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
                 <!-- Progress Ring -->
-                <controls:ProgressRing x:Name="MainProgressRing"
+                <controls:ProgressRing Grid.Row="0" x:Name="MainProgressRing"
                                        Width="160"
                                        Height="160"
                                        Progress="{Binding ProgressPercentage}"
@@ -170,83 +176,86 @@
                     </controls:ProgressRing.Effect>
                 </controls:ProgressRing>
 
-                <!-- Current Test Card -->
-                <Border Style="{StaticResource Card}"
-                        Margin="0,32,0,0"
-                        MinWidth="300"
-                        Visibility="{Binding IsTestRunning, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <StackPanel>
-                        <TextBlock Text="Currently Running"
-                                   Style="{DynamicResource TextCaption}"
-                                   Foreground="{DynamicResource TextTertiary}"
-                                   Margin="0,0,0,8"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                <!-- Card Area - Both cards occupy same row to prevent layout shift -->
+                <Grid Grid.Row="1" MinHeight="140">
+                    <!-- Current Test Card -->
+                    <Border Style="{StaticResource Card}"
+                            Margin="0,32,0,0"
+                            MinWidth="300"
+                            Visibility="{Binding IsTestRunning, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="Currently Running"
+                                       Style="{DynamicResource TextCaption}"
+                                       Foreground="{DynamicResource TextTertiary}"
+                                       Margin="0,0,0,8"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                            <!-- Animated spinner -->
-                            <ui:SymbolIcon Grid.Column="0"
-                                           Symbol="ArrowSync24"
-                                           FontSize="20"
-                                           Foreground="{DynamicResource AccentPrimary}"
-                                           Margin="0,0,12,0"
-                                           RenderTransformOrigin="0.5,0.5">
-                                <ui:SymbolIcon.RenderTransform>
-                                    <RotateTransform x:Name="SpinnerRotation"/>
-                                </ui:SymbolIcon.RenderTransform>
-                                <ui:SymbolIcon.Triggers>
-                                    <EventTrigger RoutedEvent="Loaded">
-                                        <BeginStoryboard>
-                                            <Storyboard RepeatBehavior="Forever">
-                                                <DoubleAnimation Storyboard.TargetName="SpinnerRotation"
-                                                                 Storyboard.TargetProperty="Angle"
-                                                                 From="0" To="360"
-                                                                 Duration="0:0:1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </ui:SymbolIcon.Triggers>
-                            </ui:SymbolIcon>
+                                <!-- Animated spinner -->
+                                <ui:SymbolIcon Grid.Column="0"
+                                               Symbol="ArrowSync24"
+                                               FontSize="20"
+                                               Foreground="{DynamicResource AccentPrimary}"
+                                               Margin="0,0,12,0"
+                                               RenderTransformOrigin="0.5,0.5">
+                                    <ui:SymbolIcon.RenderTransform>
+                                        <RotateTransform x:Name="SpinnerRotation"/>
+                                    </ui:SymbolIcon.RenderTransform>
+                                    <ui:SymbolIcon.Triggers>
+                                        <EventTrigger RoutedEvent="Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetName="SpinnerRotation"
+                                                                     Storyboard.TargetProperty="Angle"
+                                                                     From="0" To="360"
+                                                                     Duration="0:0:1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </ui:SymbolIcon.Triggers>
+                                </ui:SymbolIcon>
 
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding CurrentTestName, FallbackValue='Waiting...'}"
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding CurrentTestName, FallbackValue='Waiting...'}"
+                                           Style="{DynamicResource TextBody}"
+                                           Foreground="{DynamicResource TextPrimary}"
+                                           FontWeight="Medium"
+                                           TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Completion Summary Card -->
+                    <Border Style="{StaticResource Card}"
+                            Margin="0,32,0,0"
+                            MinWidth="300"
+                            Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <ui:SymbolIcon Symbol="CheckmarkCircle24"
+                                           FontSize="24"
+                                           Foreground="{DynamicResource StatusPass}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,8"/>
+                            <TextBlock Text="All tests completed"
                                        Style="{DynamicResource TextBody}"
                                        Foreground="{DynamicResource TextPrimary}"
-                                       FontWeight="Medium"
-                                       TextTrimming="CharacterEllipsis"
-                                       VerticalAlignment="Center"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Completion Summary Card -->
-                <Border Style="{StaticResource Card}"
-                        Margin="0,32,0,0"
-                        MinWidth="300"
-                        Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <StackPanel HorizontalAlignment="Center">
-                        <ui:SymbolIcon Symbol="CheckmarkCircle24"
-                                       FontSize="48"
-                                       Foreground="{DynamicResource StatusPass}"
                                        HorizontalAlignment="Center"
-                                       Margin="0,0,0,8"/>
-                        <TextBlock Text="All tests completed"
-                                   Style="{DynamicResource TextH3}"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   HorizontalAlignment="Center"
-                                   FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding TotalTests, StringFormat='{}{0} tests executed'}"
-                                   Style="{DynamicResource TextCaption}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Border>
+                                       FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding TotalTests, StringFormat='{}{0} tests executed'}"
+                                       Style="{DynamicResource TextCaption}"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
 
                 <!-- Stats Summary -->
-                <Grid Margin="0,24,0,0">
+                <Grid Grid.Row="2" Margin="0,24,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -292,7 +301,7 @@
                                    HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
-            </StackPanel>
+            </Grid>
 
             <!-- Divider -->
             <Border Grid.Column="1"
