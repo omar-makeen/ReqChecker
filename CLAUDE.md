@@ -49,9 +49,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 026-premium-history-cards: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 025-remove-trend-chart: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 024-history-empty-state: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 023-test-history: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json
 
 
 

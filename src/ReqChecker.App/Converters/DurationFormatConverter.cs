@@ -14,11 +14,25 @@ public class DurationFormatConverter : IValueConverter
     {
         if (value is TimeSpan duration)
         {
-            // Show "Xms" for < 1s, "X.Xs" for >= 1s
+            // Handle 0-second edge case
+            if (duration.TotalSeconds == 0)
+            {
+                return "0s";
+            }
+
+            // Show "Xms" for < 1s
             if (duration.TotalSeconds < 1)
             {
                 return $"{duration.TotalMilliseconds:F0}ms";
             }
+            // Show "Xm Ys" for >= 60s
+            else if (duration.TotalSeconds >= 60)
+            {
+                int minutes = (int)duration.TotalMinutes;
+                int seconds = duration.Seconds;
+                return $"{minutes}m {seconds}s";
+            }
+            // Show "X.Xs" for 1-59s
             else
             {
                 return $"{duration.TotalSeconds:F1}s";

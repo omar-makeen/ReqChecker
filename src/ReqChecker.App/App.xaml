@@ -35,6 +35,8 @@
                                             FirstConverter="{StaticResource TestResultDetailsConverter}"
                                             SecondConverter="{StaticResource CredentialMaskConverter}" />
             <converters:DurationFormatConverter x:Key="DurationFormatConverter" />
+            <converters:FriendlyDateConverter x:Key="FriendlyDateConverter" />
+            <converters:PassRateToBrushConverter x:Key="PassRateToBrushConverter" />
             <converters:RetryCountVisibilityConverter x:Key="RetryCountVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>

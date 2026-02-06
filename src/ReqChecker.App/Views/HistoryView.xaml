@@ -259,52 +259,59 @@
                                                Foreground="{DynamicResource TextPrimary}"
                                                FontWeight="SemiBold"/>
 
-                                    <!-- Pass Rate Badge -->
-                                    <Border Grid.Column="1"
-                                            Background="{DynamicResource BackgroundSurface}"
-                                            CornerRadius="4"
-                                            Padding="8,4"
-                                            Margin="8,0,0,0">
-                                        <TextBlock Text="{Binding Summary.PassRate, StringFormat='{}{0:N0}%'}"
-                                                   Style="{DynamicResource TextCaption}"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                    </Border>
+                                     <!-- Pass Rate Badge -->
+                                     <Border Grid.Column="1"
+                                             Background="{Binding Summary.PassRate, Converter={StaticResource PassRateToBrushConverter}, ConverterParameter=Background}"
+                                             CornerRadius="4"
+                                             Padding="8,4"
+                                             Margin="8,0,0,0">
+                                         <TextBlock Text="{Binding Summary.PassRate, StringFormat='Pass Rate: {0:N0}%'}"
+                                                    Style="{DynamicResource TextCaption}"
+                                                    Foreground="{Binding Summary.PassRate, Converter={StaticResource PassRateToBrushConverter}, ConverterParameter=Foreground}"
+                                                    FontWeight="Medium"/>
+                                     </Border>
                                 </Grid>
 
-                                <!-- Date and Duration -->
-                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                    <TextBlock Text="{Binding StartTime, StringFormat='{}{0:MMM dd, yyyy HH:mm}'}"
-                                               Style="{DynamicResource TextCaption}"
-                                               Foreground="{DynamicResource TextTertiary}"/>
-                                    <TextBlock Text=" • "
-                                               Style="{DynamicResource TextCaption}"
-                                               Foreground="{DynamicResource TextTertiary}"/>
-                                    <TextBlock Text="{Binding Duration, Converter={StaticResource DurationFormatConverter}}"
-                                               Style="{DynamicResource TextCaption}"
-                                               Foreground="{DynamicResource TextTertiary}"/>
-                                </StackPanel>
+                                 <!-- Date and Duration -->
+                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                     <ui:SymbolIcon Symbol="CalendarLtr24" FontSize="12" Foreground="{DynamicResource TextTertiary}" Margin="0,1,4,0"/>
+                                     <TextBlock Text="{Binding StartTime, Converter={StaticResource FriendlyDateConverter}}"
+                                                Style="{DynamicResource TextCaption}"
+                                                Foreground="{DynamicResource TextTertiary}"/>
+                                     <TextBlock Text=" • "
+                                                Style="{DynamicResource TextCaption}"
+                                                Foreground="{DynamicResource TextTertiary}"/>
+                                     <ui:SymbolIcon Symbol="Timer24" FontSize="12" Foreground="{DynamicResource TextTertiary}" Margin="0,1,4,0"/>
+                                     <TextBlock Text="Duration:"
+                                                Style="{DynamicResource TextCaption}"
+                                                Foreground="{DynamicResource TextTertiary}"/>
+                                     <TextBlock Text="{Binding Duration, Converter={StaticResource DurationFormatConverter}}"
+                                                Style="{DynamicResource TextCaption}"
+                                                Foreground="{DynamicResource TextTertiary}"
+                                                Margin="4,0,0,0"/>
+                                 </StackPanel>
 
-                                <!-- Status Indicators -->
-                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
-                                        <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusPass}" Margin="0,0,4,0"/>
-                                        <TextBlock Text="{Binding Summary.Passed, StringFormat='{}{0}'}"
-                                                   Style="{DynamicResource TextCaption}"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
-                                        <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusFail}" Margin="0,0,4,0"/>
-                                        <TextBlock Text="{Binding Summary.Failed, StringFormat='{}{0}'}"
-                                                   Style="{DynamicResource TextCaption}"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusSkip}" Margin="0,0,4,0"/>
-                                        <TextBlock Text="{Binding Summary.Skipped, StringFormat='{}{0}'}"
-                                                   Style="{DynamicResource TextCaption}"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                    </StackPanel>
-                                </StackPanel>
+                                 <!-- Status Indicators -->
+                                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                     <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                                         <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusPass}" Margin="0,0,4,0"/>
+                                         <TextBlock Text="{Binding Summary.Passed, StringFormat='{}{0} Passed'}"
+                                                    Style="{DynamicResource TextCaption}"
+                                                    Foreground="{DynamicResource StatusPass}"/>
+                                     </StackPanel>
+                                     <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                                         <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusFail}" Margin="0,0,4,0"/>
+                                         <TextBlock Text="{Binding Summary.Failed, StringFormat='{}{0} Failed'}"
+                                                    Style="{DynamicResource TextCaption}"
+                                                    Foreground="{DynamicResource StatusFail}"/>
+                                     </StackPanel>
+                                     <StackPanel Orientation="Horizontal">
+                                         <Ellipse Width="8" Height="8" Fill="{DynamicResource StatusSkip}" Margin="0,0,4,0"/>
+                                         <TextBlock Text="{Binding Summary.Skipped, StringFormat='{}{0} Skipped'}"
+                                                    Style="{DynamicResource TextCaption}"
+                                                    Foreground="{DynamicResource StatusSkip}"/>
+                                     </StackPanel>
+                                 </StackPanel>
                             </StackPanel>
 
                             <!-- Delete Button -->
