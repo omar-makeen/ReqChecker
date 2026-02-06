@@ -221,29 +221,36 @@
 
                 <!-- Info -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Style="{DynamicResource TextBody}"
-                               Foreground="{DynamicResource TextSecondary}"
-                               Margin="0,0,0,8">
-                        <Run Text="Profile: "/>
-                        <Run Text="{Binding Report.ProfileName}"
-                             Foreground="{DynamicResource TextPrimary}"
-                             FontWeight="SemiBold"/>
-                    </TextBlock>
-                    <TextBlock Style="{DynamicResource TextBody}"
-                               Foreground="{DynamicResource TextSecondary}"
-                               Margin="0,0,0,8">
-                        <Run Text="Started: "/>
-                        <Run Text="{Binding Report.StartTime}"
-                             Foreground="{DynamicResource TextPrimary}"
-                             FontWeight="SemiBold"/>
-                    </TextBlock>
-                    <TextBlock Style="{DynamicResource TextBody}"
-                               Foreground="{DynamicResource TextSecondary}">
-                        <Run Text="Duration: "/>
-                        <Run Text="{Binding Report.Duration}"
-                             Foreground="{DynamicResource TextPrimary}"
-                             FontWeight="SemiBold"/>
-                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Text="Profile: "
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding Report.ProfileName}"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis"
+                                   MaxWidth="350"
+                                   ToolTip="{Binding Report.ProfileName}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Text="Started: "
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding Report.StartTime, Converter={StaticResource FriendlyDateConverter}}"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Duration: "
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding Report.Duration, Converter={StaticResource DurationFormatConverter}}"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   FontWeight="SemiBold"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Summary Cards -->
@@ -386,7 +393,7 @@
                 <DataTemplate>
                     <controls:ExpanderCard Style="{StaticResource AnimatedResultItem}"
                                            Title="{Binding DisplayName}"
-                                           Subtitle="{Binding Duration, StringFormat='{}{0:N0}ms'}"
+                                           Subtitle="{Binding Duration, Converter={StaticResource DurationFormatConverter}}"
                                            Status="{Binding Status}"
                                            TestDuration="{Binding Duration}"
                                            AttemptCount="{Binding AttemptCount}"

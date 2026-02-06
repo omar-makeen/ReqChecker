@@ -30,6 +30,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - JSON files in `%APPDATA%/ReqChecker/history/` (023-test-history)
 - N/A (UI-only changes) (024-history-empty-state)
 - N/A (code removal) (025-remove-trend-chart)
+- N/A (in-memory RunReport via IAppState) (027-premium-results)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -49,9 +50,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 027-premium-results: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 026-premium-history-cards: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 025-remove-trend-chart: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 024-history-empty-state: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 
