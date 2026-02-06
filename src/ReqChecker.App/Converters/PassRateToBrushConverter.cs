@@ -47,9 +47,13 @@ public class PassRateToBrushConverter : IValueConverter
                 r = 0xef; g = 0x44; b = 0x44;
             }
 
-            return new SolidColorBrush(Color.FromArgb(alpha, r, g, b));
+            var brush = new SolidColorBrush(Color.FromArgb(alpha, r, g, b));
+            brush.Freeze();
+            return brush;
         }
-        return new SolidColorBrush(Color.FromArgb(0xFF, 0x99, 0x99, 0x99)); // Default gray
+        var defaultBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x99, 0x99, 0x99)); // Default gray
+        defaultBrush.Freeze();
+        return defaultBrush;
     }
 
     /// <inheritdoc />

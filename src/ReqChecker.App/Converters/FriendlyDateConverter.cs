@@ -22,11 +22,11 @@ public class FriendlyDateConverter : IValueConverter
 
             if (localDate == today)
             {
-                return dateTimeOffset.LocalDateTime.ToString("Today at h:mm tt", CultureInfo.InvariantCulture);
+                return dateTimeOffset.LocalDateTime.ToString("'Today at' h:mm tt", CultureInfo.InvariantCulture);
             }
             else if (localDate == yesterday)
             {
-                return dateTimeOffset.LocalDateTime.ToString("Yesterday at h:mm tt", CultureInfo.InvariantCulture);
+                return dateTimeOffset.LocalDateTime.ToString("'Yesterday at' h:mm tt", CultureInfo.InvariantCulture);
             }
             else
             {

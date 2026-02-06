@@ -5,7 +5,7 @@ namespace ReqChecker.App.Converters;
 
 /// <summary>
 /// Converts TimeSpan to formatted duration string.
-/// Shows "Xms" for less than 1 second, "X.Xs" for 1 second or more.
+/// Shows "0s" for zero, "Xms" for less than 1 second, "X.Xs" for 1-59 seconds, "Xm Ys" for 60 seconds or more.
 /// </summary>
 public class DurationFormatConverter : IValueConverter
 {
