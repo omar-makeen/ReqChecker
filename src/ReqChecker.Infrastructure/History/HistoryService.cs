@@ -1,4 +1,5 @@
 using ReqChecker.Core.Models;
+using ReqChecker.Core.Services;
 using Serilog;
 using System.IO;
 using System.Text.Json;
@@ -37,88 +38,72 @@ public class HistoryService : IHistoryService
         _history = new List<RunReport>();
         _loaded = false;
     }
-
+    
     /// <summary>
     /// Load history from disk (call on startup).
     /// </summary>
-    /// <returns>List of historical runs.</returns>
     public async Task<List<RunReport>> LoadHistoryAsync()
     {
         await _lock.WaitAsync();
         try
         {
-            if (_loaded)
+            if (File.Exists(_historyPath))
             {
-                return _history.ToList();
-            }
+                var json = await File.ReadAllTextAsync(_historyPath);
+                var store = JsonSerializer.Deserialize<HistoryStore>(json, _jsonOptions);
 
-            await Task.Run(() =>
+                if (store != null && store.Runs != null)
+                {
+                    _history = store.Runs;
+                    Log.Information("Loaded {RunCount} historical runs from {HistoryPath}", _history.Count, _historyPath);
+                }
+                else
+                {
+                    _history = new List<RunReport>();
+                    Log.Information("No history file found at {HistoryPath}, starting with empty history", _historyPath);
+                }
+            }
+        }
+        catch (JsonException ex)
+        {
+            Log.Warning(ex, "Failed to parse history file at {HistoryPath}, attempting backup", _historyPath);
+
+            // Try to restore from backup
+            if (File.Exists(_backupPath))
             {
                 try
                 {
-                    if (File.Exists(_historyPath))
-                    {
-                        var json = File.ReadAllText(_historyPath);
-                        var store = JsonSerializer.Deserialize<HistoryStore>(json, _jsonOptions);
+                    var backupJson = await File.ReadAllTextAsync(_backupPath);
+                    var store = JsonSerializer.Deserialize<HistoryStore>(backupJson, _jsonOptions);
 
-                        if (store != null && store.Runs != null)
-                        {
-                            _history = store.Runs;
-                            Log.Information("Loaded {RunCount} historical runs from {HistoryPath}", _history.Count, _historyPath);
-                        }
+                    if (store != null && store.Runs != null)
+                    {
+                        _history = store.Runs;
+                        Log.Information("Restored {RunCount} runs from backup", _history.Count);
                     }
                     else
                     {
                         _history = new List<RunReport>();
-                        Log.Information("No history file found at {HistoryPath}, starting with empty history", _historyPath);
+                        Log.Information("No history in backup, starting with empty history");
                     }
                 }
-                catch (JsonException ex)
+                catch (Exception backupEx)
                 {
-                    Log.Warning(ex, "Failed to parse history file at {HistoryPath}, attempting backup", _historyPath);
-
-                    // Try to restore from backup
-                    if (File.Exists(_backupPath))
-                    {
-                        try
-                        {
-                            var backupJson = File.ReadAllText(_backupPath);
-                            var store = JsonSerializer.Deserialize<HistoryStore>(backupJson, _jsonOptions);
-
-                            if (store != null && store.Runs != null)
-                            {
-                                _history = store.Runs;
-                                Log.Information("Restored {RunCount} runs from backup", _history.Count);
-                            }
-                        }
-                        catch (Exception backupEx)
-                        {
-                            Log.Error(backupEx, "Failed to restore from backup, starting with empty history");
-                            _history = new List<RunReport>();
-                        }
-                    }
-                    else
-                    {
-                        Log.Warning("No backup available, starting with empty history");
-                        _history = new List<RunReport>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Failed to load history, starting with empty history");
+                    Log.Warning(backupEx, "Failed to restore from backup, starting with empty history");
                     _history = new List<RunReport>();
                 }
-            });
-
-            _loaded = true;
-            return _history.ToList();
+            }
         }
-        finally
+        catch (Exception ex)
         {
-            _lock.Release();
+            Log.Error(ex, "Failed to load history, starting with empty history");
+            _history = new List<RunReport>();
         }
-    }
 
+        _loaded = true;
+        return _history.ToList();
+    }
+    
     /// <summary>
     /// Ensures history is loaded (thread-safe).
     /// </summary>
@@ -129,11 +114,10 @@ public class HistoryService : IHistoryService
             await LoadHistoryAsync();
         }
     }
-
+    
     /// <summary>
     /// Save a new run to history (call after test completion).
     /// </summary>
-    /// <param name="report">The run report to save.</param>
     public async Task SaveRunAsync(RunReport report)
     {
         if (report == null)
@@ -146,37 +130,33 @@ public class HistoryService : IHistoryService
         await _lock.WaitAsync();
         try
         {
-            // Add the new run
-            _history.Add(report);
+            // Sanitize the report before persistence (redacts sensitive data)
+            var sanitizedReport = TestResultSanitizer.SanitizeForPersistence(report);
+
+            // Add the sanitized run to history
+            _history.Add(sanitizedReport);
 
             // Sort by start time (newest first)
             _history = _history.OrderByDescending(r => r.StartTime).ToList();
 
             // Save to file
-            await Task.Run(() => SaveToFile());
-
-            Log.Information("Saved run {RunId} to history", report.RunId);
+            await SaveToFileAsync();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Failed to save run {RunId} to history", report.RunId);
             throw;
         }
-        finally
-        {
-            _lock.Release();
-        }
     }
-
+    
     /// <summary>
     /// Delete a specific run.
     /// </summary>
-    /// <param name="runId">The run ID to delete.</param>
     public async Task DeleteRunAsync(string runId)
     {
         if (string.IsNullOrEmpty(runId))
         {
-            throw new ArgumentException("Run ID cannot be null or empty", nameof(runId));
+            throw new ArgumentException("Run ID cannot be null or empty.", nameof(runId));
         }
 
         await EnsureLoadedAsync();
@@ -189,7 +169,7 @@ public class HistoryService : IHistoryService
 
             if (_history.Count < initialCount)
             {
-                await Task.Run(() => SaveToFile());
+                await SaveToFileAsync();
                 Log.Information("Deleted run {RunId} from history", runId);
             }
         }
@@ -198,12 +178,8 @@ public class HistoryService : IHistoryService
             Log.Error(ex, "Failed to delete run {RunId} from history", runId);
             throw;
         }
-        finally
-        {
-            _lock.Release();
-        }
     }
-
+    
     /// <summary>
     /// Clear all history.
     /// </summary>
@@ -213,8 +189,7 @@ public class HistoryService : IHistoryService
         try
         {
             _history = new List<RunReport>();
-            await Task.Run(() => SaveToFile());
-
+            await SaveToFileAsync();
             Log.Information("Cleared all history");
         }
         catch (Exception ex)
@@ -222,16 +197,46 @@ public class HistoryService : IHistoryService
             Log.Error(ex, "Failed to clear history");
             throw;
         }
-        finally
-        {
-            _lock.Release();
-        }
     }
+    
+    /// <summary>
+    /// Saves the current history to file atomically.
+    /// </summary>
+    private async Task SaveToFileAsync()
+    {
+        var directory = Path.GetDirectoryName(_historyPath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
 
+        // Create backup if file exists
+        if (File.Exists(_historyPath))
+        {
+            try
+            {
+                File.Copy(_historyPath, _backupPath, overwrite: true);
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Failed to create backup of history file");
+            }
+        }
+
+        var store = new HistoryStore
+        {
+            Version = "1.0",
+            LastUpdated = DateTimeOffset.UtcNow,
+            Runs = _history
+        };
+
+        var json = JsonSerializer.Serialize(store, _jsonOptions);
+        await File.WriteAllTextAsync(_historyPath, json);
+    }
+    
     /// <summary>
     /// Get storage statistics.
     /// </summary>
-    /// <returns>Storage statistics.</returns>
     public HistoryStats GetStats()
     {
         _lock.Wait();
@@ -267,40 +272,5 @@ public class HistoryService : IHistoryService
         {
             _lock.Release();
         }
-    }
-
-    /// <summary>
-    /// Saves the current history to file atomically.
-    /// </summary>
-    private void SaveToFile()
-    {
-        var directory = Path.GetDirectoryName(_historyPath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
-        // Create backup if file exists
-        if (File.Exists(_historyPath))
-        {
-            try
-            {
-                File.Copy(_historyPath, _backupPath, overwrite: true);
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "Failed to create backup of history file");
-            }
-        }
-
-        var store = new HistoryStore
-        {
-            Version = "1.0",
-            LastUpdated = DateTimeOffset.UtcNow,
-            Runs = _history
-        };
-
-        var json = JsonSerializer.Serialize(store, _jsonOptions);
-        File.WriteAllText(_historyPath, json);
     }
 }

@@ -37,7 +37,7 @@
                             <Setter TargetName="Border" Property="Opacity" Value="0.6"/>
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="#0078D4"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource SystemAccentColorPrimaryBrush}"/>
                             <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -57,7 +57,7 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="2" Stroke="#0078D4" StrokeThickness="2" StrokeDashArray="4 2" RadiusX="4" RadiusY="4"/>
+                                <Rectangle Margin="2" Stroke="{DynamicResource SystemAccentColorPrimaryBrush}" StrokeThickness="2" StrokeDashArray="4 2" RadiusX="4" RadiusY="4"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -74,7 +74,7 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="-2" Stroke="#0078D4" StrokeThickness="2" RadiusX="2" RadiusY="2"/>
+                                <Rectangle Margin="-2" Stroke="{DynamicResource SystemAccentColorPrimaryBrush}" StrokeThickness="2" RadiusX="2" RadiusY="2"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -91,7 +91,7 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="-2" Stroke="#0078D4" StrokeThickness="2" RadiusX="2" RadiusY="2"/>
+                                <Rectangle Margin="-2" Stroke="{DynamicResource SystemAccentColorPrimaryBrush}" StrokeThickness="2" RadiusX="2" RadiusY="2"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -108,7 +108,7 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="2" Stroke="#0078D4" StrokeThickness="2" StrokeDashArray="4 2" RadiusX="2" RadiusY="2"/>
+                                <Rectangle Margin="2" Stroke="{DynamicResource SystemAccentColorPrimaryBrush}" StrokeThickness="2" StrokeDashArray="4 2" RadiusX="2" RadiusY="2"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -125,7 +125,7 @@
                     <Setter Property="Control.Template">
                         <Setter.Value>
                             <ControlTemplate>
-                                <Rectangle Margin="2" Stroke="#0078D4" StrokeThickness="1" StrokeDashArray="2 2" RadiusX="2" RadiusY="2"/>
+                                <Rectangle Margin="2" Stroke="{DynamicResource SystemAccentColorPrimaryBrush}" StrokeThickness="1" StrokeDashArray="2 2" RadiusX="2" RadiusY="2"/>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>

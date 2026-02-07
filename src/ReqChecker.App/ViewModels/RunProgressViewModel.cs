@@ -183,6 +183,10 @@ public partial class RunProgressViewModel : ObservableObject
         finally
         {
             OnCompletion();
+
+            // Dispose CancellationTokenSource to prevent memory leaks
+            Cts?.Dispose();
+            Cts = null;
         }
     }
 

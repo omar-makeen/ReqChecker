@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.App.Services;
+using System.ComponentModel;
 using Wpf.Ui.Controls;
 
 namespace ReqChecker.App.ViewModels;
@@ -33,6 +34,8 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private bool _isSidebarExpanded;
 
+    private PropertyChangedEventHandler? _themeHandler;
+
     public MainViewModel(IPreferencesService preferencesService, IAppState appState)
     {
         _preferencesService = preferencesService;
@@ -44,6 +47,16 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
         // Subscribe to profile changes
         _appState.CurrentProfileChanged += OnCurrentProfileChanged;
+
+        // Initialize theme handler as a stored field to enable proper unsubscription
+        _themeHandler = (s, e) =>
+        {
+            if (e.PropertyName == nameof(ThemeService.CurrentTheme))
+            {
+                OnPropertyChanged(nameof(ThemeLabel));
+                OnPropertyChanged(nameof(ThemeIcon));
+            }
+        };
     }
 
     private void OnCurrentProfileChanged(object? sender, EventArgs e)
@@ -87,17 +100,18 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
     partial void OnThemeServiceChanged(ThemeService? value)
     {
-        if (value != null)
+        // Unsubscribe from old theme service if it exists
+        if (ThemeService != null && _themeHandler != null)
         {
-            value.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(ThemeService.CurrentTheme))
-                {
-                    OnPropertyChanged(nameof(ThemeLabel));
-                    OnPropertyChanged(nameof(ThemeIcon));
-                }
-            };
+            ThemeService.PropertyChanged -= _themeHandler;
         }
+
+        // Subscribe to new theme service if it exists
+        if (value != null && _themeHandler != null)
+        {
+            value.PropertyChanged += _themeHandler;
+        }
+
         OnPropertyChanged(nameof(ThemeLabel));
         OnPropertyChanged(nameof(ThemeIcon));
     }
@@ -144,5 +158,11 @@ public partial class MainViewModel : ObservableObject, IDisposable
     public void Dispose()
     {
         _appState.CurrentProfileChanged -= OnCurrentProfileChanged;
+
+        // Unsubscribe from theme service property changed
+        if (ThemeService != null && _themeHandler != null)
+        {
+            ThemeService.PropertyChanged -= _themeHandler;
+        }
     }
 }

@@ -85,6 +85,31 @@ public class ProfileStorageService : IProfileStorageService
     }
 
     /// <summary>
+    /// Validates a file name to prevent path traversal attacks.
+    /// </summary>
+    /// <param name="fileName">The file name to validate.</param>
+    /// <exception cref="ArgumentException">Thrown if the file name is invalid.</exception>
+    private void ValidateFileName(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+        }
+
+        // Check if the file name contains path separators
+        if (Path.GetFileName(fileName) != fileName)
+        {
+            throw new ArgumentException("Invalid filename: must not contain path separators.", nameof(fileName));
+        }
+
+        // Check for path traversal sequences
+        if (fileName.Contains(".."))
+        {
+            throw new ArgumentException("Invalid filename: must not contain path traversal sequences.", nameof(fileName));
+        }
+    }
+
+    /// <summary>
     /// Deletes a profile file from the user profiles directory.
     /// </summary>
     /// <param name="fileName">The file name to delete.</param>
@@ -94,6 +119,9 @@ public class ProfileStorageService : IProfileStorageService
         {
             throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
         }
+
+        // Validate file name before processing
+        ValidateFileName(fileName);
 
         var filePath = Path.Combine(_profilesPath, fileName);
 
@@ -115,6 +143,9 @@ public class ProfileStorageService : IProfileStorageService
         {
             return false;
         }
+
+        // Validate file name before processing
+        ValidateFileName(fileName);
 
         var filePath = Path.Combine(_profilesPath, fileName);
         return File.Exists(filePath);

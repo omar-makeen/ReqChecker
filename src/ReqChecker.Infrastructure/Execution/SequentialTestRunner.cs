@@ -119,6 +119,29 @@ public class SequentialTestRunner : ITestRunner
             // Check for PromptAtRun fields and prompt for credentials if needed
             var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
 
+            // If credentials were not provided (user cancelled), skip the test
+            if (context == null)
+            {
+                var result = new TestResult
+                {
+                    TestId = testDefinition.Id,
+                    TestType = testDefinition.Type,
+                    DisplayName = testDefinition.DisplayName,
+                    Status = TestStatus.Skipped,
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow,
+                    Duration = TimeSpan.Zero,
+                    Error = new TestError
+                    {
+                        Category = ErrorCategory.Configuration,
+                        Message = "Credentials not provided"
+                    }
+                };
+                results.Add(result);
+                progress?.Report(result);
+                continue;
+            }
+
             // Execute test with retry policy
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
@@ -208,6 +231,11 @@ public class SequentialTestRunner : ITestRunner
                 }
 
                 // Return credentials in execution context (not in Parameters)
+                // Return null if both username and password are null (user cancelled)
+                if (username == null && password == null)
+                {
+                    return null;
+                }
                 return new TestExecutionContext(username ?? string.Empty, password ?? string.Empty);
             }
         }

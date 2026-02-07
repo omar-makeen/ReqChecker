@@ -2,6 +2,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
+using ReqChecker.Core.Services;
 using ReqChecker.Core.Utilities;
 using System.Globalization;
 
@@ -35,8 +36,11 @@ public class CsvExporter : IExporter
             Directory.CreateDirectory(directory);
         }
 
-        // Apply credential masking if requested
-        var reportToExport = maskCredentials ? CredentialMasker.MaskCredentials(report) : report;
+        // Sanitize sensitive data before export
+        var sanitizedReport = TestResultSanitizer.SanitizeForPersistence(report);
+
+        // Apply credential masking if requested (in addition to sanitization)
+        var reportToExport = maskCredentials ? CredentialMasker.MaskCredentials(sanitizedReport) : sanitizedReport;
 
         // Write CSV file
         await using var writer = new StreamWriter(filePath);

@@ -4,6 +4,7 @@ using QuestPDF.Infrastructure;
 using ReqChecker.Core.Enums;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
+using ReqChecker.Core.Services;
 using ReqChecker.Core.Utilities;
 using System.Reflection;
 
@@ -23,9 +24,13 @@ public class PdfExporter : IExporter
         ArgumentNullException.ThrowIfNull(report);
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
+        // Sanitize sensitive data before export
+        var sanitizedReport = TestResultSanitizer.SanitizeForPersistence(report);
+
+        // Apply credential masking if requested (in addition to sanitization)
         var reportToExport = maskCredentials
-            ? CredentialMasker.MaskCredentials(report)
-            : report;
+            ? CredentialMasker.MaskCredentials(sanitizedReport)
+            : sanitizedReport;
 
         // Ensure directory exists
         var directory = Path.GetDirectoryName(filePath);

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
+using ReqChecker.Core.Services;
 using ReqChecker.Core.Utilities;
 
 namespace ReqChecker.Infrastructure.Export;
@@ -33,8 +34,11 @@ public class JsonExporter : IExporter
             Directory.CreateDirectory(directory);
         }
 
-        // Apply credential masking if requested
-        var reportToExport = maskCredentials ? CredentialMasker.MaskCredentials(report) : report;
+        // Sanitize sensitive data before export
+        var sanitizedReport = TestResultSanitizer.SanitizeForPersistence(report);
+
+        // Apply credential masking if requested (in addition to sanitization)
+        var reportToExport = maskCredentials ? CredentialMasker.MaskCredentials(sanitizedReport) : sanitizedReport;
 
         // Serialize using source-generated context
         var json = JsonSerializer.Serialize(reportToExport, AppJsonContext.Default.RunReport);

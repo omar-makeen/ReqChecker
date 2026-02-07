@@ -32,6 +32,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (code removal) (025-remove-trend-chart)
 - N/A (in-memory RunReport via IAppState) (027-premium-results)
 - N/A (in-memory only) (028-premium-test-execution-ux)
+- JSON files in `%LOCALAPPDATA%/ReqChecker/` (history.json), Windows Credential Manager (credentials) (029-security-quality-hardening)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -51,9 +52,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 029-security-quality-hardening: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json
 - 028-premium-test-execution-ux: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 027-premium-results: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 026-premium-history-cards: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 

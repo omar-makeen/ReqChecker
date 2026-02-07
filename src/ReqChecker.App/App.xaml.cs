@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using ReqChecker.Core.Interfaces;
@@ -14,6 +15,7 @@ using ReqChecker.Infrastructure.Logging;
 using ReqChecker.Infrastructure.Security;
 using ReqChecker.App.ViewModels;
 using ReqChecker.App.Services;
+using ReqChecker.App.Views;
 
 namespace ReqChecker.App;
 
@@ -224,5 +226,39 @@ public partial class App : System.Windows.Application
 
         // Build service provider
         Services = services.BuildServiceProvider();
+
+        // Wire PromptForCredentials callback on SequentialTestRunner
+        var testRunner = Services.GetRequiredService<ITestRunner>() as SequentialTestRunner;
+        if (testRunner != null)
+        {
+            testRunner.PromptForCredentials = async (label, credRef, _) =>
+            {
+                // Dispatch to UI thread
+                var tcs = new TaskCompletionSource<(string?, string?)>();
+
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    // Create credential prompt ViewModel
+                    var viewModel = new CredentialPromptViewModel();
+                    viewModel.Initialize(label, label, credRef);
+
+                    // Show credential prompt dialog
+                    var dialog = new CredentialPromptDialog(viewModel);
+                    dialog.Owner = Current.MainWindow;
+                    var result = dialog.ShowDialog();
+
+                    if (result == true)
+                    {
+                        tcs.SetResult((viewModel.Username, viewModel.Password));
+                    }
+                    else
+                    {
+                        tcs.SetResult((null, null));
+                    }
+                });
+
+                return await tcs.Task;
+            };
+        }
     }
 }

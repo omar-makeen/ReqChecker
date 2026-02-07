@@ -13,7 +13,7 @@ namespace ReqChecker.App.ViewModels;
 /// <summary>
 /// View model for diagnostics view.
 /// </summary>
-public partial class DiagnosticsViewModel : ObservableObject
+public partial class DiagnosticsViewModel : ObservableObject, IDisposable
 {
     [ObservableProperty]
     private string? _statusMessage;
@@ -229,5 +229,13 @@ public partial class DiagnosticsViewModel : ObservableObject
             IsStatusError = true;
             Log.Error(ex, "Failed to copy diagnostic details");
         }
+    }
+
+    /// <summary>
+    /// Disposes resources and unsubscribes from events.
+    /// </summary>
+    public void Dispose()
+    {
+        _appState.LastRunReportChanged -= OnLastRunReportChanged;
     }
 }
