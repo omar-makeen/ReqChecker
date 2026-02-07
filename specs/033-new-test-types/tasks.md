@@ -48,8 +48,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T006 [US2] Implement `TcpPortOpenTest` class in `src/ReqChecker.Infrastructure/Tests/TcpPortOpenTest.cs` — use `[TestType("TcpPortOpen")]`, `System.Net.Sockets.TcpClient.ConnectAsync` with linked CTS for timeout. Parameters: `host` (required), `port` (required, int), `connectTimeout` (optional, default 5000ms). Evidence: host, port, connected (bool), remote endpoint, connect time. Error categories: `Network` for connection refused, `Timeout` for connection timeout, `Configuration` for missing/invalid parameters. Handle cancellation → Skipped.
-- [ ] T007 [US2] Add a TcpPortOpen test entry to `src/ReqChecker.App/Profiles/default-profile.json` — target `www.example.com` port `443`, add `dependsOn`, `fieldPolicy`, `timeout`, `retryCount`, `requiresAdmin` fields per schema v3 format
+- [x] T006 [US2] Implement `TcpPortOpenTest` class in `src/ReqChecker.Infrastructure/Tests/TcpPortOpenTest.cs` — use `[TestType("TcpPortOpen")]`, `System.Net.Sockets.TcpClient.ConnectAsync` with linked CTS for timeout. Parameters: `host` (required), `port` (required, int), `connectTimeout` (optional, default 5000ms). Evidence: host, port, connected (bool), remote endpoint, connect time. Error categories: `Network` for connection refused, `Timeout` for connection timeout, `Configuration` for missing/invalid parameters. Handle cancellation → Skipped.
+- [x] T007 [US2] Add a TcpPortOpen test entry to `src/ReqChecker.App/Profiles/default-profile.json` — target `www.example.com` port `443`, add `dependsOn`, `fieldPolicy`, `timeout`, `retryCount`, `requiresAdmin` fields per schema v3 format
 
 **Checkpoint**: TcpPortOpen test is functional. Launch app, load default profile, run TCP port test — passes with connection time in evidence. `dotnet build` succeeds.
 

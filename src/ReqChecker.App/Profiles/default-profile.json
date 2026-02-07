@@ -121,6 +121,26 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-007",
+      "type": "TcpPortOpen",
+      "displayName": "Check TCP Port Connectivity",
+      "description": "Verifies that a specific host:port is reachable via TCP handshake.",
+      "parameters": {
+        "host": "www.example.com",
+        "port": 443,
+        "connectTimeout": 5000
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "connectTimeout": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
     }
   ],
   "signature": null
