@@ -33,8 +33,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Implement `DnsResolveTest` class in `src/ReqChecker.Infrastructure/Tests/DnsResolveTest.cs` — use `[TestType("DnsResolve")]`, `System.Net.Dns.GetHostAddressesAsync`, parameters: `hostname` (required), `expectedAddress` (optional). Evidence: resolved addresses, address family (IPv4/IPv6/Mixed), resolution time. Error categories: `Network` for resolution failure, `Validation` for expected-address mismatch, `Configuration` for missing hostname parameter. Handle cancellation → Skipped.
-- [ ] T005 [US1] Update `src/ReqChecker.App/Profiles/sample-diagnostics.json` — change test 003 type from `DnsLookup` to `DnsResolve` (the alias in T001 ensures backward compatibility for any external profiles still using `DnsLookup`)
+- [x] T004 [US1] Implement `DnsResolveTest` class in `src/ReqChecker.Infrastructure/Tests/DnsResolveTest.cs` — use `[TestType("DnsResolve")]`, `System.Net.Dns.GetHostAddressesAsync`, parameters: `hostname` (required), `expectedAddress` (optional). Evidence: resolved addresses, address family (IPv4/IPv6/Mixed), resolution time. Error categories: `Network` for resolution failure, `Validation` for expected-address mismatch, `Configuration` for missing hostname parameter. Handle cancellation → Skipped.
+- [x] T005 [US1] Update `src/ReqChecker.App/Profiles/sample-diagnostics.json` — change test 003 type from `DnsLookup` to `DnsResolve` (the alias in T001 ensures backward compatibility for any external profiles still using `DnsLookup`)
 
 **Checkpoint**: DnsResolve test is functional. Launch app, load sample profile, run DNS Resolution Check — passes with evidence showing resolved IPs and timing. `dotnet build` succeeds.
 

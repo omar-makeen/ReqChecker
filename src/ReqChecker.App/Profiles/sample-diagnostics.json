@@ -49,7 +49,7 @@
     },
     {
       "id": "10000000-0000-0000-0000-000000000003",
-      "type": "DnsLookup",
+      "type": "DnsResolve",
       "displayName": "DNS Resolution Check",
       "description": "Verifies DNS can resolve google.com.",
       "parameters": {
