@@ -50,9 +50,19 @@ public class FluentProfileValidator : IProfileValidator
 
             RuleFor(p => p.Tests)
                 .NotEmpty().WithMessage("Profile must contain at least one test.")
-                .Must(HaveUniqueTestIds).WithMessage("All test IDs within a profile must be unique.")
-                .Must(HaveValidDependencyReferences).WithMessage("All dependency references must be valid.")
-                .Must(HaveNoCircularDependencies).WithMessage("Profile must not contain circular dependencies.");
+                .Must(HaveUniqueTestIds).WithMessage("All test IDs within a profile must be unique.");
+
+            RuleFor(p => p.Tests)
+                .Custom((tests, context) =>
+                {
+                    if (tests == null || tests.Count == 0) return;
+
+                    foreach (var error in GetInvalidDependencyReferences(tests))
+                        context.AddFailure("Tests", error);
+
+                    foreach (var error in GetCircularDependencies(tests))
+                        context.AddFailure("Tests", error);
+                });
 
             RuleForEach(p => p.Tests)
                 .SetValidator(new TestDefinitionValidator());
@@ -77,82 +87,69 @@ public class FluentProfileValidator : IProfileValidator
             return tests.Select(t => t.Id).Distinct().Count() == tests.Count;
         }
 
-        private static bool HaveValidDependencyReferences(List<TestDefinition> tests)
+        private static IEnumerable<string> GetInvalidDependencyReferences(List<TestDefinition> tests)
         {
-            if (tests == null || tests.Count == 0)
-            {
-                return true;
-            }
-
             var validTestIds = new HashSet<string>(tests.Select(t => t.Id));
 
             foreach (var test in tests)
             {
-                if (test.DependsOn == null)
-                {
-                    continue;
-                }
+                if (test.DependsOn == null) continue;
 
                 foreach (var depId in test.DependsOn)
                 {
                     if (!validTestIds.Contains(depId))
                     {
-                        return false;
+                        yield return $"Test '{test.DisplayName}' ({test.Id}) references unknown dependency '{depId}'.";
                     }
                 }
             }
-
-            return true;
         }
 
-        private static bool HaveNoCircularDependencies(List<TestDefinition> tests)
+        private static IEnumerable<string> GetCircularDependencies(List<TestDefinition> tests)
         {
-            if (tests == null || tests.Count == 0)
-            {
-                return true;
-            }
-
             var visited = new HashSet<string>();
             var visiting = new HashSet<string>();
+            var testLookup = tests.ToDictionary(t => t.Id);
 
             foreach (var test in tests)
             {
                 if (!visited.Contains(test.Id))
                 {
-                    if (HasCycle(test.Id, tests, visited, visiting))
+                    var cyclePath = new List<string>();
+                    if (HasCycle(test.Id, testLookup, visited, visiting, cyclePath))
                     {
-                        return false;
+                        var displayName = testLookup.TryGetValue(cyclePath[0], out var t) ? t.DisplayName : cyclePath[0];
+                        yield return $"Test '{displayName}' ({cyclePath[0]}) is involved in a circular dependency.";
                     }
                 }
             }
-
-            return true;
         }
 
         private static bool HasCycle(
             string testId,
-            List<TestDefinition> tests,
+            Dictionary<string, TestDefinition> testLookup,
             HashSet<string> visited,
-            HashSet<string> visiting)
+            HashSet<string> visiting,
+            List<string> cyclePath)
         {
             if (visiting.Contains(testId))
             {
-                return true; // Found a cycle
+                cyclePath.Add(testId);
+                return true;
             }
 
             if (visited.Contains(testId))
             {
-                return false; // Already processed, no cycle from this path
+                return false;
             }
 
             visiting.Add(testId);
 
-            var test = tests.FirstOrDefault(t => t.Id == testId);
-            if (test != null && test.DependsOn != null)
+            if (testLookup.TryGetValue(testId, out var test) && test.DependsOn != null)
             {
                 foreach (var depId in test.DependsOn)
                 {
-                    if (HasCycle(depId, tests, visited, visiting))
+                    if (HasCycle(depId, testLookup, visited, visiting, cyclePath))
                     {
                         return true;
                     }

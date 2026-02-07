@@ -86,6 +86,7 @@ public class SequentialTestRunner : ITestRunner
                 };
                 results.Add(result);
                 progress?.Report(result);
+                completedResults[testDefinition.Id] = result;
                 continue;
             }
 
@@ -109,6 +110,7 @@ public class SequentialTestRunner : ITestRunner
                 };
                 results.Add(result);
                 progress?.Report(result);
+                completedResults[testDefinition.Id] = result;
                 continue;
             }
 
@@ -160,6 +162,7 @@ public class SequentialTestRunner : ITestRunner
                     };
                     results.Add(result);
                     progress?.Report(result);
+                    completedResults[testDefinition.Id] = result;
                     continue;
                 }
             }
@@ -195,6 +198,7 @@ public class SequentialTestRunner : ITestRunner
                 };
                 results.Add(result);
                 progress?.Report(result);
+                completedResults[testDefinition.Id] = result;
                 continue;
             }
 

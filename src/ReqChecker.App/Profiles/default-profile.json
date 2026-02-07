@@ -1,7 +1,7 @@
 {
   "id": "default-profile-guid-0001",
   "name": "Default Environment Readiness Profile",
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "source": "Bundled",
   "runSettings": {
     "defaultTimeout": 30000,

@@ -407,7 +407,7 @@
                                             </StackPanel>
                                             <!-- Dependency Indicator -->
                                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0"
-                                                        Visibility="{Binding Test.DependsOn.Count, Converter={StaticResource CountToVisibilityConverter}}">
+                                                        Visibility="{Binding DependencyDisplayText, Converter={StaticResource NullToVisibilityConverter}}">
                                                 <ui:SymbolIcon Symbol="Link24"
                                                                FontSize="12"
                                                                Foreground="{DynamicResource AccentPrimary}"

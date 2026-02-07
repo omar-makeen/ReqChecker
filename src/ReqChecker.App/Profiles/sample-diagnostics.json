@@ -1,7 +1,7 @@
 {
   "id": "00000000-0000-0000-0000-000000000001",
   "name": "Sample Diagnostics",
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "source": "Bundled",
   "runSettings": {
     "defaultTimeout": 30000,
@@ -25,7 +25,8 @@
       },
       "timeout": null,
       "retryCount": null,
-      "requiresAdmin": false
+      "requiresAdmin": false,
+      "dependsOn": []
     },
     {
       "id": "10000000-0000-0000-0000-000000000002",
@@ -43,7 +44,8 @@
       },
       "timeout": null,
       "retryCount": null,
-      "requiresAdmin": false
+      "requiresAdmin": false,
+      "dependsOn": ["10000000-0000-0000-0000-000000000001"]
     },
     {
       "id": "10000000-0000-0000-0000-000000000003",
@@ -58,7 +60,8 @@
       },
       "timeout": null,
       "retryCount": null,
-      "requiresAdmin": false
+      "requiresAdmin": false,
+      "dependsOn": []
     },
     {
       "id": "10000000-0000-0000-0000-000000000004",
@@ -73,7 +76,8 @@
       },
       "timeout": null,
       "retryCount": null,
-      "requiresAdmin": false
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
