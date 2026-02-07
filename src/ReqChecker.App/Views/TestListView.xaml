@@ -115,10 +115,8 @@
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Center"
                                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Foreground="White" FontWeight="SemiBold">
-                                <Run Text="{Binding SelectableTests.Count, FallbackValue=0, Mode=OneWay}"/>
-                                <Run Text=" tests"/>
-                            </TextBlock>
+                            <TextBlock Foreground="White" FontWeight="SemiBold"
+                                       Text="{Binding TestCountDisplay}"/>
                         </Border>
 
                         <!-- Run All Tests Button -->
@@ -166,23 +164,72 @@
             </Grid>
         </Border>
 
-        <!-- Toolbar Row - Select All -->
+        <!-- Toolbar Row - Search and Select All -->
         <Border Grid.Row="2"
                 Margin="0,0,0,16"
                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search TextBox -->
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Search Icon -->
+                    <ui:SymbolIcon Grid.Column="0"
+                                   Symbol="Search16"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource TextTertiary}"
+                                   VerticalAlignment="Center"
+                                   Margin="12,0,0,0"/>
+
+                    <!-- Search TextBox -->
+                    <TextBox Grid.Column="1"
+                             Style="{StaticResource InputField}"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="8,8,36,8"
+                             BorderThickness="0"
+                             Background="Transparent"/>
+
+                    <!-- Clear Button (X) - visible when text is present -->
+                    <Button HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Width="28"
+                            Height="28"
+                            Margin="0,0,8,0"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Command="{Binding ClearSearchCommand}"
+                            Visibility="{Binding SearchText, Converter={StaticResource NullToVisibilityConverter}}">
+                        <ui:SymbolIcon Symbol="Dismiss16"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource TextTertiary}"/>
+                    </Button>
+                </Grid>
+
                 <!-- Select All Checkbox -->
-                <CheckBox Style="{StaticResource AccentCheckBox}"
-                          IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
-                          IsThreeState="False"
-                          VerticalAlignment="Center"
-                          Margin="0,0,8,0">
-                </CheckBox>
-                <TextBlock Text="Select All"
-                           Style="{DynamicResource TextBody}"
-                           Foreground="{DynamicResource TextPrimary}"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <CheckBox Style="{StaticResource AccentCheckBox}"
+                              IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                              IsThreeState="False"
+                              VerticalAlignment="Center"
+                              Margin="0,0,8,0">
+                    </CheckBox>
+                    <TextBlock Text="Select All"
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextPrimary}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Empty State - No Profile Loaded -->
@@ -242,10 +289,48 @@
             </StackPanel>
         </Border>
 
+        <!-- Empty State - No Filter Results -->
+        <Border Grid.Row="3"
+                Visibility="{Binding IsNoFilterResults, Converter={StaticResource BoolToVisibilityConverter}}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,60,0,0">
+            <StackPanel HorizontalAlignment="Center" MaxWidth="400">
+                <!-- Illustration -->
+                <Border Background="{DynamicResource BackgroundSurface}"
+                        CornerRadius="50"
+                        Width="100"
+                        Height="100"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,32">
+                    <ui:SymbolIcon Symbol="Search24"
+                                   FontSize="48"
+                                   Foreground="{DynamicResource AccentPrimary}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Title -->
+                <TextBlock Text="No tests match your search"
+                           Style="{DynamicResource TextH2}"
+                           Foreground="{DynamicResource TextPrimary}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12"/>
+
+                <!-- Description -->
+                <TextBlock Text="Try adjusting your search terms or clearing the search box to see all tests."
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextSecondary}"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
         <!-- Test List with virtualization -->
         <ListBox Grid.Row="3"
-                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}"
-                 ItemsSource="{Binding SelectableTests}"
+                 Visibility="{Binding ShouldShowTestList, Converter={StaticResource BoolToVisibilityConverter}}"
+                 ItemsSource="{Binding FilteredTestsView}"
                  Background="Transparent"
                  BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"

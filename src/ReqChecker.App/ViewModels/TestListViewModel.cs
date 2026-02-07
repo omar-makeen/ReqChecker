@@ -6,6 +6,7 @@ using ReqChecker.App.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 
 namespace ReqChecker.App.ViewModels;
 
@@ -46,22 +47,40 @@ public partial class TestListViewModel : ObservableObject, IDisposable
 
     /// <summary>
     /// Gets or sets whether all tests are selected. Returns true if all selected, false if none, null if mixed.
-    /// Setting a value checks or unchecks all tests.
+    /// Setting a value checks or unchecks all tests. When IsFilterActive is true, operates on visible items only.
     /// </summary>
     public bool? IsAllSelected
     {
         get
         {
+            // When filter is active, check only visible items
+            if (IsFilterActive && FilteredTestsView != null)
+            {
+                var visibleItems = FilteredTestsView.Cast<SelectableTestItem>().ToList();
+                if (visibleItems.Count == 0)
+                {
+                    return null;
+                }
+
+                var allSelected = visibleItems.All(item => item.IsSelected);
+                var noneSelected = visibleItems.All(item => !item.IsSelected);
+
+                if (allSelected) return true;
+                if (noneSelected) return false;
+                return null;
+            }
+
+            // When no filter, check all items
             if (SelectableTests.Count == 0)
             {
                 return null;
             }
 
-            var allSelected = SelectableTests.All(item => item.IsSelected);
-            var noneSelected = SelectableTests.All(item => !item.IsSelected);
+            var allSelectedAll = SelectableTests.All(item => item.IsSelected);
+            var noneSelectedAll = SelectableTests.All(item => !item.IsSelected);
 
-            if (allSelected) return true;
-            if (noneSelected) return false;
+            if (allSelectedAll) return true;
+            if (noneSelectedAll) return false;
             return null;
         }
         set
@@ -81,6 +100,49 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     /// Gets the total count of tests.
     /// </summary>
     public int TotalCount => SelectableTests.Count;
+
+    /// <summary>
+    /// Gets the count of tests passing the current filter.
+    /// </summary>
+    public int FilteredCount => FilteredTestsView?.Cast<SelectableTestItem>().Count() ?? 0;
+
+    /// <summary>
+    /// Gets whether a filter is active (search text is non-empty after trimming).
+    /// </summary>
+    public bool IsFilterActive => !string.IsNullOrWhiteSpace(SearchText);
+
+    /// <summary>
+    /// Gets the test count display string. Returns "X of Y tests" when filtered, "Y tests" when unfiltered.
+    /// </summary>
+    public string TestCountDisplay
+    {
+        get
+        {
+            if (IsFilterActive)
+            {
+                return $"{FilteredCount} of {TotalCount} tests";
+            }
+            return $"{TotalCount} tests";
+        }
+    }
+
+    /// <summary>
+    /// Gets whether there are no filter results (filter is active but no items match).
+    /// </summary>
+    public bool IsNoFilterResults => IsFilterActive && FilteredCount == 0;
+
+    /// <summary>
+    /// Gets whether the test list should be shown (profile loaded and no empty filter results).
+    /// </summary>
+    public bool ShouldShowTestList => CurrentProfile != null && !IsNoFilterResults;
+
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
+    /// <summary>
+    /// Gets the filtered collection view of tests.
+    /// </summary>
+    public ICollectionView? FilteredTestsView { get; private set; }
 
     /// <summary>
     /// Gets the run button label based on selection count.
@@ -161,10 +223,58 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     }
 
     /// <summary>
+    /// Called when SearchText property changes. Refreshes the filter and updates computed properties.
+    /// </summary>
+    partial void OnSearchTextChanged(string value)
+    {
+        FilteredTestsView?.Refresh();
+        OnPropertyChanged(nameof(FilteredCount));
+        OnPropertyChanged(nameof(IsFilterActive));
+        OnPropertyChanged(nameof(TestCountDisplay));
+        OnPropertyChanged(nameof(IsAllSelected));
+        OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(RunButtonLabel));
+        OnPropertyChanged(nameof(IsNoFilterResults));
+        OnPropertyChanged(nameof(ShouldShowTestList));
+    }
+
+    /// <summary>
+    /// Sets up the filtered collection view with a filter predicate.
+    /// </summary>
+    private void SetupFilteredView()
+    {
+        var view = CollectionViewSource.GetDefaultView(SelectableTests);
+        view.Filter = FilterTest;
+        FilteredTestsView = view;
+    }
+
+    /// <summary>
+    /// Filter predicate for test items. Returns true if the item matches the search text.
+    /// </summary>
+    private bool FilterTest(object obj)
+    {
+        if (obj is not SelectableTestItem item)
+            return false;
+
+        // Return true for all items when search is empty or whitespace
+        var trimmedSearch = SearchText.Trim();
+        if (string.IsNullOrWhiteSpace(trimmedSearch))
+            return true;
+
+        // Match against DisplayName (US1: name search), Type (US2: type search), Description (US3: description search)
+        return item.Test.DisplayName.Contains(trimmedSearch, StringComparison.OrdinalIgnoreCase)
+            || item.Test.Type.Contains(trimmedSearch, StringComparison.OrdinalIgnoreCase)
+            || (item.Test.Description?.Contains(trimmedSearch, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    /// <summary>
     /// Populates SelectableTests from given profile.
     /// </summary>
     private async Task PopulateSelectableTests(Profile profile)
     {
+        // Clear search text before rebuilding the collection
+        SearchText = string.Empty;
+
         // Unsubscribe from old items before clearing
         foreach (var item in SelectableTests)
             item.PropertyChanged -= OnItemPropertyChanged;
@@ -191,16 +301,24 @@ public partial class TestListViewModel : ObservableObject, IDisposable
             ValidationErrorMessage = null;
         }
 
+        // Set up the filtered view after populating the collection
+        SetupFilteredView();
+
         OnPropertyChanged(nameof(HasSelectedTests));
         OnPropertyChanged(nameof(IsAllSelected));
         OnPropertyChanged(nameof(SelectedCount));
         OnPropertyChanged(nameof(RunButtonLabel));
         OnPropertyChanged(nameof(ValidationErrorMessage));
+        OnPropertyChanged(nameof(FilteredCount));
+        OnPropertyChanged(nameof(IsFilterActive));
+        OnPropertyChanged(nameof(TestCountDisplay));
+        OnPropertyChanged(nameof(IsNoFilterResults));
+        OnPropertyChanged(nameof(ShouldShowTestList));
         RunAllTestsCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
-    /// Toggles all test selections.
+    /// Toggles all test selections. When IsFilterActive is true, toggles only visible items.
     /// </summary>
     [RelayCommand]
     private void ToggleSelectAll()
@@ -208,10 +326,32 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         // If indeterminate or none selected, check all
         // If all selected, uncheck all
         var newState = IsAllSelected != true;
-        foreach (var item in SelectableTests)
+
+        // When filter is active, iterate only visible items
+        if (IsFilterActive && FilteredTestsView != null)
         {
-            item.IsSelected = newState;
+            foreach (var item in FilteredTestsView.Cast<SelectableTestItem>())
+            {
+                item.IsSelected = newState;
+            }
         }
+        else
+        {
+            // When no filter, iterate all items
+            foreach (var item in SelectableTests)
+            {
+                item.IsSelected = newState;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Clears the search text.
+    /// </summary>
+    [RelayCommand]
+    private void ClearSearch()
+    {
+        SearchText = string.Empty;
     }
 
     /// <summary>
