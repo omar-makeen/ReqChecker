@@ -41,7 +41,8 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     public bool HasSelectedTests => SelectableTests.Any(item => item.IsSelected);
 
     /// <summary>
-    /// Gets whether all tests are selected. Returns true if all selected, false if none, null if mixed.
+    /// Gets or sets whether all tests are selected. Returns true if all selected, false if none, null if mixed.
+    /// Setting a value checks or unchecks all tests.
     /// </summary>
     public bool? IsAllSelected
     {
@@ -58,6 +59,12 @@ public partial class TestListViewModel : ObservableObject, IDisposable
             if (allSelected) return true;
             if (noneSelected) return false;
             return null;
+        }
+        set
+        {
+            var newState = value == true;
+            foreach (var item in SelectableTests)
+                item.IsSelected = newState;
         }
     }
 
@@ -126,6 +133,11 @@ public partial class TestListViewModel : ObservableObject, IDisposable
                 item.PropertyChanged -= OnItemPropertyChanged;
             }
             SelectableTests.Clear();
+            OnPropertyChanged(nameof(HasSelectedTests));
+            OnPropertyChanged(nameof(IsAllSelected));
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(RunButtonLabel));
+            RunAllTestsCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -135,7 +147,9 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         {
             OnPropertyChanged(nameof(HasSelectedTests));
             OnPropertyChanged(nameof(IsAllSelected));
+            OnPropertyChanged(nameof(SelectedCount));
             OnPropertyChanged(nameof(RunButtonLabel));
+            RunAllTestsCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -144,6 +158,10 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     /// </summary>
     private void PopulateSelectableTests(Profile profile)
     {
+        // Unsubscribe from old items before clearing
+        foreach (var item in SelectableTests)
+            item.PropertyChanged -= OnItemPropertyChanged;
+
         SelectableTests.Clear();
 
         foreach (var test in profile.Tests)
@@ -155,6 +173,9 @@ public partial class TestListViewModel : ObservableObject, IDisposable
 
         OnPropertyChanged(nameof(HasSelectedTests));
         OnPropertyChanged(nameof(IsAllSelected));
+        OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(RunButtonLabel));
+        RunAllTestsCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
@@ -183,13 +204,20 @@ public partial class TestListViewModel : ObservableObject, IDisposable
             return;
         }
 
-        // Store selected test IDs in AppState
-        var selectedTestIds = SelectableTests
-            .Where(item => item.IsSelected)
-            .Select(item => item.Test.Id)
-            .ToList();
+        // Store selected test IDs in AppState (null = run all, avoids unnecessary filtering)
+        if (SelectableTests.All(item => item.IsSelected))
+        {
+            _appState.SetSelectedTestIds(null);
+        }
+        else
+        {
+            var selectedTestIds = SelectableTests
+                .Where(item => item.IsSelected)
+                .Select(item => item.Test.Id)
+                .ToList();
 
-        _appState.SetSelectedTestIds(selectedTestIds);
+            _appState.SetSelectedTestIds(selectedTestIds);
+        }
 
         // Navigate to run progress view - it will handle actual execution
         _navigationService.NavigateToRunProgress();

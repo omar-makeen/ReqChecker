@@ -140,21 +140,24 @@ public partial class RunProgressViewModel : ObservableObject
 
         // Check if SelectedTestIds is set (user selected specific tests)
         var selectedTestIds = _appState.SelectedTestIds;
-        if (CurrentProfile != null && selectedTestIds != null && selectedTestIds.Count > 0)
+        if (selectedTestIds != null)
         {
-            // Create a shallow copy of the profile with filtered tests
-            CurrentProfile = new Profile
+            if (CurrentProfile != null && selectedTestIds.Count > 0)
             {
-                Id = CurrentProfile.Id,
-                Name = CurrentProfile.Name,
-                SchemaVersion = CurrentProfile.SchemaVersion,
-                Source = CurrentProfile.Source,
-                RunSettings = CurrentProfile.RunSettings,
-                Signature = CurrentProfile.Signature,
-                Tests = CurrentProfile.Tests.Where(t => selectedTestIds.Contains(t.Id)).ToList()
-            };
+                // Create a shallow copy of the profile with filtered tests
+                CurrentProfile = new Profile
+                {
+                    Id = CurrentProfile.Id,
+                    Name = CurrentProfile.Name,
+                    SchemaVersion = CurrentProfile.SchemaVersion,
+                    Source = CurrentProfile.Source,
+                    RunSettings = CurrentProfile.RunSettings,
+                    Signature = CurrentProfile.Signature,
+                    Tests = CurrentProfile.Tests.Where(t => selectedTestIds.Contains(t.Id)).ToList()
+                };
+            }
 
-            // Clear SelectedTestIds after consumption
+            // Always clear SelectedTestIds after consumption (prevents stale state)
             _appState.SetSelectedTestIds(null);
         }
 
