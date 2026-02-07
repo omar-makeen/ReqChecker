@@ -40,6 +40,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (in-memory session-only; `dependsOn` persisted in profile JSON files) (032-test-dependencies)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages) (033-new-test-types)
 - N/A (test results are in-memory; parameters persisted in profile JSON files) (033-new-test-types)
+- N/A (in-memory session-only; reuses IAppState.SelectedTestIds) (034-rerun-failed-tests)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -59,9 +60,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 034-rerun-failed-tests: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 - 033-new-test-types: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 - 032-test-dependencies: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, FluentValidation, Microsoft.Extensions.DependencyInjection
-- 031-fix-checkbox-ux: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 
