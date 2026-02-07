@@ -19,6 +19,14 @@ public class SequentialTestRunner : ITestRunner
     private readonly ICredentialProvider? _credentialProvider;
 
     /// <summary>
+    /// Type alias mappings for backward compatibility.
+    /// </summary>
+    private static readonly Dictionary<string, string> _typeAliases = new()
+    {
+        { "DnsLookup", "DnsResolve" }
+    };
+
+    /// <summary>
     /// Callback for prompting credentials during test execution.
     /// </summary>
     public Func<string, string, string?, Task<(string? username, string? password, bool rememberCredentials)>>? PromptForCredentials { get; set; }
@@ -44,6 +52,16 @@ public class SequentialTestRunner : ITestRunner
         return attribute?.TypeIdentifier ?? testType.Name;
     }
 
+    /// <summary>
+    /// Resolves a test type identifier through the alias mapping.
+    /// </summary>
+    /// <param name="typeIdentifier">The type identifier to resolve.</param>
+    /// <returns>The resolved type identifier (original if no alias exists).</returns>
+    private static string ResolveTypeAlias(string typeIdentifier)
+    {
+        return _typeAliases.TryGetValue(typeIdentifier, out var resolvedType) ? resolvedType : typeIdentifier;
+    }
+
     /// <inheritdoc/>
     public async Task<RunReport> RunTestsAsync(
         ProfileModel profile,
@@ -66,8 +84,11 @@ public class SequentialTestRunner : ITestRunner
             var testDefinition = profile.Tests[i];
             cancellationToken.ThrowIfCancellationRequested();
 
+            // Resolve type alias for backward compatibility
+            var resolvedType = ResolveTypeAlias(testDefinition.Type);
+
             // Check if test type is registered
-            if (!_tests.TryGetValue(testDefinition.Type, out var test))
+            if (!_tests.TryGetValue(resolvedType, out var test))
             {
                 var result = new TestResult
                 {
