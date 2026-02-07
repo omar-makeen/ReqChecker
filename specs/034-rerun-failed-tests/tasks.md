@@ -21,9 +21,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T001 [P] [US1] Add `HasFailedTests` computed property and `RerunFailedTestsCommand` to `src/ReqChecker.App/ViewModels/ResultsViewModel.cs` — `HasFailedTests` returns true when `Report?.Results` contains any result with `Status == TestStatus.Fail`; notify on change when `Report` changes. `RerunFailedTestsCommand` collects all `TestId` values where `Status == Fail`, calls `_appState.SetSelectedTestIds(failedIds)`, then `_navigationService.NavigateToRunProgress()`. CanExecute: `HasFailedTests && _navigationService != null`.
-- [ ] T002 [P] [US1] Add "Re-run Failed" PrimaryButton to `src/ReqChecker.App/Views/ResultsView.xaml` — insert after "Back to Tests" button and before the JSON export button in the header action StackPanel. Use `Style="{StaticResource PrimaryButton}"`, `Command="{Binding RerunFailedTestsCommand}"`, `Visibility` bound to `HasFailedTests` via `BooleanToVisibilityConverter`. Icon: `ArrowRepeatAll24` with `FontSize="16"` and `Margin="0,0,8,0"`. Button `Margin="0,0,8,0"`. Update TabIndex values: Re-run Failed = 2, shift JSON/CSV/PDF to 3/4/5.
-- [ ] T003 [US1] Verify `dotnet build` succeeds with zero errors, then launch app and manually test: (1) run profile with failing tests → button visible, click re-runs only failed tests; (2) run profile with all passing → button hidden.
+- [x] T001 [P] [US1] Add `HasFailedTests` computed property and `RerunFailedTestsCommand` to `src/ReqChecker.App/ViewModels/ResultsViewModel.cs` — `HasFailedTests` returns true when `Report?.Results` contains any result with `Status == TestStatus.Fail`; notify on change when `Report` changes. `RerunFailedTestsCommand` collects all `TestId` values where `Status == Fail`, calls `_appState.SetSelectedTestIds(failedIds)`, then `_navigationService.NavigateToRunProgress()`. CanExecute: `HasFailedTests && _navigationService != null`.
+- [x] T002 [P] [US1] Add "Re-run Failed" PrimaryButton to `src/ReqChecker.App/Views/ResultsView.xaml` — insert after "Back to Tests" button and before the JSON export button in the header action StackPanel. Use `Style="{StaticResource PrimaryButton}"`, `Command="{Binding RerunFailedTestsCommand}"`, `Visibility` bound to `HasFailedTests` via `BooleanToVisibilityConverter`. Icon: `ArrowRepeatAll24` with `FontSize="16"` and `Margin="0,0,8,0"`. Button `Margin="0,0,8,0"`. Update TabIndex values: Re-run Failed = 2, shift JSON/CSV/PDF to 3/4/5.
+- [x] T003 [US1] Verify `dotnet build` succeeds with zero errors, then launch app and manually test: (1) run profile with failing tests → button visible, click re-runs only failed tests; (2) run profile with all passing → button hidden.
 
 **Checkpoint**: User Story 1 is fully functional. Users can re-run failed tests with a single click. `dotnet build` succeeds.
 
@@ -37,8 +37,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T004 [US2] Extend `RerunFailedTestsCommand` in `src/ReqChecker.App/ViewModels/ResultsViewModel.cs` — in addition to collecting `Fail` test IDs, also collect `TestId` values where `Status == TestStatus.Skipped` AND `Error?.Category == ErrorCategory.Dependency`. Union both sets (deduplicated) before calling `SetSelectedTestIds`.
-- [ ] T005 [US2] Verify `dotnet build` succeeds, then launch app and manually test: (1) run profile with dependency chain where A fails and B (depends on A) is skipped → re-run includes both A and B; (2) cancel a run midway → cancelled-skipped tests are NOT included in re-run.
+- [x] T004 [US2] Extend `RerunFailedTestsCommand` in `src/ReqChecker.App/ViewModels/ResultsViewModel.cs` — in addition to collecting `Fail` test IDs, also collect `TestId` values where `Status == TestStatus.Skipped` AND `Error?.Category == ErrorCategory.Dependency`. Union both sets (deduplicated) before calling `SetSelectedTestIds`.
+- [x] T005 [US2] Verify `dotnet build` succeeds, then launch app and manually test: (1) run profile with dependency chain where A fails and B (depends on A) is skipped → re-run includes both A and B; (2) cancel a run midway → cancelled-skipped tests are NOT included in re-run.
 
 **Checkpoint**: Both user stories are complete. Failed tests AND their dependency-skipped dependents are included in re-run. `dotnet build` succeeds.
 

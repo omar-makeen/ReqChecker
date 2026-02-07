@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -62,6 +63,16 @@ public partial class ResultsViewModel : ObservableObject
     /// </summary>
     public bool HasReport => Report != null;
 
+    /// <summary>
+    /// Gets whether the report contains any failed tests.
+    /// </summary>
+    public bool HasFailedTests => Report?.Results?.Any(r => r.Status == TestStatus.Fail) ?? false;
+
+    /// <summary>
+    /// Gets the command to re-run failed tests.
+    /// </summary>
+    public IRelayCommand RerunFailedTestsCommand { get; }
+
     private readonly JsonExporter _jsonExporter;
     private readonly CsvExporter _csvExporter;
     private readonly PdfExporter _pdfExporter;
@@ -81,6 +92,8 @@ public partial class ResultsViewModel : ObservableObject
         _appState = appState;
         NavigationService = navigationService;
         DialogService = dialogService;
+
+        RerunFailedTestsCommand = new RelayCommand(ExecuteRerunFailedTests, CanExecuteRerunFailedTests);
     }
 
     /// <summary>
@@ -93,9 +106,12 @@ public partial class ResultsViewModel : ObservableObject
             _appState.SetLastRunReport(value);
             SetupFilteredResults();
         }
-        // Notify that CanExport and HasReport have changed (depend on Report)
+        // Notify that CanExport, HasReport, and HasFailedTests have changed (depend on Report)
         OnPropertyChanged(nameof(CanExport));
         OnPropertyChanged(nameof(HasReport));
+        OnPropertyChanged(nameof(HasFailedTests));
+        // Update the re-run failed tests command's CanExecute state
+        RerunFailedTestsCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
@@ -226,7 +242,7 @@ public partial class ResultsViewModel : ObservableObject
         IsExporting = true;
         StatusMessage = null;
         IsStatusError = false;
-        
+
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var format = Path.GetExtension(filePath).TrimStart('.').ToUpperInvariant();
 
@@ -272,5 +288,44 @@ public partial class ResultsViewModel : ObservableObject
             sw.Stop();
             IsExporting = false;
         }
+    }
+
+    /// <summary>
+    /// Executes the re-run failed tests command.
+    /// </summary>
+    private void ExecuteRerunFailedTests()
+    {
+        if (Report?.Results == null)
+            return;
+
+        // Collect failed test IDs
+        var failedIds = Report.Results
+            .Where(r => r.Status == TestStatus.Fail)
+            .Select(r => r.TestId);
+
+        // Collect dependency-skipped test IDs
+        var depSkippedIds = Report.Results
+            .Where(r => r.Status == TestStatus.Skipped && r.Error?.Category == ErrorCategory.Dependency)
+            .Select(r => r.TestId);
+
+        // Union both sets (deduplicated)
+        var rerunIds = failedIds.Union(depSkippedIds).ToList();
+
+        // Store the selected test IDs in app state
+        _appState.SetSelectedTestIds(rerunIds);
+
+        // Navigate to Run Progress page
+        NavigationService?.NavigateToRunProgress();
+
+        Log.Information("Re-run failed tests initiated: {TestCount} tests (failed: {FailedCount}, dep-skipped: {DepSkippedCount})",
+            rerunIds.Count, failedIds.Count(), depSkippedIds.Count());
+    }
+
+    /// <summary>
+    /// Determines whether the re-run failed tests command can execute.
+    /// </summary>
+    private bool CanExecuteRerunFailedTests()
+    {
+        return HasFailedTests && NavigationService != null;
     }
 }
