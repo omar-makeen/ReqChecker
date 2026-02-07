@@ -233,31 +233,18 @@ public partial class App : System.Windows.Application
         {
             testRunner.PromptForCredentials = async (label, credRef, _) =>
             {
-                // Dispatch to UI thread
-                var tcs = new TaskCompletionSource<(string?, string?)>();
-
+                (string?, string?) credentials = (null, null);
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    // Create credential prompt ViewModel
                     var viewModel = new CredentialPromptViewModel();
                     viewModel.Initialize(label, label, credRef);
-
-                    // Show credential prompt dialog
                     var dialog = new CredentialPromptDialog(viewModel);
                     dialog.Owner = Current.MainWindow;
                     var result = dialog.ShowDialog();
-
                     if (result == true)
-                    {
-                        tcs.SetResult((viewModel.Username, viewModel.Password));
-                    }
-                    else
-                    {
-                        tcs.SetResult((null, null));
-                    }
+                        credentials = (viewModel.Username, viewModel.Password);
                 });
-
-                return await tcs.Task;
+                return credentials;
             };
         }
     }

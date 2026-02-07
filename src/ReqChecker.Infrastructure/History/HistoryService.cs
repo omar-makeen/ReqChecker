@@ -99,6 +99,10 @@ public class HistoryService : IHistoryService
             Log.Error(ex, "Failed to load history, starting with empty history");
             _history = new List<RunReport>();
         }
+        finally
+        {
+            _lock.Release();
+        }
 
         _loaded = true;
         return _history.ToList();
@@ -147,6 +151,10 @@ public class HistoryService : IHistoryService
             Log.Error(ex, "Failed to save run {RunId} to history", report.RunId);
             throw;
         }
+        finally
+        {
+            _lock.Release();
+        }
     }
     
     /// <summary>
@@ -178,6 +186,10 @@ public class HistoryService : IHistoryService
             Log.Error(ex, "Failed to delete run {RunId} from history", runId);
             throw;
         }
+        finally
+        {
+            _lock.Release();
+        }
     }
     
     /// <summary>
@@ -196,6 +208,10 @@ public class HistoryService : IHistoryService
         {
             Log.Error(ex, "Failed to clear history");
             throw;
+        }
+        finally
+        {
+            _lock.Release();
         }
     }
     

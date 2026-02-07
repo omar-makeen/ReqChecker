@@ -119,8 +119,9 @@ public class SequentialTestRunner : ITestRunner
             // Check for PromptAtRun fields and prompt for credentials if needed
             var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
 
-            // If credentials were not provided (user cancelled), skip the test
-            if (context == null)
+            // Only skip if test requires credentials but user cancelled the prompt
+            var hasCredentialRef = testDefinition.Parameters?.ContainsKey("credentialRef") == true;
+            if (context == null && hasCredentialRef)
             {
                 var result = new TestResult
                 {
