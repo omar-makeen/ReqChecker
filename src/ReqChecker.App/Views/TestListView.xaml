@@ -59,6 +59,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -136,17 +137,46 @@
             </Grid>
         </Border>
 
-        <!-- Toolbar Row - Select All -->
+        <!-- Validation Error Banner -->
         <Border Grid.Row="1"
+                Margin="0,0,0,16"
+                Background="{DynamicResource StatusWarningBackground}"
+                BorderBrush="{DynamicResource StatusWarning}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16,12"
+                Visibility="{Binding ValidationErrorMessage, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ui:SymbolIcon Grid.Column="0"
+                               Symbol="Warning24"
+                               FontSize="20"
+                               Foreground="{DynamicResource StatusWarning}"
+                               Margin="0,0,12,0"
+                               VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding ValidationErrorMessage}"
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextPrimary}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Toolbar Row - Select All -->
+        <Border Grid.Row="2"
                 Margin="0,0,0,16"
                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal">
                 <!-- Select All Checkbox -->
                 <CheckBox Style="{StaticResource AccentCheckBox}"
-                         IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
-                         IsThreeState="False"
-                         VerticalAlignment="Center"
-                         Margin="0,0,8,0">
+                          IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                          IsThreeState="False"
+                          VerticalAlignment="Center"
+                          Margin="0,0,8,0">
                 </CheckBox>
                 <TextBlock Text="Select All"
                            Style="{DynamicResource TextBody}"
@@ -156,7 +186,7 @@
         </Border>
 
         <!-- Empty State - No Profile Loaded -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -213,7 +243,7 @@
         </Border>
 
         <!-- Test List with virtualization -->
-        <ListBox Grid.Row="2"
+        <ListBox Grid.Row="3"
                  Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}"
                  ItemsSource="{Binding SelectableTests}"
                  Background="Transparent"
@@ -357,7 +387,7 @@
                                                        TextTrimming="CharacterEllipsis"
                                                        MaxHeight="32"
                                                        Margin="0,2,0,0"
-                                                       Visibility="{Binding Test.Description, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                                        Visibility="{Binding Test.Description, Converter={StaticResource NullToVisibilityConverter}}"/>
                                             <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                                 <TextBlock Text="{Binding Test.Type}"
                                                            Style="{DynamicResource TextCaption}"
@@ -374,6 +404,19 @@
                                                            Style="{DynamicResource TextCaption}"
                                                            Foreground="{DynamicResource StatusSkip}"
                                                            Visibility="{Binding Test.RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            </StackPanel>
+                                            <!-- Dependency Indicator -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0"
+                                                        Visibility="{Binding Test.DependsOn.Count, Converter={StaticResource CountToVisibilityConverter}}">
+                                                <ui:SymbolIcon Symbol="Link24"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource AccentPrimary}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding DependencyDisplayText}"
+                                                           Style="{DynamicResource TextCaption}"
+                                                           Foreground="{DynamicResource AccentPrimary}"
+                                                           VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </StackPanel>
 

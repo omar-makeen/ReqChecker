@@ -17,6 +17,7 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     private readonly IAppState _appState;
     private readonly NavigationService _navigationService;
     private readonly ITestRunner _testRunner;
+    private readonly IProfileValidator _profileValidator;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -26,6 +27,9 @@ public partial class TestListViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     private DialogService? _dialogService;
+
+    [ObservableProperty]
+    private string? _validationErrorMessage;
 
     [ObservableProperty]
     private bool _isRunning;
@@ -97,11 +101,12 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         }
     }
 
-    public TestListViewModel(IAppState appState, NavigationService navigationService, ITestRunner testRunner)
+    public TestListViewModel(IAppState appState, NavigationService navigationService, ITestRunner testRunner, IProfileValidator profileValidator)
     {
         _appState = appState;
         _navigationService = navigationService;
         _testRunner = testRunner;
+        _profileValidator = profileValidator;
 
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
@@ -112,18 +117,18 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         // Initialize SelectableTests if profile is already loaded
         if (CurrentProfile != null)
         {
-            PopulateSelectableTests(CurrentProfile);
+            _ = PopulateSelectableTests(CurrentProfile);
         }
     }
 
-    private void OnCurrentProfileChanged(object? sender, EventArgs e)
+    private async void OnCurrentProfileChanged(object? sender, EventArgs e)
     {
         CurrentProfile = _appState.CurrentProfile;
 
         // Rebuild SelectableTests when profile changes
         if (CurrentProfile != null)
         {
-            PopulateSelectableTests(CurrentProfile);
+            await PopulateSelectableTests(CurrentProfile);
         }
         else
         {
@@ -133,10 +138,12 @@ public partial class TestListViewModel : ObservableObject, IDisposable
                 item.PropertyChanged -= OnItemPropertyChanged;
             }
             SelectableTests.Clear();
+            ValidationErrorMessage = null;
             OnPropertyChanged(nameof(HasSelectedTests));
             OnPropertyChanged(nameof(IsAllSelected));
             OnPropertyChanged(nameof(SelectedCount));
             OnPropertyChanged(nameof(RunButtonLabel));
+            OnPropertyChanged(nameof(ValidationErrorMessage));
             RunAllTestsCommand.NotifyCanExecuteChanged();
         }
     }
@@ -156,7 +163,7 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     /// <summary>
     /// Populates SelectableTests from given profile.
     /// </summary>
-    private void PopulateSelectableTests(Profile profile)
+    private async Task PopulateSelectableTests(Profile profile)
     {
         // Unsubscribe from old items before clearing
         foreach (var item in SelectableTests)
@@ -168,13 +175,27 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         {
             var item = new SelectableTestItem(test);
             item.PropertyChanged += OnItemPropertyChanged;
+            item.UpdateDependencyDisplayText(profile.Tests);
             SelectableTests.Add(item);
+        }
+
+        // Validate the profile and check for dependency-related errors
+        var validationResult = await _profileValidator.ValidateAsync(profile);
+        if (validationResult.Any())
+        {
+            // Set validation error message with summary of errors
+            ValidationErrorMessage = $"Profile validation errors: {string.Join("; ", validationResult)}";
+        }
+        else
+        {
+            ValidationErrorMessage = null;
         }
 
         OnPropertyChanged(nameof(HasSelectedTests));
         OnPropertyChanged(nameof(IsAllSelected));
         OnPropertyChanged(nameof(SelectedCount));
         OnPropertyChanged(nameof(RunButtonLabel));
+        OnPropertyChanged(nameof(ValidationErrorMessage));
         RunAllTestsCommand.NotifyCanExecuteChanged();
     }
 

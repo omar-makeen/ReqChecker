@@ -36,6 +36,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (030-selective-test-run)
 - N/A (in-memory session-only selection state; no persistence) (030-selective-test-run)
 - N/A (UI-only fix, no data persistence changes) (031-fix-checkbox-ux)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, FluentValidation, Microsoft.Extensions.DependencyInjection (032-test-dependencies)
+- N/A (in-memory session-only; `dependsOn` persisted in profile JSON files) (032-test-dependencies)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -55,9 +57,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 032-test-dependencies: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, FluentValidation, Microsoft.Extensions.DependencyInjection
 - 031-fix-checkbox-ux: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 - 030-selective-test-run: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
-- 029-security-quality-hardening: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json
 
 
 

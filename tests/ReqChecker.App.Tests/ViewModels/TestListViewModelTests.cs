@@ -20,11 +20,12 @@ public class TestListViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
         var mockTestRunner = new Mock<ITestRunner>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
 
         if (profile != null)
             mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
 
-        return new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object);
+        return new TestListViewModel(mockAppState.Object, navigationService, mockTestRunner.Object, mockProfileValidator.Object);
     }
 
     private static Profile CreateProfileWithTests(int count = 3)

@@ -400,6 +400,7 @@
                                            Summary="{Binding Converter={StaticResource TestResultSummaryConverter}}"
                                            TechnicalDetails="{Binding Converter={StaticResource TechnicalDetailsConverter}}"
                                            ErrorMessage="{Binding Error.Message}"
+                                           ErrorCategory="{Binding Error.Category}"
                                            AutomationProperties.Name="{Binding DisplayName}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>

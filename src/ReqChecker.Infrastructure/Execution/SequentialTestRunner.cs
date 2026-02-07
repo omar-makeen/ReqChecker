@@ -58,6 +58,9 @@ public class SequentialTestRunner : ITestRunner
         // Use provided settings or create default
         runSettings ??= new RunSettings();
 
+        // Track completed test results for dependency checking
+        var completedResults = new Dictionary<string, TestResult>();
+
         for (int i = 0; i < profile.Tests.Count; i++)
         {
             var testDefinition = profile.Tests[i];
@@ -109,6 +112,58 @@ public class SequentialTestRunner : ITestRunner
                 continue;
             }
 
+            // Check dependency requirements
+            if (testDefinition.DependsOn != null && testDefinition.DependsOn.Count > 0)
+            {
+                bool shouldSkip = false;
+                string skipReason = string.Empty;
+
+                foreach (var depId in testDefinition.DependsOn)
+                {
+                    if (!completedResults.TryGetValue(depId, out var depResult))
+                    {
+                        // Prerequisite not yet executed
+                        var depTest = profile.Tests.FirstOrDefault(t => t.Id == depId);
+                        var depDisplayName = depTest?.DisplayName ?? depId;
+                        skipReason = $"Prerequisite test '{depDisplayName}' has not yet been executed";
+                        shouldSkip = true;
+                        break;
+                    }
+                    else if (depResult.Status != TestStatus.Pass)
+                    {
+                        // Prerequisite failed or was skipped
+                        var depDisplayName = depResult.DisplayName ?? depId;
+                        var statusText = depResult.Status == TestStatus.Fail ? "failed" : "was skipped";
+                        skipReason = $"Prerequisite test '{depDisplayName}' {statusText}";
+                        shouldSkip = true;
+                        break;
+                    }
+                }
+
+                if (shouldSkip)
+                {
+                    var result = new TestResult
+                    {
+                        TestId = testDefinition.Id,
+                        TestType = testDefinition.Type,
+                        DisplayName = testDefinition.DisplayName,
+                        Status = TestStatus.Skipped,
+                        StartTime = DateTime.UtcNow,
+                        EndTime = DateTime.UtcNow,
+                        Duration = TimeSpan.Zero,
+                        Error = new TestError
+                        {
+                            Category = ErrorCategory.Dependency,
+                            Message = skipReason
+                        },
+                        HumanSummary = skipReason
+                    };
+                    results.Add(result);
+                    progress?.Report(result);
+                    continue;
+                }
+            }
+
             // Apply inter-test delay before execution (skip for first test)
             // This makes the delay visible to users as they see "Running Test X" during the delay
             if (runSettings.InterTestDelayMs > 0 && i > 0)
@@ -147,6 +202,9 @@ public class SequentialTestRunner : ITestRunner
             var testResult = await RetryPolicy.ExecuteWithRetryAsync(test, testDefinition, runSettings, context, cancellationToken);
             results.Add(testResult);
             progress?.Report(testResult);
+
+            // Store result for dependency checking
+            completedResults[testDefinition.Id] = testResult;
         }
 
         stopwatch.Stop();

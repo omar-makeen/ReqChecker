@@ -50,7 +50,9 @@ public class FluentProfileValidator : IProfileValidator
 
             RuleFor(p => p.Tests)
                 .NotEmpty().WithMessage("Profile must contain at least one test.")
-                .Must(HaveUniqueTestIds).WithMessage("All test IDs within a profile must be unique.");
+                .Must(HaveUniqueTestIds).WithMessage("All test IDs within a profile must be unique.")
+                .Must(HaveValidDependencyReferences).WithMessage("All dependency references must be valid.")
+                .Must(HaveNoCircularDependencies).WithMessage("Profile must not contain circular dependencies.");
 
             RuleForEach(p => p.Tests)
                 .SetValidator(new TestDefinitionValidator());
@@ -73,6 +75,94 @@ public class FluentProfileValidator : IProfileValidator
             }
 
             return tests.Select(t => t.Id).Distinct().Count() == tests.Count;
+        }
+
+        private static bool HaveValidDependencyReferences(List<TestDefinition> tests)
+        {
+            if (tests == null || tests.Count == 0)
+            {
+                return true;
+            }
+
+            var validTestIds = new HashSet<string>(tests.Select(t => t.Id));
+
+            foreach (var test in tests)
+            {
+                if (test.DependsOn == null)
+                {
+                    continue;
+                }
+
+                foreach (var depId in test.DependsOn)
+                {
+                    if (!validTestIds.Contains(depId))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private static bool HaveNoCircularDependencies(List<TestDefinition> tests)
+        {
+            if (tests == null || tests.Count == 0)
+            {
+                return true;
+            }
+
+            var visited = new HashSet<string>();
+            var visiting = new HashSet<string>();
+
+            foreach (var test in tests)
+            {
+                if (!visited.Contains(test.Id))
+                {
+                    if (HasCycle(test.Id, tests, visited, visiting))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private static bool HasCycle(
+            string testId,
+            List<TestDefinition> tests,
+            HashSet<string> visited,
+            HashSet<string> visiting)
+        {
+            if (visiting.Contains(testId))
+            {
+                return true; // Found a cycle
+            }
+
+            if (visited.Contains(testId))
+            {
+                return false; // Already processed, no cycle from this path
+            }
+
+            visiting.Add(testId);
+
+            var test = tests.FirstOrDefault(t => t.Id == testId);
+            if (test != null && test.DependsOn != null)
+            {
+                foreach (var depId in test.DependsOn)
+                {
+                    if (HasCycle(depId, tests, visited, visiting))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            visiting.Remove(testId);
+            visited.Add(testId);
+
+            return false;
         }
     }
 

@@ -13,17 +13,18 @@ namespace ReqChecker.Infrastructure.Tests.Profile;
 public class ProfileMigrationTests
 {
     [Fact]
-    public void ProfileMigrationPipeline_TargetVersion_ShouldBe2()
+    public void ProfileMigrationPipeline_TargetVersion_ShouldBe3()
     {
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
 
         // Act & Assert
-        Assert.Equal(2, pipeline.TargetVersion);
+        Assert.Equal(3, pipeline.TargetVersion);
     }
 
     [Fact]
@@ -32,7 +33,8 @@ public class ProfileMigrationTests
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
         var v1Profile = new ProfileModel
@@ -50,23 +52,24 @@ public class ProfileMigrationTests
     }
 
     [Fact]
-    public void NeedsMigration_ShouldReturnFalseForV2Profile()
+    public void NeedsMigration_ShouldReturnFalseForV3Profile()
     {
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
-        var v2Profile = new ProfileModel
+        var v3Profile = new ProfileModel
         {
-            Name = "V2 Profile",
-            SchemaVersion = 2,
+            Name = "V3 Profile",
+            SchemaVersion = 3,
             Tests = new List<TestDefinition>()
         };
 
         // Act
-        var needsMigration = pipeline.NeedsMigration(v2Profile);
+        var needsMigration = pipeline.NeedsMigration(v3Profile);
 
         // Assert
         Assert.False(needsMigration);
@@ -78,7 +81,8 @@ public class ProfileMigrationTests
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
 
@@ -87,12 +91,13 @@ public class ProfileMigrationTests
     }
 
     [Fact]
-    public async Task MigrateAsync_ShouldUpdateSchemaVersionFromV1ToV2()
+    public async Task MigrateAsync_ShouldUpdateSchemaVersionFromV1ToV3()
     {
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
         var v1Profile = new ProfileModel
@@ -118,9 +123,10 @@ public class ProfileMigrationTests
         var migratedProfile = await pipeline.MigrateAsync(v1Profile);
 
         // Assert
-        Assert.Equal(2, migratedProfile.SchemaVersion);
+        Assert.Equal(3, migratedProfile.SchemaVersion);
         Assert.Equal("V1 Profile", migratedProfile.Name);
         Assert.Single(migratedProfile.Tests);
+        Assert.NotNull(migratedProfile.Tests[0].DependsOn);
     }
 
     [Fact]
@@ -129,22 +135,23 @@ public class ProfileMigrationTests
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
-        var v2Profile = new ProfileModel
+        var v3Profile = new ProfileModel
         {
-            Name = "V2 Profile",
-            SchemaVersion = 2,
+            Name = "V3 Profile",
+            SchemaVersion = 3,
             Tests = new List<TestDefinition>()
         };
 
         // Act
-        var migratedProfile = await pipeline.MigrateAsync(v2Profile);
+        var migratedProfile = await pipeline.MigrateAsync(v3Profile);
 
         // Assert
-        Assert.Same(v2Profile, migratedProfile);
-        Assert.Equal(2, migratedProfile.SchemaVersion);
+        Assert.Same(v3Profile, migratedProfile);
+        Assert.Equal(3, migratedProfile.SchemaVersion);
     }
 
     [Fact]
@@ -153,7 +160,8 @@ public class ProfileMigrationTests
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
 
@@ -293,7 +301,8 @@ public class ProfileMigrationTests
         // Arrange
         var migrators = new List<IProfileMigrator>
         {
-            new V1ToV2Migration()
+            new V1ToV2Migration(),
+            new V2ToV3Migration()
         };
         var pipeline = new ProfileMigrationPipeline(migrators);
         var v1Profile = new ProfileModel
@@ -334,7 +343,7 @@ public class ProfileMigrationTests
         var migratedProfile = await pipeline.MigrateAsync(v1Profile);
 
         // Assert
-        Assert.Equal(2, migratedProfile.SchemaVersion);
+        Assert.Equal(3, migratedProfile.SchemaVersion);
         Assert.Equal("Test Profile", migratedProfile.Name);
         Assert.Equal(2, migratedProfile.Tests.Count);
 
@@ -345,6 +354,7 @@ public class ProfileMigrationTests
         Assert.Equal(30, test1.Timeout);
         Assert.Equal(3, test1.RetryCount);
         Assert.Equal("example.com", test1.Parameters["target"]?.ToString());
+        Assert.NotNull(test1.DependsOn);
 
         var test2 = migratedProfile.Tests[1];
         Assert.Equal("Test 2", test2.DisplayName);
@@ -352,5 +362,6 @@ public class ProfileMigrationTests
         Assert.Equal(60, test2.Timeout);
         Assert.Equal(0, test2.RetryCount);
         Assert.Equal("https://example.com/api", test2.Parameters["url"]?.ToString());
+        Assert.NotNull(test2.DependsOn);
     }
 }

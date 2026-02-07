@@ -164,6 +164,7 @@ public partial class App : System.Windows.Application
 
         // Register individual migrators as IProfileMigrator (for collection resolution)
         services.AddSingleton<IProfileMigrator, V1ToV2Migration>();
+        services.AddSingleton<IProfileMigrator, V2ToV3Migration>();
 
         // Register ProfileMigrationPipeline directly (not as IProfileMigrator) to avoid circular dependency
         // The pipeline orchestrates the individual migrators registered above

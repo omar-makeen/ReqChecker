@@ -60,6 +60,13 @@ public partial class ExpanderCard : UserControl
             typeof(ExpanderCard),
             new PropertyMetadata(null));
 
+    public static readonly DependencyProperty ErrorCategoryProperty =
+        DependencyProperty.Register(
+            nameof(ErrorCategory),
+            typeof(ErrorCategory),
+            typeof(ExpanderCard),
+            new PropertyMetadata(ErrorCategory.Unknown));
+
     public static readonly DependencyProperty TestDurationProperty =
         DependencyProperty.Register(
             nameof(TestDuration),
@@ -121,6 +128,12 @@ public partial class ExpanderCard : UserControl
     {
         get => (string?)GetValue(ErrorMessageProperty);
         set => SetValue(ErrorMessageProperty, value);
+    }
+
+    public ErrorCategory ErrorCategory
+    {
+        get => (ErrorCategory)GetValue(ErrorCategoryProperty);
+        set => SetValue(ErrorCategoryProperty, value);
     }
 
     public TimeSpan TestDuration

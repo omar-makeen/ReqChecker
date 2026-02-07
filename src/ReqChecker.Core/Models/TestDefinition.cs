@@ -52,4 +52,9 @@ public class TestDefinition
     /// Whether test needs elevation.
     /// </summary>
     public bool RequiresAdmin { get; set; }
+
+    /// <summary>
+    /// IDs of tests that must complete successfully before this test runs. Empty list means no dependencies.
+    /// </summary>
+    public List<string> DependsOn { get; set; } = new();
 }

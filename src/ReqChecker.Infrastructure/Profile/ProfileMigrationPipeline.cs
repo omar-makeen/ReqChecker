@@ -10,7 +10,7 @@ namespace ReqChecker.Infrastructure.ProfileManagement;
 public class ProfileMigrationPipeline : IProfileMigrator
 {
     private readonly IEnumerable<IProfileMigrator> _migrators;
-    private const int CurrentSchemaVersion = 2;
+    private const int CurrentSchemaVersion = 3;
 
     /// <summary>
     /// Initializes a new instance of the ProfileMigrationPipeline.

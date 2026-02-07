@@ -31,6 +31,11 @@ public enum ErrorCategory
     Configuration,
 
     /// <summary>
+    /// Test skipped because a prerequisite test failed or was skipped.
+    /// </summary>
+    Dependency,
+
+    /// <summary>
     /// Unclassified error.
     /// </summary>
     Unknown
