@@ -141,6 +141,24 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-008",
+      "type": "DiskSpace",
+      "displayName": "Check Disk Space",
+      "description": "Verifies that a drive or mount point has at least a specified amount of free space.",
+      "parameters": {
+        "path": "C:\\",
+        "minimumFreeGB": 10.0
+      },
+      "fieldPolicy": {
+        "path": "Editable",
+        "minimumFreeGB": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

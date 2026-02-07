@@ -3,16 +3,14 @@ using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Core.Enums;
 using System.Diagnostics;
-using System.Runtime.Versioning;
 
 namespace ReqChecker.Infrastructure.Tests;
 
 /// <summary>
-/// Tests Windows service status by checking if a named service is installed and in the expected state.
+/// Tests disk space by checking if a drive or mount point has at least a specified amount of free space.
 /// </summary>
-[TestType("WindowsService")]
-[SupportedOSPlatform("windows")]
-public class WindowsServiceTest : ITest
+[TestType("DiskSpace")]
+public class DiskSpaceTest : ITest
 {
     /// <inheritdoc/>
     public async Task<TestResult> ExecuteAsync(TestDefinition testDefinition, TestExecutionContext? context, CancellationToken cancellationToken = default)
@@ -30,35 +28,38 @@ public class WindowsServiceTest : ITest
 
         try
         {
-#if WINDOWS
             // Get parameters
-            var serviceName = testDefinition.Parameters["serviceName"]?.ToString() ?? string.Empty;
-            var expectedStatusValue = testDefinition.Parameters["expectedStatus"]?.ToString();
+            var path = testDefinition.Parameters["path"]?.ToString() ?? string.Empty;
+            var minimumFreeGBValue = testDefinition.Parameters["minimumFreeGB"];
 
             // Validate required parameters
-            if (string.IsNullOrEmpty(serviceName))
+            if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("serviceName parameter is required", nameof(serviceName));
+                throw new ArgumentException("path parameter is required", nameof(path));
             }
 
-            // Default to Running if not specified
-            string expectedStatus = expectedStatusValue ?? "Running";
+            if (minimumFreeGBValue == null)
+            {
+                throw new ArgumentException("minimumFreeGB parameter is required", "minimumFreeGB");
+            }
+
+            // Parse minimumFreeGB
+            if (!decimal.TryParse(minimumFreeGBValue.ToString(), out decimal minimumFreeGB) || minimumFreeGB < 0)
+            {
+                throw new ArgumentException("minimumFreeGB must be a valid non-negative decimal value", "minimumFreeGB");
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Get the service controller
-            using var serviceController = new System.ServiceProcess.ServiceController(serviceName);
-
-            // Check if service exists
+            // Get drive info
+            DriveInfo? driveInfo = null;
             try
             {
-                // Refresh and access Status to verify the service exists
-                serviceController.Refresh();
-                _ = serviceController.Status;
+                // Try to get drive info for the path
+                driveInfo = new DriveInfo(path);
             }
-            catch (InvalidOperationException ex)
+            catch (ArgumentException ex)
             {
-                // Service not found
                 stopwatch.Stop();
                 result.EndTime = DateTime.UtcNow;
                 result.Duration = stopwatch.Elapsed;
@@ -66,7 +67,7 @@ public class WindowsServiceTest : ITest
                 result.Error = new TestError
                 {
                     Category = ErrorCategory.Configuration,
-                    Message = $"Windows service '{serviceName}' not found",
+                    Message = $"Invalid path '{path}': {ex.Message}",
                     StackTrace = ex.StackTrace
                 };
                 return await Task.FromResult(result);
@@ -76,26 +77,27 @@ public class WindowsServiceTest : ITest
             result.EndTime = DateTime.UtcNow;
             result.Duration = stopwatch.Elapsed;
 
-            // Get service details
-            string displayName = serviceController.DisplayName;
-            string currentStatus = serviceController.Status.ToString();
-            string startType = serviceController.StartType.ToString();
+            // Get drive details
+            string drivePath = driveInfo.Name;
+            decimal totalSpaceGB = driveInfo.TotalSize > 0 ? (decimal)driveInfo.TotalSize / (1024 * 1024 * 1024) : 0;
+            decimal freeSpaceGB = driveInfo.AvailableFreeSpace > 0 ? (decimal)driveInfo.AvailableFreeSpace / (1024 * 1024 * 1024) : 0;
+            decimal percentFree = totalSpaceGB > 0 ? (freeSpaceGB / totalSpaceGB) * 100 : 0;
 
-            // Check if status matches
-            bool statusMatch = string.Equals(currentStatus, expectedStatus, StringComparison.OrdinalIgnoreCase);
+            // Check if threshold is met (inclusive: free >= minimum)
+            bool thresholdMet = freeSpaceGB >= minimumFreeGB;
 
             // Determine test status
-            result.Status = statusMatch ? TestStatus.Pass : TestStatus.Fail;
+            result.Status = thresholdMet ? TestStatus.Pass : TestStatus.Fail;
 
             // Build evidence
             var evidence = new Dictionary<string, object>
             {
-                ["serviceName"] = serviceName,
-                ["displayName"] = displayName,
-                ["status"] = currentStatus,
-                ["expectedStatus"] = expectedStatus,
-                ["startType"] = startType,
-                ["statusMatch"] = statusMatch
+                ["path"] = path,
+                ["totalSpaceGB"] = Math.Round(totalSpaceGB, 2),
+                ["freeSpaceGB"] = Math.Round(freeSpaceGB, 2),
+                ["percentFree"] = Math.Round(percentFree, 2),
+                ["minimumFreeGB"] = Math.Round(minimumFreeGB, 2),
+                ["thresholdMet"] = thresholdMet
             };
 
             result.Evidence = new TestEvidence
@@ -108,26 +110,15 @@ public class WindowsServiceTest : ITest
                 }
             };
 
-            // Set error if status doesn't match
-            if (!statusMatch)
+            // Set error if threshold not met
+            if (!thresholdMet)
             {
                 result.Error = new TestError
                 {
                     Category = ErrorCategory.Validation,
-                    Message = $"Service '{serviceName}' status is '{currentStatus}', expected '{expectedStatus}'"
+                    Message = $"Drive '{path}' has {Math.Round(freeSpaceGB, 2)} GB free, which is less than the required {Math.Round(minimumFreeGB, 2)} GB"
                 };
             }
-#else
-            stopwatch.Stop();
-            result.EndTime = DateTime.UtcNow;
-            result.Duration = stopwatch.Elapsed;
-            result.Status = TestStatus.Skipped;
-            result.Error = new TestError
-            {
-                Category = ErrorCategory.Permission,
-                Message = "Windows Service tests are only supported on Windows"
-            };
-#endif
         }
         catch (OperationCanceledException)
         {

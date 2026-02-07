@@ -77,8 +77,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T009 [US4] Implement `DiskSpaceTest` class in `src/ReqChecker.Infrastructure/Tests/DiskSpaceTest.cs` — use `[TestType("DiskSpace")]`, `System.IO.DriveInfo`. Parameters: `path` (required, e.g. `C:\` or `/`), `minimumFreeGB` (required, decimal). Evidence: path, total space GB, free space GB, percent free, minimum threshold, threshold met (bool). Pass when free >= minimum (inclusive). Error categories: `Validation` for insufficient space, `Configuration` for invalid/missing path or drive not found. Handle cancellation → Skipped.
-- [ ] T010 [US4] Add a DiskSpace test entry to `src/ReqChecker.App/Profiles/default-profile.json` — target `C:\` with `minimumFreeGB: 10`, add `dependsOn`, `fieldPolicy`, `timeout`, `retryCount`, `requiresAdmin` fields per schema v3 format
+- [x] T009 [US4] Implement `DiskSpaceTest` class in `src/ReqChecker.Infrastructure/Tests/DiskSpaceTest.cs` — use `[TestType("DiskSpace")]`, `System.IO.DriveInfo`. Parameters: `path` (required, e.g. `C:\` or `/`), `minimumFreeGB` (required, decimal). Evidence: path, total space GB, free space GB, percent free, minimum threshold, threshold met (bool). Pass when free >= minimum (inclusive). Error categories: `Validation` for insufficient space, `Configuration` for invalid/missing path or drive not found. Handle cancellation → Skipped.
+- [x] T010 [US4] Add a DiskSpace test entry to `src/ReqChecker.App/Profiles/default-profile.json` — target `C:\` with `minimumFreeGB: 10`, add `dependsOn`, `fieldPolicy`, `timeout`, `retryCount`, `requiresAdmin` fields per schema v3 format
 
 **Checkpoint**: DiskSpace test is functional. Launch app, load default profile, run disk space test — passes with storage details in evidence. `dotnet build` succeeds.
 
