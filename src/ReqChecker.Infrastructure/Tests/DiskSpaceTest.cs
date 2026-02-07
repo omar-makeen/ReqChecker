@@ -73,12 +73,26 @@ public class DiskSpaceTest : ITest
                 return await Task.FromResult(result);
             }
 
+            // Check if drive is ready (e.g., removable media may be disconnected)
+            if (!driveInfo.IsReady)
+            {
+                stopwatch.Stop();
+                result.EndTime = DateTime.UtcNow;
+                result.Duration = stopwatch.Elapsed;
+                result.Status = TestStatus.Fail;
+                result.Error = new TestError
+                {
+                    Category = ErrorCategory.Configuration,
+                    Message = $"Drive '{path}' is not ready or not accessible"
+                };
+                return await Task.FromResult(result);
+            }
+
             stopwatch.Stop();
             result.EndTime = DateTime.UtcNow;
             result.Duration = stopwatch.Elapsed;
 
             // Get drive details
-            string drivePath = driveInfo.Name;
             decimal totalSpaceGB = driveInfo.TotalSize > 0 ? (decimal)driveInfo.TotalSize / (1024 * 1024 * 1024) : 0;
             decimal freeSpaceGB = driveInfo.AvailableFreeSpace > 0 ? (decimal)driveInfo.AvailableFreeSpace / (1024 * 1024 * 1024) : 0;
             decimal percentFree = totalSpaceGB > 0 ? (freeSpaceGB / totalSpaceGB) * 100 : 0;
