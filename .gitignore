@@ -298,3 +298,6 @@ dist/
 
 # Windows device file (accidentally created)
 nul
+
+# Claude AI tool settings
+.claude/settings.local.json

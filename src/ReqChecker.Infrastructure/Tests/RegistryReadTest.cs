@@ -87,7 +87,7 @@ public class RegistryReadTest : ITest
                 // Check expected type
                 if (!string.IsNullOrEmpty(expectedType))
                 {
-                    var expectedKind = expectedType.ToLower() switch
+                    RegistryValueKind? expectedKind = expectedType.ToLower() switch
                     {
                         "string" => RegistryValueKind.String,
                         "dword" => RegistryValueKind.DWord,
@@ -95,7 +95,7 @@ public class RegistryReadTest : ITest
                         "multistring" => RegistryValueKind.MultiString,
                         "binary" => RegistryValueKind.Binary,
                         "expandstring" => RegistryValueKind.ExpandString,
-                        _ => null
+                        _ => (RegistryValueKind?)null
                     };
 
                     if (expectedKind.HasValue && valueKind != expectedKind.Value)

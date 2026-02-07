@@ -1,3 +1,5 @@
+using System.Runtime.Versioning;
+
 namespace ReqChecker.Infrastructure.Platform;
 
 /// <summary>
@@ -12,6 +14,20 @@ public class AdminPrivilegeChecker
     public static bool IsAdministrator()
     {
 #if WINDOWS
+        return IsAdministratorWindows();
+#else
+        // On non-Windows platforms, we cannot easily check admin status
+        return false;
+#endif
+    }
+
+    /// <summary>
+    /// Checks if the current process is running with administrator privileges on Windows.
+    /// </summary>
+    /// <returns>True if running as administrator.</returns>
+    [SupportedOSPlatform("windows")]
+    private static bool IsAdministratorWindows()
+    {
         try
         {
             using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
@@ -22,10 +38,6 @@ public class AdminPrivilegeChecker
         {
             return false;
         }
-#else
-        // On non-Windows platforms, we cannot easily check admin status
-        return false;
-#endif
     }
 
     /// <summary>

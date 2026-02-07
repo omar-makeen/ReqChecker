@@ -63,7 +63,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T008 [US3] Implement `WindowsServiceTest` class in `src/ReqChecker.Infrastructure/Tests/WindowsServiceTest.cs` — use `[TestType("WindowsService")]`, `System.ServiceProcess.ServiceController` with `#if WINDOWS` guard. Parameters: `serviceName` (required, internal name only), `expectedStatus` (optional, default `Running`). Evidence: service name, display name, status, expected status, start type, status match (bool). Error categories: `Validation` for status mismatch, `Configuration` for service not found or missing parameter, `Permission` for non-Windows skip. Non-Windows path: return Skipped with "Windows Service tests are only supported on Windows" message. Handle cancellation → Skipped.
+- [x] T008 [US3] Implement `WindowsServiceTest` class in `src/ReqChecker.Infrastructure/Tests/WindowsServiceTest.cs` — use `[TestType("WindowsService")]`, `System.ServiceProcess.ServiceController` with `#if WINDOWS` guard. Parameters: `serviceName` (required, internal name only), `expectedStatus` (optional, default `Running`). Evidence: service name, display name, status, expected status, start type, status match (bool). Error categories: `Validation` for status mismatch, `Configuration` for service not found or missing parameter, `Permission` for non-Windows skip. Non-Windows path: return Skipped with "Windows Service tests are only supported on Windows" message. Handle cancellation → Skipped.
 
 **Checkpoint**: WindowsService test is functional. Create a test profile with a WindowsService test for `Winmgmt`, run it — passes with service details in evidence. `dotnet build` succeeds.
 
