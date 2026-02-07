@@ -175,46 +175,63 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Search TextBox -->
-                <Grid Grid.Column="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        Background="{DynamicResource BackgroundSurface}"
+                        BorderBrush="{DynamicResource BorderSubtle}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Height="40">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Search Icon -->
-                    <ui:SymbolIcon Grid.Column="0"
-                                   Symbol="Search16"
-                                   FontSize="16"
+                        <!-- Search Icon -->
+                        <ui:SymbolIcon Grid.Column="0"
+                                       Symbol="Search16"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource TextTertiary}"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0,0,0"/>
+
+                        <!-- Search TextBox -->
+                        <TextBox Grid.Column="1"
+                                 Style="{StaticResource InputField}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Padding="8,8,36,8"
+                                 BorderThickness="0"
+                                 Background="Transparent"/>
+
+                        <!-- Placeholder Text -->
+                        <TextBlock Grid.Column="1"
+                                   Text="Search by name, type, or description..."
                                    Foreground="{DynamicResource TextTertiary}"
                                    VerticalAlignment="Center"
-                                   Margin="12,0,0,0"/>
+                                   Margin="8,0,0,0"
+                                   IsHitTestVisible="False"
+                                   Visibility="{Binding IsFilterActive, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}"/>
 
-                    <!-- Search TextBox -->
-                    <TextBox Grid.Column="1"
-                             Style="{StaticResource InputField}"
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Padding="8,8,36,8"
-                             BorderThickness="0"
-                             Background="Transparent"/>
-
-                    <!-- Clear Button (X) - visible when text is present -->
-                    <Button HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Width="28"
-                            Height="28"
-                            Margin="0,0,8,0"
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Cursor="Hand"
-                            Command="{Binding ClearSearchCommand}"
-                            Visibility="{Binding SearchText, Converter={StaticResource NullToVisibilityConverter}}">
-                        <ui:SymbolIcon Symbol="Dismiss16"
-                                       FontSize="14"
-                                       Foreground="{DynamicResource TextTertiary}"/>
-                    </Button>
-                </Grid>
+                        <!-- Clear Button (X) - visible when text is present -->
+                        <Button Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Width="28"
+                                Height="28"
+                                Margin="0,0,8,0"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Command="{Binding ClearSearchCommand}"
+                                Visibility="{Binding IsFilterActive, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ui:SymbolIcon Symbol="Dismiss16"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource TextTertiary}"/>
+                        </Button>
+                    </Grid>
+                </Border>
 
                 <!-- Select All Checkbox -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">

@@ -76,18 +76,26 @@ public partial class TestListViewModel : ObservableObject, IDisposable
                 return null;
             }
 
-            var allSelectedAll = SelectableTests.All(item => item.IsSelected);
-            var noneSelectedAll = SelectableTests.All(item => !item.IsSelected);
+            var allChecked = SelectableTests.All(item => item.IsSelected);
+            var noneChecked = SelectableTests.All(item => !item.IsSelected);
 
-            if (allSelectedAll) return true;
-            if (noneSelectedAll) return false;
+            if (allChecked) return true;
+            if (noneChecked) return false;
             return null;
         }
         set
         {
             var newState = value == true;
-            foreach (var item in SelectableTests)
-                item.IsSelected = newState;
+            if (IsFilterActive && FilteredTestsView != null)
+            {
+                foreach (var item in FilteredTestsView.Cast<SelectableTestItem>())
+                    item.IsSelected = newState;
+            }
+            else
+            {
+                foreach (var item in SelectableTests)
+                    item.IsSelected = newState;
+            }
         }
     }
 
@@ -104,7 +112,8 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     /// <summary>
     /// Gets the count of tests passing the current filter.
     /// </summary>
-    public int FilteredCount => FilteredTestsView?.Cast<SelectableTestItem>().Count() ?? 0;
+    private int _filteredCount;
+    public int FilteredCount => _filteredCount;
 
     /// <summary>
     /// Gets whether a filter is active (search text is non-empty after trimming).
@@ -228,6 +237,7 @@ public partial class TestListViewModel : ObservableObject, IDisposable
     partial void OnSearchTextChanged(string value)
     {
         FilteredTestsView?.Refresh();
+        _filteredCount = FilteredTestsView?.Cast<SelectableTestItem>().Count() ?? 0;
         OnPropertyChanged(nameof(FilteredCount));
         OnPropertyChanged(nameof(IsFilterActive));
         OnPropertyChanged(nameof(TestCountDisplay));
@@ -246,6 +256,7 @@ public partial class TestListViewModel : ObservableObject, IDisposable
         var view = CollectionViewSource.GetDefaultView(SelectableTests);
         view.Filter = FilterTest;
         FilteredTestsView = view;
+        _filteredCount = FilteredTestsView?.Cast<SelectableTestItem>().Count() ?? 0;
     }
 
     /// <summary>

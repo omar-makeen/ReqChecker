@@ -47,7 +47,8 @@
       "Bash(selected\" test\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(where:*)",
       "Bash(git -C \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\" show 90f7ca6:tests/ReqChecker.Infrastructure.Tests/Execution/SequentialTestRunnerTests.cs)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git -C \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\" branch --show-current)"
     ]
   }
 }
