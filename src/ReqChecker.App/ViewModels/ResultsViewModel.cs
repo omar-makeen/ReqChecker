@@ -301,24 +301,26 @@ public partial class ResultsViewModel : ObservableObject
         // Collect failed test IDs
         var failedIds = Report.Results
             .Where(r => r.Status == TestStatus.Fail)
-            .Select(r => r.TestId);
+            .Select(r => r.TestId)
+            .ToList();
 
         // Collect dependency-skipped test IDs
         var depSkippedIds = Report.Results
             .Where(r => r.Status == TestStatus.Skipped && r.Error?.Category == ErrorCategory.Dependency)
-            .Select(r => r.TestId);
+            .Select(r => r.TestId)
+            .ToList();
 
         // Union both sets (deduplicated)
         var rerunIds = failedIds.Union(depSkippedIds).ToList();
+
+        Log.Information("Re-run failed tests initiated: {TestCount} tests (failed: {FailedCount}, dep-skipped: {DepSkippedCount})",
+            rerunIds.Count, failedIds.Count, depSkippedIds.Count);
 
         // Store the selected test IDs in app state
         _appState.SetSelectedTestIds(rerunIds);
 
         // Navigate to Run Progress page
         NavigationService?.NavigateToRunProgress();
-
-        Log.Information("Re-run failed tests initiated: {TestCount} tests (failed: {FailedCount}, dep-skipped: {DepSkippedCount})",
-            rerunIds.Count, failedIds.Count(), depSkippedIds.Count());
     }
 
     /// <summary>
