@@ -40,7 +40,12 @@
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
       "Bash(grep:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(find:*)",
+      "Bash(del:*)",
+      "Bash(git status:*)",
+      "Bash(selected\" test\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(where:*)"
     ]
   }
 }

@@ -58,11 +58,12 @@
     <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,16">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -106,21 +107,6 @@
 
                     <!-- Action Buttons -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <!-- Select All Checkbox -->
-                        <CheckBox Style="{StaticResource AccentCheckBox}"
-                                 IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
-                                 IsThreeState="False"
-                                 VerticalAlignment="Center"
-                                 Margin="0,0,12,0">
-                            <CheckBox.LayoutTransform>
-                                <ScaleTransform ScaleX="1" ScaleY="1"/>
-                            </CheckBox.LayoutTransform>
-                        </CheckBox>
-                        <TextBlock Text="Select All"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,12,0"/>
                         <!-- Enhanced Count Badge -->
                         <Border Background="{DynamicResource AccentPrimary}"
                                 CornerRadius="16"
@@ -150,8 +136,30 @@
             </Grid>
         </Border>
 
-        <!-- Empty State - No Profile Loaded -->
+        <!-- Toolbar Row - Select All -->
         <Border Grid.Row="1"
+                Margin="0,0,0,16"
+                Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                <!-- Select All Checkbox -->
+                <CheckBox Style="{StaticResource AccentCheckBox}"
+                         IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                         IsThreeState="False"
+                         VerticalAlignment="Center"
+                         Margin="0,0,8,0">
+                    <CheckBox.LayoutTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </CheckBox.LayoutTransform>
+                </CheckBox>
+                <TextBlock Text="Select All"
+                           Style="{DynamicResource TextBody}"
+                           Foreground="{DynamicResource TextPrimary}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Empty State - No Profile Loaded -->
+        <Border Grid.Row="2"
                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -208,7 +216,7 @@
         </Border>
 
         <!-- Test List with virtualization -->
-        <ListBox Grid.Row="1"
+        <ListBox Grid.Row="2"
                  Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}"
                  ItemsSource="{Binding SelectableTests}"
                  Background="Transparent"

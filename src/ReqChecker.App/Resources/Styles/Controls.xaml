@@ -1094,7 +1094,7 @@
                             <Grid>
                                 <!-- Check Mark -->
                                 <Path x:Name="CheckMark"
-                                      Data="M3.5,7.5 L6.5,10.5 L14.5,2.5"
+                                      Data="M4,9 L7,12 L13,4"
                                       Stroke="White"
                                       StrokeThickness="2"
                                       StrokeLineJoin="Round"
@@ -1102,7 +1102,10 @@
                                       StrokeEndLineCap="Round"
                                       Opacity="0"
                                       SnapsToDevicePixels="True"
-                                      IsHitTestVisible="False"/>
+                                      IsHitTestVisible="False"
+                                      Stretch="None"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
                                 <!-- Indeterminate Mark -->
                                 <Rectangle x:Name="IndeterminateMark"
                                            Width="10"
