@@ -88,9 +88,9 @@
 
 **Purpose**: Final build verification and validation across all stories
 
-- [ ] T011 Run `dotnet build` to verify zero errors across the full solution
-- [ ] T012 Run `dotnet test` to verify all existing tests still pass (no regressions)
-- [ ] T013 Launch the app and verify all four new test types display with correct icons and colors in the test list
+- [x] T011 Run `dotnet build` to verify zero errors across the full solution
+- [x] T012 Run `dotnet test` to verify all existing tests still pass (no regressions)
+- [x] T013 Launch the app and verify all four new test types display with correct icons and colors in the test list
 
 ---
 
