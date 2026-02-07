@@ -140,16 +140,13 @@
         <Border Grid.Row="1"
                 Margin="0,0,0,16"
                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+            <StackPanel Orientation="Horizontal">
                 <!-- Select All Checkbox -->
                 <CheckBox Style="{StaticResource AccentCheckBox}"
                          IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
                          IsThreeState="False"
                          VerticalAlignment="Center"
                          Margin="0,0,8,0">
-                    <CheckBox.LayoutTransform>
-                        <ScaleTransform ScaleX="1" ScaleY="1"/>
-                    </CheckBox.LayoutTransform>
                 </CheckBox>
                 <TextBlock Text="Select All"
                            Style="{DynamicResource TextBody}"
