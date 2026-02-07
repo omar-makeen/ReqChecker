@@ -21,7 +21,7 @@ public class SequentialTestRunner : ITestRunner
     /// <summary>
     /// Callback for prompting credentials during test execution.
     /// </summary>
-    public Func<string, string, string?, Task<(string? username, string? password)>>? PromptForCredentials { get; set; }
+    public Func<string, string, string?, Task<(string? username, string? password, bool rememberCredentials)>>? PromptForCredentials { get; set; }
 
     /// <summary>
     /// Initializes a new instance of SequentialTestRunner.
@@ -216,8 +216,8 @@ public class SequentialTestRunner : ITestRunner
                     username = result.username;
                     password = result.password;
 
-                    // Optionally store the credentials back to the provider
-                    if (username != null && password != null && _credentialProvider != null)
+                    // Only store credentials if user opted in
+                    if (result.rememberCredentials && username != null && password != null && _credentialProvider != null)
                     {
                         try
                         {

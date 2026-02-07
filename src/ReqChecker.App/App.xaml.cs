@@ -233,7 +233,7 @@ public partial class App : System.Windows.Application
         {
             testRunner.PromptForCredentials = async (label, credRef, _) =>
             {
-                (string?, string?) credentials = (null, null);
+                (string?, string?, bool) credentials = (null, null, false);
                 await Dispatcher.InvokeAsync(() =>
                 {
                     var viewModel = new CredentialPromptViewModel();
@@ -242,7 +242,7 @@ public partial class App : System.Windows.Application
                     dialog.Owner = Current.MainWindow;
                     var result = dialog.ShowDialog();
                     if (result == true)
-                        credentials = (viewModel.Username, viewModel.Password);
+                        credentials = (viewModel.Username, viewModel.Password, viewModel.RememberCredentials);
                 });
                 return credentials;
             };
