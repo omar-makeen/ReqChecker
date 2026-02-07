@@ -6,11 +6,12 @@ using ReqChecker.Core.Interfaces;
 using ReqChecker.App.Services;
 using ReqChecker.Infrastructure.History;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ReqChecker.App.ViewModels;
 
 /// <summary>
-/// View model for the run progress view.
+/// View model for run progress view.
 /// </summary>
 public partial class RunProgressViewModel : ObservableObject
 {
@@ -137,6 +138,26 @@ public partial class RunProgressViewModel : ObservableObject
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
 
+        // Check if SelectedTestIds is set (user selected specific tests)
+        var selectedTestIds = _appState.SelectedTestIds;
+        if (CurrentProfile != null && selectedTestIds != null && selectedTestIds.Count > 0)
+        {
+            // Create a shallow copy of the profile with filtered tests
+            CurrentProfile = new Profile
+            {
+                Id = CurrentProfile.Id,
+                Name = CurrentProfile.Name,
+                SchemaVersion = CurrentProfile.SchemaVersion,
+                Source = CurrentProfile.Source,
+                RunSettings = CurrentProfile.RunSettings,
+                Signature = CurrentProfile.Signature,
+                Tests = CurrentProfile.Tests.Where(t => selectedTestIds.Contains(t.Id)).ToList()
+            };
+
+            // Clear SelectedTestIds after consumption
+            _appState.SetSelectedTestIds(null);
+        }
+
         if (CurrentProfile != null)
         {
             TotalTests = CurrentProfile.Tests.Count;
@@ -144,7 +165,7 @@ public partial class RunProgressViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Starts the test execution.
+    /// Starts test execution.
     /// </summary>
     public async Task StartTestsAsync()
     {

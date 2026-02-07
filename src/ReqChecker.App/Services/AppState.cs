@@ -17,6 +17,9 @@ public class AppState : IAppState
     public Profile? CurrentProfile { get; private set; }
 
     /// <inheritdoc />
+    public IReadOnlyList<string>? SelectedTestIds { get; private set; }
+
+    /// <inheritdoc />
     public event EventHandler? LastRunReportChanged;
 
     /// <inheritdoc />
@@ -41,6 +44,12 @@ public class AppState : IAppState
         CurrentProfile = profile;
         CurrentProfileChanged?.Invoke(this, EventArgs.Empty);
     }
+
+    /// <inheritdoc />
+    public void SetSelectedTestIds(IReadOnlyList<string>? testIds)
+    {
+        SelectedTestIds = testIds;
+    }
 }
 
 /// <summary>
@@ -62,6 +71,11 @@ public interface IAppState
     /// Gets the currently selected profile.
     /// </summary>
     Profile? CurrentProfile { get; }
+
+    /// <summary>
+    /// Gets the selected test IDs for the next run. Null means "run all".
+    /// </summary>
+    IReadOnlyList<string>? SelectedTestIds { get; }
 
     /// <summary>
     /// Event raised when last run report changes.
@@ -87,4 +101,9 @@ public interface IAppState
     /// Sets the current profile.
     /// </summary>
     void SetCurrentProfile(Profile profile);
+
+    /// <summary>
+    /// Sets the selected test IDs for the next run. Null means "run all".
+    /// </summary>
+    void SetSelectedTestIds(IReadOnlyList<string>? testIds);
 }

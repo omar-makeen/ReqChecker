@@ -39,7 +39,8 @@
       "Bash(dotnet --version:*)",
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git rebase:*)"
     ]
   }
 }

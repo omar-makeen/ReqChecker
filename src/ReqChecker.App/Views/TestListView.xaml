@@ -53,6 +53,7 @@
         <!-- Value converters -->
         <converters:TestTypeToIconConverter x:Key="TestTypeToIconConverter"/>
         <converters:TestTypeToColorConverter x:Key="TestTypeToColorConverter"/>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
     </Page.Resources>
 
     <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
@@ -106,6 +107,21 @@
 
                     <!-- Action Buttons -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <!-- Select All Checkbox -->
+                        <CheckBox Style="{StaticResource AccentCheckBox}"
+                                 IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                                 IsThreeState="False"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,12,0">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <TextBlock Text="Select All"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,12,0"/>
                         <!-- Enhanced Count Badge -->
                         <Border Background="{DynamicResource AccentPrimary}"
                                 CornerRadius="16"
@@ -114,7 +130,7 @@
                                 VerticalAlignment="Center"
                                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Foreground="White" FontWeight="SemiBold">
-                                <Run Text="{Binding CurrentProfile.Tests.Count, FallbackValue=0, Mode=OneWay}"/>
+                                <Run Text="{Binding SelectableTests.Count, FallbackValue=0, Mode=OneWay}"/>
                                 <Run Text=" tests"/>
                             </TextBlock>
                         </Border>
@@ -123,11 +139,11 @@
                         <Button x:Name="RunAllTestsButton"
                                 Style="{StaticResource PrimaryButtonLarge}"
                                 Command="{Binding RunAllTestsCommand}"
-                                IsEnabled="{Binding CurrentProfile, Converter={StaticResource NullToBoolConverter}}"
+                                IsEnabled="{Binding HasSelectedTests}"
                                 TabIndex="1">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
-                                <TextBlock Text="Run All Tests" FontSize="15"/>
+                                <TextBlock Text="{Binding RunButtonLabel}" FontSize="15"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -195,7 +211,7 @@
         <!-- Test List with virtualization -->
         <ListBox Grid.Row="1"
                  Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}"
-                 ItemsSource="{Binding CurrentProfile.Tests}"
+                 ItemsSource="{Binding SelectableTests}"
                  Background="Transparent"
                  BorderThickness="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -232,14 +248,15 @@
                 <DataTemplate>
                     <Border Style="{StaticResource AnimatedTestCard}"
                             Cursor="Hand"
-                            AutomationProperties.Name="{Binding DisplayName}">
+                            AutomationProperties.Name="{Binding Test.DisplayName}"
+                            Opacity="{Binding IsSelected, Converter={StaticResource BoolToOpacityConverter}}">
                         <Border.InputBindings>
                             <MouseBinding MouseAction="LeftClick"
                                           Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                          CommandParameter="{Binding}"/>
+                                          CommandParameter="{Binding Test}"/>
                             <KeyBinding Key="Enter"
                                         Command="{Binding DataContext.NavigateToTestConfigCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                        CommandParameter="{Binding}"/>
+                                        CommandParameter="{Binding Test}"/>
                         </Border.InputBindings>
 
                         <Border Background="{DynamicResource BackgroundSurface}"
@@ -261,67 +278,75 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
+                                <!-- Selection Checkbox -->
+                                <CheckBox Grid.Column="0"
+                                         Style="{StaticResource AccentCheckBox}"
+                                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,8,0"/>
+
                                 <!-- Test Type Icon -->
-                                <Border Grid.Column="0"
+                                <Border Grid.Column="1"
                                         Width="44"
                                         Height="44"
                                         Background="{DynamicResource BackgroundElevated}"
                                         CornerRadius="8"
                                         Margin="0,0,16,0">
-                                    <ui:SymbolIcon Symbol="{Binding Type, Converter={StaticResource TestTypeToIconConverter}}"
-                                                   Foreground="{Binding Type, Converter={StaticResource TestTypeToColorConverter}}"
+                                    <ui:SymbolIcon Symbol="{Binding Test.Type, Converter={StaticResource TestTypeToIconConverter}}"
+                                                   Foreground="{Binding Test.Type, Converter={StaticResource TestTypeToColorConverter}}"
                                                    FontSize="18"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
                                 </Border>
 
                                 <!-- Test Info -->
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding DisplayName}"
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Test.DisplayName}"
                                                Style="{DynamicResource TextBody}"
                                                Foreground="{DynamicResource TextPrimary}"
                                                FontWeight="Medium"
                                                TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding Description}"
+                                    <TextBlock Text="{Binding Test.Description}"
                                                Style="{DynamicResource TextCaption}"
                                                Foreground="{DynamicResource TextSecondary}"
                                                TextTrimming="CharacterEllipsis"
                                                MaxHeight="32"
                                                Margin="0,2,0,0"
-                                               Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                               Visibility="{Binding Test.Description, Converter={StaticResource NullToVisibilityConverter}}"/>
                                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                        <TextBlock Text="{Binding Type}"
+                                        <TextBlock Text="{Binding Test.Type}"
                                                    Style="{DynamicResource TextCaption}"
                                                    Foreground="{DynamicResource TextTertiary}"/>
                                         <TextBlock Text=" • "
                                                    Foreground="{DynamicResource TextTertiary}"
-                                                   Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                   Visibility="{Binding Test.RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                         <ui:SymbolIcon Symbol="Shield24"
                                                        FontSize="12"
                                                        Foreground="{DynamicResource StatusSkip}"
                                                        Margin="0,0,4,0"
-                                                       Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                       Visibility="{Binding Test.RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                         <TextBlock Text="Requires Admin"
                                                    Style="{DynamicResource TextCaption}"
                                                    Foreground="{DynamicResource StatusSkip}"
-                                                   Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                   Visibility="{Binding Test.RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     </StackPanel>
                                 </StackPanel>
 
                                 <!-- Status Badge -->
-                                <controls:TestStatusBadge Grid.Column="2"
-                                                          Status="{Binding Status}"
-                                                          ShowIcon="True"
-                                                          VerticalAlignment="Center"
-                                                          Margin="16,0"/>
+                                <controls:TestStatusBadge Grid.Column="3"
+                                                           Status="{Binding Test.Status}"
+                                                           ShowIcon="True"
+                                                           VerticalAlignment="Center"
+                                                           Margin="16,0"/>
 
                                 <!-- Chevron -->
-                                <ui:SymbolIcon Grid.Column="3"
+                                <ui:SymbolIcon Grid.Column="4"
                                                Symbol="ChevronRight24"
                                                FontSize="16"
                                                Foreground="{DynamicResource TextTertiary}"

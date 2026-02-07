@@ -17,9 +17,9 @@
 
 **Purpose**: Extend IAppState and AppState to support passing selected test IDs between ViewModels, and create the SelectableTestItem wrapper ViewModel.
 
-- [ ] T001 [P] Add `SelectedTestIds` property (`IReadOnlyList<string>?`) and `SetSelectedTestIds(IReadOnlyList<string>?)` method to `src/ReqChecker.Core/Interfaces/IAppState.cs`
-- [ ] T002 [P] Implement `SelectedTestIds` property and `SetSelectedTestIds()` in `src/ReqChecker.App/Services/AppState.cs` — store value, no event needed (consumed once on navigation)
-- [ ] T003 [P] Create `SelectableTestItem` class extending `ObservableObject` in `src/ReqChecker.App/ViewModels/SelectableTestItem.cs` — wraps `TestDefinition`, adds `[ObservableProperty] bool _isSelected = true`
+- [x] T001 [P] Add `SelectedTestIds` property (`IReadOnlyList<string>?`) and `SetSelectedTestIds(IReadOnlyList<string>?)` method to `src/ReqChecker.Core/Interfaces/IAppState.cs`
+- [x] T002 [P] Implement `SelectedTestIds` property and `SetSelectedTestIds()` in `src/ReqChecker.App/Services/AppState.cs` — store value, no event needed (consumed once on navigation)
+- [x] T003 [P] Create `SelectableTestItem` class extending `ObservableObject` in `src/ReqChecker.App/ViewModels/SelectableTestItem.cs` — wraps `TestDefinition`, adds `[ObservableProperty] bool _isSelected = true`
 
 **Checkpoint**: Foundation ready — three new/modified files, no existing behavior changed. `dotnet build` should pass.
 
@@ -31,7 +31,7 @@
 
 **Warning**: No user story UI work can begin until this style exists.
 
-- [ ] T004 Add `AccentCheckBox` style to `src/ReqChecker.App/Resources/Styles/Controls.xaml` — use `AccentPrimary` for checked fill, `DurationFast` (150ms) transition, 8px spacing grid alignment, 18x18 size matching card icon scale
+- [x] T004 Add `AccentCheckBox` style to `src/ReqChecker.App/Resources/Styles/Controls.xaml` — use `AccentPrimary` for checked fill, `DurationFast` (150ms) transition, 8px spacing grid alignment, 18x18 size matching card icon scale
 
 **Checkpoint**: Style resource available. `dotnet build` should pass.
 
@@ -45,15 +45,15 @@
 
 ### Tests for User Story 1
 
-- [ ] T005 [P] [US1] Create test file `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs` with tests: (a) `SelectableTests_InitializedAllSelected_WhenProfileLoaded` — verify all items have `IsSelected=true`; (b) `RunCommand_StoresOnlySelectedTestIds_InAppState` — uncheck 2 of 4, run, assert `AppState.SelectedTestIds` contains only the 2 checked IDs; (c) `RunCommand_Disabled_WhenNoTestsSelected` — uncheck all, assert `CanExecute` is false
-- [ ] T006 [P] [US1] Add test to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: `RunProgressViewModel_FiltersProfile_UsingSelectedTestIds` — set `SelectedTestIds` in mock AppState, construct `RunProgressViewModel`, verify `TotalTests` matches filtered count
+- [x] T005 [P] [US1] Create test file `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs` with tests: (a) `SelectableTests_InitializedAllSelected_WhenProfileLoaded` — verify all items have `IsSelected=true`; (b) `RunCommand_StoresOnlySelectedTestIds_InAppState` — uncheck 2 of 4, run, assert `AppState.SelectedTestIds` contains only the 2 checked IDs; (c) `RunCommand_Disabled_WhenNoTestsSelected` — uncheck all, assert `CanExecute` is false
+- [x] T006 [P] [US1] Add test to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: `RunProgressViewModel_FiltersProfile_UsingSelectedTestIds` — set `SelectedTestIds` in mock AppState, construct `RunProgressViewModel`, verify `TotalTests` matches filtered count
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Refactor `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — add `ObservableCollection<SelectableTestItem> SelectableTests` property; populate from `CurrentProfile.Tests` in constructor and on `CurrentProfileChanged`; replace `RunAllTests()` to write selected IDs to `_appState.SetSelectedTestIds()` before `_navigationService.NavigateToRunProgress()`; add `HasSelectedTests` computed property; update `RunAllTestsCommand` `CanExecute` to require `HasSelectedTests`
-- [ ] T008 [US1] Update `RunProgressViewModel` in `src/ReqChecker.App/ViewModels/RunProgressViewModel.cs` — in constructor, read `_appState.SelectedTestIds`; if non-null, create a shallow copy of `CurrentProfile` with `Tests` filtered to only those IDs; set `TotalTests` from filtered count; clear `SelectedTestIds` in AppState after consumption; pass filtered profile to `_testRunner.RunTestsAsync()` in `StartTestsAsync()`
-- [ ] T009 [US1] Update `TestListView.xaml` in `src/ReqChecker.App/Views/TestListView.xaml` — change `ItemsSource` from `CurrentProfile.Tests` to `SelectableTests`; add a `CheckBox` column (Style=`AccentCheckBox`) as the first element in each test card grid (before type icon), bound to `IsSelected` with `Click` event handled via command or direct binding (must NOT trigger card navigation); add opacity binding on card Border: `Opacity` bound to `IsSelected` via `BoolToOpacityConverter` (1.0 when true, 0.5 when false) with 150ms animation using `DurationFast`
-- [ ] T010 [US1] Add `BoolToOpacityConverter` to `src/ReqChecker.App/Converters/` (if not already existing) — returns 1.0 for true, 0.5 for false; register in App.xaml or TestListView.xaml resources
+- [x] T007 [US1] Refactor `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — add `ObservableCollection<SelectableTestItem> SelectableTests` property; populate from `CurrentProfile.Tests` in constructor and on `CurrentProfileChanged`; replace `RunAllTests()` to write selected IDs to `_appState.SetSelectedTestIds()` before `_navigationService.NavigateToRunProgress()`; add `HasSelectedTests` computed property; update `RunAllTestsCommand` `CanExecute` to require `HasSelectedTests`
+- [x] T008 [US1] Update `RunProgressViewModel` in `src/ReqChecker.App/ViewModels/RunProgressViewModel.cs` — in constructor, read `_appState.SelectedTestIds`; if non-null, create a shallow copy of `CurrentProfile` with `Tests` filtered to only those IDs; set `TotalTests` from filtered count; clear `SelectedTestIds` in AppState after consumption; pass filtered profile to `_testRunner.RunTestsAsync()` in `StartTestsAsync()`
+- [x] T009 [US1] Update `TestListView.xaml` in `src/ReqChecker.App/Views/TestListView.xaml` — change `ItemsSource` from `CurrentProfile.Tests` to `SelectableTests`; add a `CheckBox` column (Style=`AccentCheckBox`) as the first element in each test card grid (before type icon), bound to `IsSelected` with `Click` event handled via command or direct binding (must NOT trigger card navigation); add opacity binding on card Border: `Opacity` bound to `IsSelected` via `BoolToOpacityConverter` (1.0 when true, 0.5 when false) with 150ms animation using `DurationFast`
+- [x] T010 [US1] Add `BoolToOpacityConverter` to `src/ReqChecker.App/Converters/` (if not already existing) — returns 1.0 for true, 0.5 for false; register in App.xaml or TestListView.xaml resources
 
 **Checkpoint**: User Story 1 complete. Users can check/uncheck tests and run a subset. `dotnet build && dotnet test` should pass. Default behavior (all selected) is identical to prior "Run All" flow.
 
@@ -67,12 +67,12 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Add tests to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: (a) `IsAllSelected_ReturnsTrue_WhenAllSelected`; (b) `IsAllSelected_ReturnsFalse_WhenNoneSelected`; (c) `IsAllSelected_ReturnsNull_WhenPartiallySelected`; (d) `ToggleSelectAll_ChecksAll_WhenIndeterminate`; (e) `ToggleSelectAll_UnchecksAll_WhenAllChecked`; (f) `ToggleSelectAll_ChecksAll_WhenNoneChecked`
+- [x] T011 [P] [US2] Add tests to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: (a) `IsAllSelected_ReturnsTrue_WhenAllSelected`; (b) `IsAllSelected_ReturnsFalse_WhenNoneSelected`; (c) `IsAllSelected_ReturnsNull_WhenPartiallySelected`; (d) `ToggleSelectAll_ChecksAll_WhenIndeterminate`; (e) `ToggleSelectAll_UnchecksAll_WhenAllChecked`; (f) `ToggleSelectAll_ChecksAll_WhenNoneChecked`
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Add `IsAllSelected` (`bool?`) computed property to `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — returns `true` if all `IsSelected`, `false` if none, `null` if mixed; add `ToggleSelectAllCommand` that sets all items to checked (if currently indeterminate or none) or unchecked (if all checked); subscribe to each `SelectableTestItem.PropertyChanged` to raise `OnPropertyChanged(nameof(IsAllSelected))` when any `IsSelected` changes
-- [ ] T013 [US2] Add "Select All" checkbox to header row in `src/ReqChecker.App/Views/TestListView.xaml` — position between test count label and run button; bind `IsChecked` to `IsAllSelected` (TwoWay); set `IsThreeState="False"` (user cannot manually set indeterminate, only computed); use `AccentCheckBox` style; add label text "Select All" next to it
+- [x] T012 [US2] Add `IsAllSelected` (`bool?`) computed property to `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — returns `true` if all `IsSelected`, `false` if none, `null` if mixed; add `ToggleSelectAllCommand` that sets all items to checked (if currently indeterminate or none) or unchecked (if all checked); subscribe to each `SelectableTestItem.PropertyChanged` to raise `OnPropertyChanged(nameof(IsAllSelected))` when any `IsSelected` changes
+- [x] T013 [US2] Add "Select All" checkbox to header row in `src/ReqChecker.App/Views/TestListView.xaml` — position between test count label and run button; bind `IsChecked` to `IsAllSelected` (TwoWay); set `IsThreeState="False"` (user cannot manually set indeterminate, only computed); use `AccentCheckBox` style; add label text "Select All" next to it
 
 **Checkpoint**: User Story 2 complete. Select All toggles all checkboxes. Indeterminate state shows when partial. `dotnet build && dotnet test` should pass.
 
@@ -86,12 +86,12 @@
 
 ### Tests for User Story 3
 
-- [ ] T014 [P] [US3] Add tests to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: (a) `RunButtonLabel_ShowsRunAllTests_WhenAllSelected`; (b) `RunButtonLabel_ShowsRunNofM_WhenSubsetSelected`; (c) `RunButtonLabel_ShowsRunTests_WhenNoneSelected`
+- [x] T014 [P] [US3] Add tests to `tests/ReqChecker.App.Tests/ViewModels/TestListViewModelTests.cs`: (a) `RunButtonLabel_ShowsRunAllTests_WhenAllSelected`; (b) `RunButtonLabel_ShowsRunNofM_WhenSubsetSelected`; (c) `RunButtonLabel_ShowsRunTests_WhenNoneSelected`
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Add `RunButtonLabel` computed string property to `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — returns "Run All Tests" when `SelectedCount == TotalCount`, "Run N of M Tests" when `0 < SelectedCount < TotalCount`, "Run Tests" when `SelectedCount == 0`; add `SelectedCount` and `TotalCount` helper properties; raise `OnPropertyChanged(nameof(RunButtonLabel))` when any `IsSelected` changes (piggyback on existing subscription from T012)
-- [ ] T016 [US3] Update run button in `src/ReqChecker.App/Views/TestListView.xaml` — replace hardcoded "Run All Tests" TextBlock with binding to `RunButtonLabel`; ensure `IsEnabled` is bound to `HasSelectedTests` (from T007)
+- [x] T015 [US3] Add `RunButtonLabel` computed string property to `TestListViewModel` in `src/ReqChecker.App/ViewModels/TestListViewModel.cs` — returns "Run All Tests" when `SelectedCount == TotalCount`, "Run N of M Tests" when `0 < SelectedCount < TotalCount`, "Run Tests" when `SelectedCount ==0`; add `SelectedCount` and `TotalCount` helper properties; raise `OnPropertyChanged(nameof(RunButtonLabel))` when any `IsSelected` changes (piggyback on existing subscription from T012)
+- [x] T016 [US3] Update run button in `src/ReqChecker.App/Views/TestListView.xaml` — replace hardcoded "Run All Tests" TextBlock with binding to `RunButtonLabel`; ensure `IsEnabled` is bound to `HasSelectedTests` (from T007)
 
 **Checkpoint**: User Story 3 complete. Button dynamically reflects selection count. `dotnet build && dotnet test` should pass.
 
