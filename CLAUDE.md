@@ -33,6 +33,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (in-memory RunReport via IAppState) (027-premium-results)
 - N/A (in-memory only) (028-premium-test-execution-ux)
 - JSON files in `%LOCALAPPDATA%/ReqChecker/` (history.json), Windows Credential Manager (credentials) (029-security-quality-hardening)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (030-selective-test-run)
+- N/A (in-memory session-only selection state; no persistence) (030-selective-test-run)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -52,9 +54,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 030-selective-test-run: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection
 - 029-security-quality-hardening: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, System.Text.Json
 - 028-premium-test-execution-ux: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 027-premium-results: Added C# 12 / .NET 8.0-windows + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 
