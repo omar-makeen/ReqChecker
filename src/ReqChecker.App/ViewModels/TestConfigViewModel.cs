@@ -24,6 +24,11 @@ public partial class TestConfigViewModel : ObservableObject
 
     public string RequiresAdminText => RequiresAdmin ? "Yes" : "No";
 
+    partial void OnRequiresAdminChanged(bool value)
+    {
+        OnPropertyChanged(nameof(RequiresAdminText));
+    }
+
     [ObservableProperty]
     private int? _timeout;
 
