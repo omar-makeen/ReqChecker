@@ -123,14 +123,16 @@
         <!-- Error Message -->
         <Border Grid.Row="1"
                 Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}"
-                Background="{DynamicResource StatusFailGlowColor}"
                 BorderBrush="{DynamicResource StatusFail}"
                 BorderThickness="1"
                 CornerRadius="12"
                 Padding="16,12"
                 Margin="0,0,0,16">
+            <Border.Background>
+                <SolidColorBrush Color="{DynamicResource StatusFailGlowColor}"/>
+            </Border.Background>
             <Border.Effect>
-                <DropShadowEffect Color="#EF4444"
+                <DropShadowEffect Color="{StaticResource StatusFailColor}"
                                   Opacity="0.3"
                                   BlurRadius="16"
                                   ShadowDepth="0"/>
