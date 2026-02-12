@@ -24,6 +24,11 @@ public partial class TestConfigViewModel : ObservableObject
 
     public string RequiresAdminText => RequiresAdmin ? "Yes" : "No";
 
+    partial void OnRequiresAdminChanged(bool value)
+    {
+        OnPropertyChanged(nameof(RequiresAdminText));
+    }
+
     [ObservableProperty]
     private int? _timeout;
 
@@ -42,7 +47,6 @@ public partial class TestConfigViewModel : ObservableObject
     public ObservableCollection<TestParameterViewModel> Parameters { get; } = new();
 
     public ICommand SaveCommand { get; }
-    public ICommand CancelCommand { get; }
     public ICommand BackCommand { get; }
     public ICommand PromptForCredentialsCommand { get; }
 
@@ -57,7 +61,6 @@ public partial class TestConfigViewModel : ObservableObject
         RetryCount = testDefinition.RetryCount;
         InitializeParameters();
         SaveCommand = new AsyncRelayCommand(SaveAsync);
-        CancelCommand = new RelayCommand(OnCancel);
         BackCommand = new RelayCommand(OnBack);
         PromptForCredentialsCommand = new RelayCommand(OnPromptForCredentials);
     }
@@ -101,14 +104,6 @@ public partial class TestConfigViewModel : ObservableObject
         {
             IsSaving = false;
         }
-    }
-
-    private void OnCancel()
-    {
-        TestName = _testDefinition.DisplayName;
-        RequiresAdmin = _testDefinition.RequiresAdmin;
-        Timeout = _testDefinition.Timeout;
-        RetryCount = _testDefinition.RetryCount;
     }
 
     private void OnBack()

@@ -123,12 +123,18 @@
         <!-- Error Message -->
         <Border Grid.Row="1"
                 Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}"
-                Background="#1AEF4444"
+                Background="{DynamicResource StatusFailGlowColor}"
                 BorderBrush="{DynamicResource StatusFail}"
                 BorderThickness="1"
-                CornerRadius="8"
+                CornerRadius="12"
                 Padding="16,12"
                 Margin="0,0,0,16">
+            <Border.Effect>
+                <DropShadowEffect Color="#EF4444"
+                                  Opacity="0.3"
+                                  BlurRadius="16"
+                                  ShadowDepth="0"/>
+            </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -147,7 +153,7 @@
                 </StackPanel>
 
                 <Button Grid.Column="1"
-                        Style="{StaticResource GhostButtonSmall}"
+                        Style="{StaticResource GhostButton}"
                         Command="{Binding ClearErrorCommand}"
                         Content="Dismiss"
                         TabIndex="3"/>

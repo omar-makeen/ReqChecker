@@ -48,7 +48,8 @@
       "Bash(where:*)",
       "Bash(git -C \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\" show 90f7ca6:tests/ReqChecker.Infrastructure.Tests/Execution/SequentialTestRunnerTests.cs)",
       "Bash(dir:*)",
-      "Bash(git -C \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\" branch --show-current)"
+      "Bash(git -C \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\" branch --show-current)",
+      "Bash(if not exist \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\\\\specs\\\\037-fix-test-config-ux\\\\checklists\" mkdir \"C:\\\\workspace\\\\pulsar\\\\ReqChecker\\\\specs\\\\037-fix-test-config-ux\\\\checklists\")"
     ]
   }
 }
