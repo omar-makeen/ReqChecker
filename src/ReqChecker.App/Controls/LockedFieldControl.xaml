@@ -6,39 +6,23 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              Opacity="0.7">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- Lock Icon -->
-        <Border Grid.Column="0"
-                Background="{DynamicResource BackgroundElevated}"
-                BorderBrush="{DynamicResource BorderSubtle}"
-                BorderThickness="1"
-                CornerRadius="6"
-                Padding="10"
-                Margin="0,0,10,0"
-                ToolTip="This field is locked and cannot be edited">
+    <Border Background="{DynamicResource BackgroundElevated}"
+            BorderBrush="{DynamicResource BorderSubtle}"
+            BorderThickness="1"
+            CornerRadius="6"
+            Padding="10,8"
+            ToolTip="This field is locked and cannot be edited">
+        <StackPanel Orientation="Horizontal">
             <ui:SymbolIcon Symbol="LockClosed24"
-                           FontSize="16"
-                           Foreground="{DynamicResource TextTertiary}"/>
-        </Border>
-
-        <!-- Field Value (Read-only) -->
-        <Border Grid.Column="1"
-                Background="{DynamicResource BackgroundElevated}"
-                BorderBrush="{DynamicResource BorderSubtle}"
-                BorderThickness="1"
-                CornerRadius="6"
-                Padding="12,10"
-                IsEnabled="False">
+                           FontSize="14"
+                           Foreground="{DynamicResource TextTertiary}"
+                           Margin="0,0,8,0"
+                           VerticalAlignment="Center"/>
             <TextBlock x:Name="ValueTextBlock"
                        Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
                        Foreground="{DynamicResource TextSecondary}"
                        VerticalAlignment="Center"
                        TextWrapping="Wrap"/>
-        </Border>
-    </Grid>
+        </StackPanel>
+    </Border>
 </UserControl>

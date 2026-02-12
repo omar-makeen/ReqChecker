@@ -499,20 +499,11 @@
     <!-- Parameter Group Card - For grouped form sections -->
     <Style x:Key="ParameterGroupCard" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource BackgroundSurface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderDefault}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtle}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="20"/>
-        <Setter Property="Margin" Value="0,0,0,16"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource ElevationGlowColor}"
-                                  BlurRadius="10"
-                                  ShadowDepth="0"
-                                  Opacity="1"
-                                  Direction="0"/>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Margin" Value="0,0,0,12"/>
     </Style>
 
     <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->

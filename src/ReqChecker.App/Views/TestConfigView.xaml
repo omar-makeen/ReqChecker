@@ -48,7 +48,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+    <Grid Margin="24" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -56,7 +56,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,24">
+        <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -95,13 +95,13 @@
                     <Border Style="{StaticResource ParameterGroupCard}">
                         <StackPanel>
                             <!-- Section Header -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <Border Background="{DynamicResource AccentPrimary}"
                                         CornerRadius="6"
-                                        Width="32" Height="32"
+                                        Width="24" Height="24"
                                         Margin="0,0,12,0">
                                     <ui:SymbolIcon Symbol="Info24"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    Foreground="White"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
@@ -113,9 +113,9 @@
                             </StackPanel>
 
                             <!-- Test Name (Locked) -->
-                            <Grid Margin="0,0,0,16">
+                            <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0"
@@ -127,9 +127,9 @@
                             </Grid>
 
                             <!-- Test Type (Locked) -->
-                            <Grid Margin="0,0,0,16">
+                            <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0"
@@ -143,7 +143,7 @@
                             <!-- Requires Admin (Locked) -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0"
@@ -151,21 +151,7 @@
                                            Style="{DynamicResource TextBody}"
                                            Foreground="{DynamicResource TextSecondary}"
                                            VerticalAlignment="Center"/>
-                                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Border Background="{DynamicResource BackgroundElevated}"
-                                            CornerRadius="6"
-                                            Padding="12,8">
-                                        <StackPanel Orientation="Horizontal">
-                                            <ui:SymbolIcon Symbol="Shield24"
-                                                           FontSize="14"
-                                                           Foreground="{DynamicResource StatusSkip}"
-                                                           Margin="0,0,8,0"
-                                                           Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                            <TextBlock Text="{Binding RequiresAdmin}"
-                                                       Foreground="{DynamicResource TextSecondary}"/>
-                                        </StackPanel>
-                                    </Border>
-                                </StackPanel>
+                                <controls:LockedFieldControl Grid.Column="1" Value="{Binding RequiresAdminText}"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -176,13 +162,13 @@
                     <Border Style="{StaticResource ParameterGroupCard}">
                         <StackPanel>
                             <!-- Section Header -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <Border Background="{DynamicResource AccentSecondary}"
                                         CornerRadius="6"
-                                        Width="32" Height="32"
+                                        Width="24" Height="24"
                                         Margin="0,0,12,0">
                                     <ui:SymbolIcon Symbol="Timer24"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    Foreground="White"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
@@ -194,9 +180,9 @@
                             </StackPanel>
 
                             <!-- Timeout -->
-                            <Grid Margin="0,0,0,16">
+                            <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0"
@@ -215,7 +201,7 @@
                             <!-- Retries -->
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0"
@@ -239,13 +225,13 @@
                     <Border Style="{StaticResource ParameterGroupCard}">
                         <StackPanel>
                             <!-- Section Header -->
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                                 <Border Background="{DynamicResource StatusPass}"
                                         CornerRadius="6"
-                                        Width="32" Height="32"
+                                        Width="24" Height="24"
                                         Margin="0,0,12,0">
                                     <ui:SymbolIcon Symbol="SlideSettings24"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    Foreground="White"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
@@ -259,10 +245,10 @@
                             <ItemsControl ItemsSource="{Binding Parameters}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="0,0,0,16"
+                                        <Grid Margin="0,0,0,12"
                                               Visibility="{Binding Policy, Converter={StaticResource FieldPolicyToVisibilityConverter}}">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="120"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
@@ -271,7 +257,10 @@
                                                        Text="{Binding Label}"
                                                        Style="{DynamicResource TextBody}"
                                                        Foreground="{DynamicResource TextSecondary}"
-                                                       VerticalAlignment="Center"/>
+                                                       VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding Label}"
+                                                       MaxWidth="110"/>
 
                                             <!-- Editable Field -->
                                             <TextBox Grid.Column="1"
@@ -333,8 +322,8 @@
                 Background="{DynamicResource BackgroundSurface}"
                 BorderBrush="{DynamicResource BorderSubtle}"
                 BorderThickness="0,1,0,0"
-                Margin="-32,24,-32,-32"
-                Padding="32,16">
+                Margin="-24,16,-24,-24"
+                Padding="24,12">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
