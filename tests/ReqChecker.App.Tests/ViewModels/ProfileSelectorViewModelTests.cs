@@ -16,7 +16,7 @@ public class ProfileSelectorViewModelTests
 {
     private static ProfileMigrationPipeline CreateMigrationPipeline()
     {
-        return new ProfileMigrationPipeline(new List<IProfileMigrator> { new V1ToV2Migration() });
+        return new ProfileMigrationPipeline(new List<IProfileMigrator> { new V1ToV2Migration(), new V2ToV3Migration() });
     }
 
     [Fact]
@@ -170,8 +170,8 @@ public class ProfileSelectorViewModelTests
 
         // Assert - If profile was migrated successfully (no error), it should be added to profiles
         Assert.False(viewModel.HasError);
-        // The migrated profile should be in the profiles collection
-        Assert.Contains(viewModel.Profiles, p => p.Name == "V1 Profile" && p.SchemaVersion == 2);
+        // The migrated profile should be in the profiles collection (migrated to version3 which is current)
+        Assert.Contains(viewModel.Profiles, p => p.Name == "V1 Profile" && p.SchemaVersion == 3);
     }
 
     [Fact]
@@ -187,7 +187,8 @@ public class ProfileSelectorViewModelTests
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
 
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
+        // Profile at current schema version (3) so no migration is needed
+        var profile = new Profile { Name = "Test Profile", SchemaVersion = 3, Tests = new List<TestDefinition>() };
         var filePath = "C:\\test\\profile.json";
 
         mockDialogService.Setup(x => x.OpenProfileFileDialog()).Returns(filePath);

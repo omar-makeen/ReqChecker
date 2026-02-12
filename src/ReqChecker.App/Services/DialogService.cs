@@ -18,7 +18,7 @@ public class DialogService
     /// Opens a file picker dialog for profile import.
     /// </summary>
     /// <returns>The selected file path, or null if cancelled.</returns>
-    public string? OpenProfileFileDialog()
+    public virtual string? OpenProfileFileDialog()
     {
         var dialog = new OpenFileDialog
         {
@@ -39,7 +39,7 @@ public class DialogService
     /// <param name="defaultFileName">The default file name.</param>
     /// <param name="filter">The file filter (e.g., "JSON Files (*.json)|*.json").</param>
     /// <returns>The selected file path, or null if cancelled.</returns>
-    public string? SaveFileDialog(string defaultFileName, string filter)
+    public virtual string? SaveFileDialog(string defaultFileName, string filter)
     {
         var dialog = new SaveFileDialog
         {

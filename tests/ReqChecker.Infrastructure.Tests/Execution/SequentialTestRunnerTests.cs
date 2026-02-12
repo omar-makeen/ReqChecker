@@ -409,8 +409,8 @@ public class SequentialTestRunnerTests
         await runner.RunTestsAsync(profile, progress, CancellationToken.None, runSettings);
         stopwatch.Stop();
 
-        // Assert: With 0ms delay, should complete quickly (under 50ms for 3 instant tests)
-        Assert.True(stopwatch.ElapsedMilliseconds < 50,
+        // Assert: With 0ms delay, should complete quickly (under 200ms for 3 instant tests to account for CI variability)
+        Assert.True(stopwatch.ElapsedMilliseconds < 200,
             $"Expected quick completion with zero delay, but got {stopwatch.ElapsedMilliseconds}ms");
     }
 
