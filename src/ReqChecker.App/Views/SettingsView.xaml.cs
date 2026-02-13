@@ -14,6 +14,7 @@ namespace ReqChecker.App.Views;
 public partial class SettingsView : Page
 {
     private readonly ThemeService _themeService;
+    private bool _animationsApplied;
 
     public SettingsView(SettingsViewModel viewModel)
     {
@@ -28,6 +29,16 @@ public partial class SettingsView : Page
         
         // Initial state
         UpdateThemeBorders(viewModel.CurrentTheme);
+        
+        // Defer entrance animations until the visual tree is fully loaded
+        Loaded += OnViewLoaded;
+    }
+
+    private void OnViewLoaded(object sender, RoutedEventArgs e)
+    {
+        // Only apply animations once
+        if (_animationsApplied) return;
+        _animationsApplied = true;
         
         // Apply entrance animations (respecting reduced-motion setting)
         ApplyEntranceAnimations();
