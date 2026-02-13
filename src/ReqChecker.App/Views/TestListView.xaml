@@ -451,7 +451,9 @@
                                         Cursor="Hand">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <ContentPresenter/>
+                                            <Border Background="Transparent">
+                                                <ContentPresenter/>
+                                            </Border>
                                         </ControlTemplate>
                                     </Button.Template>
                                     <Grid>
