@@ -263,6 +263,108 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-013",
+      "type": "MtlsConnect",
+      "displayName": "mTLS — badssl.com (Happy Path)",
+      "description": "Verifies mTLS client certificate authentication against badssl.com's test endpoint. Download PFX from https://badssl.com/certs/badssl.com-client.p12 (password: badssl.com).",
+      "parameters": {
+        "url": "https://client.badssl.com/",
+        "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "expectedStatus": 200,
+        "timeout": 15000,
+        "skipServerCertValidation": false,
+        "credentialRef": "badssl-client-cert"
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "clientCertPath": "Editable",
+        "expectedStatus": "Editable",
+        "timeout": "Editable",
+        "skipServerCertValidation": "Editable",
+        "credentialRef": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-014",
+      "type": "MtlsConnect",
+      "displayName": "mTLS — File Not Found (Error Path)",
+      "description": "Tests the file-not-found error path by pointing to a non-existent PFX file. Expected to fail with a configuration error.",
+      "parameters": {
+        "url": "https://client.badssl.com/",
+        "clientCertPath": "C:\\temp\\does-not-exist.pfx",
+        "expectedStatus": 200,
+        "timeout": 15000,
+        "skipServerCertValidation": false
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "clientCertPath": "Editable",
+        "expectedStatus": "Editable",
+        "timeout": "Editable",
+        "skipServerCertValidation": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-015",
+      "type": "MtlsConnect",
+      "displayName": "mTLS — Skip Server Cert Validation",
+      "description": "Tests mTLS with server certificate validation skipped. Uses badssl.com client cert endpoint.",
+      "parameters": {
+        "url": "https://client.badssl.com/",
+        "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "expectedStatus": 200,
+        "timeout": 15000,
+        "skipServerCertValidation": true,
+        "credentialRef": "badssl-client-cert"
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "clientCertPath": "Editable",
+        "expectedStatus": "Editable",
+        "timeout": "Editable",
+        "skipServerCertValidation": "Editable",
+        "credentialRef": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-016",
+      "type": "MtlsConnect",
+      "displayName": "mTLS — Wrong Status (Validation Fail)",
+      "description": "Tests status mismatch error path by expecting 201 from an endpoint that returns 200.",
+      "parameters": {
+        "url": "https://client.badssl.com/",
+        "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "expectedStatus": 201,
+        "timeout": 15000,
+        "skipServerCertValidation": false,
+        "credentialRef": "badssl-client-cert"
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "clientCertPath": "Editable",
+        "expectedStatus": "Editable",
+        "timeout": "Editable",
+        "skipServerCertValidation": "Editable",
+        "credentialRef": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
     }
   ],
   "signature": null

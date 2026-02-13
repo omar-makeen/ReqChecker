@@ -5,6 +5,7 @@ using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.Execution;
 using ReqChecker.Infrastructure.Tests;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using ProfileModel = ReqChecker.Core.Models.Profile;
 
 namespace ReqChecker.Infrastructure.Tests.Execution;
@@ -310,6 +311,54 @@ public class SequentialTestRunnerTests
         // Assert
         Assert.Equal(3, results.Count);
         Assert.All(results, r => Assert.Equal(TestStatus.Pass, r.Status));
+    }
+
+    [Fact]
+    public async Task RunTestsAsync_WhenCredentialPromptThrows_FailsOnlyPromptedTestAndContinues()
+    {
+        // Arrange
+        var profile = new ProfileModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = "Prompt Failure Profile",
+            SchemaVersion = 3,
+            Tests = new List<TestDefinition>
+            {
+                new TestDefinition
+                {
+                    Id = "test-credential",
+                    Type = "Instant",
+                    DisplayName = "mTLS Test",
+                    Parameters = new JsonObject { ["credentialRef"] = "client-cert" }
+                },
+                new TestDefinition
+                {
+                    Id = "test-normal",
+                    Type = "Instant",
+                    DisplayName = "Non-mTLS Test"
+                }
+            },
+            RunSettings = new RunSettings()
+        };
+
+        var runner = new SequentialTestRunner(new List<ITest> { new InstantTest() })
+        {
+            PromptForCredentials = (_, _, _) => throw new InvalidOperationException("XAML parse failure")
+        };
+
+        // Act
+        var report = await runner.RunTestsAsync(profile, null!, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(2, report.Results.Count);
+
+        var promptedResult = report.Results.First(r => r.TestId == "test-credential");
+        Assert.Equal(TestStatus.Fail, promptedResult.Status);
+        Assert.Equal(ErrorCategory.Configuration, promptedResult.Error?.Category);
+        Assert.Contains("Failed to prompt for credentials", promptedResult.Error?.Message);
+
+        var normalResult = report.Results.First(r => r.TestId == "test-normal");
+        Assert.Equal(TestStatus.Pass, normalResult.Status);
     }
 
     #region Inter-test delay tests

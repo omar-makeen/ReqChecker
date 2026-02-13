@@ -16,18 +16,9 @@ public partial class CredentialPromptDialog : Window
         _viewModel = viewModel;
         DataContext = _viewModel;
 
-        // Set up callbacks
-        _viewModel.OnCredentialsSubmitted = (username, password) =>
-        {
-            DialogResult = true;
-            Close();
-        };
-
-        _viewModel.OnCancelled = () =>
-        {
-            DialogResult = false;
-            Close();
-        };
+        // Wire button events explicitly to avoid relying on generated XAML event hookups.
+        SubmitButton.Click += SubmitButton_Click;
+        CancelButton.Click += CancelButton_Click;
     }
 
     /// <summary>
@@ -51,5 +42,29 @@ public partial class CredentialPromptDialog : Window
         {
             _viewModel.Password = passwordBox.Password;
         }
+    }
+
+    private void SubmitButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Sync password from PasswordBox (it doesn't support binding)
+        _viewModel.Password = PasswordBox.Password;
+
+        // Validate password is not empty
+        if (string.IsNullOrWhiteSpace(_viewModel.Password))
+        {
+            _viewModel.ErrorMessage = "Password is required.";
+            return;
+        }
+
+        // Clear error and close
+        _viewModel.ErrorMessage = null;
+        DialogResult = true;
+        Close();
+    }
+
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        DialogResult = false;
+        Close();
     }
 }

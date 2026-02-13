@@ -196,7 +196,37 @@ public class SequentialTestRunner : ITestRunner
             }
 
             // Check for PromptAtRun fields and prompt for credentials if needed
-            var context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
+            TestExecutionContext? context;
+            try
+            {
+                context = await PromptForCredentialsIfNeededAsync(testDefinition, cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                var result = new TestResult
+                {
+                    TestId = testDefinition.Id,
+                    TestType = testDefinition.Type,
+                    DisplayName = testDefinition.DisplayName,
+                    Status = TestStatus.Fail,
+                    StartTime = DateTime.UtcNow,
+                    EndTime = DateTime.UtcNow,
+                    Duration = TimeSpan.Zero,
+                    Error = new TestError
+                    {
+                        Category = ErrorCategory.Configuration,
+                        Message = $"Failed to prompt for credentials: {ex.Message}"
+                    }
+                };
+                results.Add(result);
+                progress?.Report(result);
+                completedResults[testDefinition.Id] = result;
+                continue;
+            }
 
             // Only skip if test requires credentials but user cancelled the prompt
             var hasCredentialRef = testDefinition.Parameters?.ContainsKey("credentialRef") == true;

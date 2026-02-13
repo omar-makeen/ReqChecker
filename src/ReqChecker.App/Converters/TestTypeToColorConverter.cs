@@ -19,7 +19,7 @@ public class TestTypeToColorConverter : IValueConverter
         {
             return testType switch
             {
-                "Ping" or "HttpGet" or "DnsLookup" or "DnsResolve" or "TcpPortOpen" or "UdpPortOpen" =>
+                "Ping" or "HttpGet" or "DnsLookup" or "DnsResolve" or "TcpPortOpen" or "UdpPortOpen" or "MtlsConnect" =>
                     Application.Current.FindResource("StatusInfo") as SolidColorBrush ?? FallbackBrush,
                 "FileExists" or "DirectoryExists" or "DiskSpace" =>
                     Application.Current.FindResource("StatusSkip") as SolidColorBrush ?? FallbackBrush,
