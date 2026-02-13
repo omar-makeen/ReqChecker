@@ -66,6 +66,7 @@ public partial class ThemeService : ObservableObject
     /// </summary>
     public void SetTheme(AppTheme theme)
     {
+        if (theme == CurrentTheme) return;
         CurrentTheme = theme;
         _preferencesService.Theme = theme;
         ApplyTheme();

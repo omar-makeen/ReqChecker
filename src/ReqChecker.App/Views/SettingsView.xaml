@@ -112,9 +112,12 @@
                                 Style="{StaticResource ThemeCardButton}"
                                 Command="{Binding SelectDarkThemeCommand}"
                                 TabIndex="1">
-                            <Border Style="{StaticResource AnimatedSettingsCard}"
+                            <Border x:Name="DarkCardBorder"
+                                    Style="{StaticResource AnimatedSettingsCard}"
                                     CornerRadius="12"
                                     Background="{DynamicResource BackgroundElevated}"
+                                    BorderThickness="2"
+                                    BorderBrush="Transparent"
                                     Padding="16">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
@@ -165,9 +168,12 @@
                                 Style="{StaticResource ThemeCardButton}"
                                 Command="{Binding SelectLightThemeCommand}"
                                 TabIndex="2">
-                            <Border Style="{StaticResource AnimatedSettingsCard}"
+                            <Border x:Name="LightCardBorder"
+                                    Style="{StaticResource AnimatedSettingsCard}"
                                     CornerRadius="12"
                                     Background="{DynamicResource BackgroundElevated}"
+                                    BorderThickness="2"
+                                    BorderBrush="Transparent"
                                     Padding="16">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
@@ -213,29 +219,6 @@
                         </Button>
                     </Grid>
 
-                    <!-- Active Theme Indicators (using DataTrigger approach in code-behind) -->
-                    <Border x:Name="DarkThemeBorder" 
-                            Grid.Column="0"
-                            CornerRadius="12"
-                            BorderThickness="2"
-                            BorderBrush="Transparent"
-                            IsHitTestVisible="False"
-                            HorizontalAlignment="Left"
-                            Width="{Binding ActualWidth, ElementName=DarkThemeCard}"
-                            Height="{Binding ActualHeight, ElementName=DarkThemeCard}"
-                            Margin="0,-78,0,0">
-                    </Border>
-                    <Border x:Name="LightThemeBorder" 
-                            Grid.Column="2"
-                            CornerRadius="12"
-                            BorderThickness="2"
-                            BorderBrush="Transparent"
-                            IsHitTestVisible="False"
-                            HorizontalAlignment="Right"
-                            Width="{Binding ActualWidth, ElementName=LightThemeCard}"
-                            Height="{Binding ActualHeight, ElementName=LightThemeCard}"
-                            Margin="0,-78,0,0">
-                    </Border>
                 </StackPanel>
 
                 <!-- About Section -->

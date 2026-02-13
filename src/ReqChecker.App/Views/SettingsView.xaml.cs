@@ -55,13 +55,13 @@ public partial class SettingsView : Page
 
     private void UpdateThemeBorders(AppTheme currentTheme)
     {
-        // Update Dark theme border
-        DarkThemeBorder.BorderBrush = currentTheme == AppTheme.Dark
+        // Update Dark theme card border
+        DarkCardBorder.BorderBrush = currentTheme == AppTheme.Dark
             ? (Brush)Application.Current.Resources["AccentPrimary"]
             : Brushes.Transparent;
-        
-        // Update Light theme border
-        LightThemeBorder.BorderBrush = currentTheme == AppTheme.Light
+
+        // Update Light theme card border
+        LightCardBorder.BorderBrush = currentTheme == AppTheme.Light
             ? (Brush)Application.Current.Resources["AccentPrimary"]
             : Brushes.Transparent;
     }

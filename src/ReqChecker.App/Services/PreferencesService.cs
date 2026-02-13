@@ -30,6 +30,8 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
+    private bool _suppressSave;
+
     [ObservableProperty]
     private AppTheme _theme = AppTheme.Dark;
 
@@ -103,12 +105,12 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
 
     partial void OnThemeChanged(AppTheme value)
     {
-        Save();
+        if (!_suppressSave) Save();
     }
 
     partial void OnSidebarExpandedChanged(bool value)
     {
-        Save();
+        if (!_suppressSave) Save();
     }
 
     /// <summary>
@@ -116,8 +118,10 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
     /// </summary>
     public void ResetToDefaults()
     {
+        _suppressSave = true;
         Theme = AppTheme.Dark;
         SidebarExpanded = true;
-        // Auto-save triggers via OnThemeChanged and OnSidebarExpandedChanged
+        _suppressSave = false;
+        Save();
     }
 }

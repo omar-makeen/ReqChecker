@@ -203,7 +203,7 @@
                         VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Theme Toggle and Status -->
+                <!-- Status Indicator -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                     <!-- Status Indicator -->
                     <Border Background="{DynamicResource StatusPass}"
