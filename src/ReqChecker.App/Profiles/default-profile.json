@@ -170,6 +170,84 @@
     },
     {
       "id": "test-009",
+      "type": "UdpPortOpen",
+      "displayName": "Check UDP DNS (Cloudflare)",
+      "description": "Verifies UDP connectivity to Cloudflare DNS server using a DNS A-record query for google.com.",
+      "parameters": {
+        "host": "1.1.1.1",
+        "port": 53,
+        "timeout": 3000,
+        "payload": "abcd0100000100000000000006676f6f676c6503636f6d0000010001",
+        "expectedResponse": "",
+        "encoding": "hex"
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "timeout": "Editable",
+        "payload": "Hidden",
+        "expectedResponse": "Hidden",
+        "encoding": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-010",
+      "type": "UdpPortOpen",
+      "displayName": "Check UDP NTP Server",
+      "description": "Verifies UDP connectivity to a public NTP time server by sending an NTP client request packet.",
+      "parameters": {
+        "host": "time.windows.com",
+        "port": 123,
+        "timeout": 5000,
+        "payload": "1b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "expectedResponse": "",
+        "encoding": "hex"
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "timeout": "Editable",
+        "payload": "Hidden",
+        "expectedResponse": "Hidden",
+        "encoding": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-011",
+      "type": "UdpPortOpen",
+      "displayName": "Check UDP Port (Expect Timeout)",
+      "description": "Tests timeout behavior by targeting a high port unlikely to have a listener. Expected to fail with timeout.",
+      "parameters": {
+        "host": "127.0.0.1",
+        "port": 59999,
+        "timeout": 1000,
+        "payload": "",
+        "expectedResponse": "",
+        "encoding": "auto"
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "timeout": "Editable",
+        "payload": "Hidden",
+        "expectedResponse": "Hidden",
+        "encoding": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-012",
       "type": "DiskSpace",
       "displayName": "Check Disk Space",
       "description": "Verifies that a drive or mount point has at least a specified amount of free space.",
