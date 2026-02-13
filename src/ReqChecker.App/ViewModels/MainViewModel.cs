@@ -35,6 +35,7 @@ public partial class MainViewModel : ObservableObject, IDisposable
     private bool _isSidebarExpanded;
 
     private PropertyChangedEventHandler? _themeHandler;
+    private PropertyChangedEventHandler? _preferencesHandler;
 
     public MainViewModel(IPreferencesService preferencesService, IAppState appState)
     {
@@ -57,6 +58,24 @@ public partial class MainViewModel : ObservableObject, IDisposable
                 OnPropertyChanged(nameof(ThemeIcon));
             }
         };
+
+        // Subscribe to preferences changes to sync sidebar state when reset
+        _preferencesHandler = (s, e) =>
+        {
+            if (e.PropertyName == nameof(IPreferencesService.SidebarExpanded))
+            {
+                // Sync from preferences service (e.g., after reset to defaults)
+                if (_preferencesService.SidebarExpanded != IsSidebarExpanded)
+                {
+                    IsSidebarExpanded = _preferencesService.SidebarExpanded;
+                }
+            }
+        };
+
+        if (_preferencesService is INotifyPropertyChanged notifyPreferences)
+        {
+            notifyPreferences.PropertyChanged += _preferencesHandler;
+        }
     }
 
     private void OnCurrentProfileChanged(object? sender, EventArgs e)
@@ -163,6 +182,12 @@ public partial class MainViewModel : ObservableObject, IDisposable
         if (ThemeService != null && _themeHandler != null)
         {
             ThemeService.PropertyChanged -= _themeHandler;
+        }
+
+        // Unsubscribe from preferences property changed
+        if (_preferencesService is INotifyPropertyChanged notifyPreferences && _preferencesHandler != null)
+        {
+            notifyPreferences.PropertyChanged -= _preferencesHandler;
         }
     }
 }

@@ -10,36 +10,13 @@
       FocusManager.FocusedElement="{Binding ElementName=DarkThemeCard}">
 
     <Page.Resources>
-        <!-- Staggered entrance animation for cards -->
+        <!-- Base style for settings cards (no animation - handled in code-behind for reduced-motion support) -->
         <Style x:Key="AnimatedSettingsCard" TargetType="Border">
-            <Setter Property="Opacity" Value="0"/>
             <Setter Property="RenderTransform">
                 <Setter.Value>
-                    <TranslateTransform Y="20"/>
+                    <TranslateTransform Y="0"/>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0" To="1"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             From="20" To="0"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
         </Style>
 
         <!-- Theme Card Button Style -->
