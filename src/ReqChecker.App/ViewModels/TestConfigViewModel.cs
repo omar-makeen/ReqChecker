@@ -142,6 +142,17 @@ public partial class TestParameterViewModel : ObservableObject
     public bool IsPromptAtRun => Policy == FieldPolicyType.PromptAtRun;
     public string Label => Name;
 
+    /// <summary>
+    /// Indicates whether this parameter is a password field (should be masked in UI).
+    /// True when the parameter name ends with "Password" (case-insensitive).
+    /// </summary>
+    public bool IsPassword => Name.EndsWith("Password", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Inverse of IsPassword for XAML visibility binding.
+    /// </summary>
+    public bool IsNotPassword => !IsPassword;
+
     public TestParameterViewModel(string name, string value, FieldPolicyType policy)
     {
         Name = name;

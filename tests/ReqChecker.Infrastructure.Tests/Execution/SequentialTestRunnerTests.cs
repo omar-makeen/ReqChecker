@@ -384,6 +384,204 @@ public class SequentialTestRunnerTests
         }
     }
 
+    #endregion
+
+    #region pfxPassword credential resolution tests
+
+    /// <summary>
+    /// A test that captures the execution context for verification in tests.
+    /// </summary>
+    [TestType("ContextCapturing")]
+    private class ContextCapturingTest : ITest
+    {
+        public TestExecutionContext? CapturedContext { get; private set; }
+
+        public Task<TestResult> ExecuteAsync(TestDefinition definition, TestExecutionContext? context, CancellationToken cancellationToken)
+        {
+            CapturedContext = context;
+            return Task.FromResult(new TestResult
+            {
+                TestId = definition.Id,
+                TestType = definition.Type,
+                DisplayName = definition.DisplayName,
+                Status = TestStatus.Pass,
+                StartTime = DateTime.UtcNow,
+                EndTime = DateTime.UtcNow,
+                Duration = TimeSpan.Zero,
+                HumanSummary = "Test passed"
+            });
+        }
+    }
+
+    [Fact]
+    public async Task PfxPassword_InParameters_CreatesContextWithoutPrompt()
+    {
+        // Arrange
+        var capturingTest = new ContextCapturingTest();
+        var profile = new ProfileModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = "Test Profile",
+            SchemaVersion = 3,
+            Tests = new List<TestDefinition>
+            {
+                new TestDefinition
+                {
+                    Id = "test-mtls",
+                    Type = "ContextCapturing",
+                    DisplayName = "mTLS Test",
+                    Parameters = new JsonObject { ["pfxPassword"] = "test-password-123" }
+                }
+            },
+            RunSettings = new RunSettings()
+        };
+
+        var runner = new SequentialTestRunner(new List<ITest> { capturingTest })
+        {
+            PromptForCredentials = (_, _, _) => throw new InvalidOperationException("Prompt should not be called when pfxPassword is provided")
+        };
+
+        // Act
+        var report = await runner.RunTestsAsync(profile, null!, CancellationToken.None);
+
+        // Assert
+        Assert.Single(report.Results);
+        var result = report.Results.First();
+        Assert.Equal(TestStatus.Pass, result.Status);
+        Assert.NotNull(capturingTest.CapturedContext);
+        Assert.Equal("test-password-123", capturingTest.CapturedContext.Password);
+    }
+
+    [Fact]
+    public async Task PfxPassword_Empty_CreatesContextWithNullPassword()
+    {
+        // Arrange
+        var capturingTest = new ContextCapturingTest();
+        var profile = new ProfileModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = "Test Profile",
+            SchemaVersion = 3,
+            Tests = new List<TestDefinition>
+            {
+                new TestDefinition
+                {
+                    Id = "test-mtls",
+                    Type = "ContextCapturing",
+                    DisplayName = "mTLS Test",
+                    Parameters = new JsonObject { ["pfxPassword"] = "" }
+                }
+            },
+            RunSettings = new RunSettings()
+        };
+
+        var runner = new SequentialTestRunner(new List<ITest> { capturingTest })
+        {
+            PromptForCredentials = (_, _, _) => throw new InvalidOperationException("Prompt should not be called when pfxPassword is provided (even if empty)")
+        };
+
+        // Act
+        var report = await runner.RunTestsAsync(profile, null!, CancellationToken.None);
+
+        // Assert
+        Assert.Single(report.Results);
+        var result = report.Results.First();
+        Assert.Equal(TestStatus.Pass, result.Status);
+        Assert.NotNull(capturingTest.CapturedContext);
+        // Empty password should result in empty string in context
+        Assert.Equal(string.Empty, capturingTest.CapturedContext.Password);
+    }
+
+    [Fact]
+    public async Task PfxPassword_TakesPrecedenceOverCredentialRef()
+    {
+        // Arrange
+        var capturingTest = new ContextCapturingTest();
+        var profile = new ProfileModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = "Test Profile",
+            SchemaVersion = 3,
+            Tests = new List<TestDefinition>
+            {
+                new TestDefinition
+                {
+                    Id = "test-mtls",
+                    Type = "ContextCapturing",
+                    DisplayName = "mTLS Test",
+                    Parameters = new JsonObject
+                    {
+                        ["pfxPassword"] = "password-from-config",
+                        ["credentialRef"] = "client-cert"
+                    }
+                }
+            },
+            RunSettings = new RunSettings()
+        };
+
+        var runner = new SequentialTestRunner(new List<ITest> { capturingTest })
+        {
+            PromptForCredentials = (_, _, _) => throw new InvalidOperationException("Prompt should not be called when pfxPassword is provided")
+        };
+
+        // Act
+        var report = await runner.RunTestsAsync(profile, null!, CancellationToken.None);
+
+        // Assert
+        Assert.Single(report.Results);
+        var result = report.Results.First();
+        Assert.Equal(TestStatus.Pass, result.Status);
+        Assert.NotNull(capturingTest.CapturedContext);
+        Assert.Equal("password-from-config", capturingTest.CapturedContext.Password);
+    }
+
+    [Fact]
+    public async Task CredentialRef_WithoutPfxPassword_StillPromptsUser()
+    {
+        // Arrange
+        var capturingTest = new ContextCapturingTest();
+        var profile = new ProfileModel
+        {
+            Id = Guid.NewGuid().ToString(),
+            Name = "Test Profile",
+            SchemaVersion = 3,
+            Tests = new List<TestDefinition>
+            {
+                new TestDefinition
+                {
+                    Id = "test-mtls",
+                    Type = "ContextCapturing",
+                    DisplayName = "mTLS Test",
+                    Parameters = new JsonObject { ["credentialRef"] = "client-cert" }
+                }
+            },
+            RunSettings = new RunSettings()
+        };
+
+        var promptCalled = false;
+        var runner = new SequentialTestRunner(new List<ITest> { capturingTest })
+        {
+            PromptForCredentials = (label, credRef, hint) =>
+            {
+                promptCalled = true;
+                return Task.FromResult<(string? username, string? password, bool remember)>(("user", "password-from-prompt", false));
+            }
+        };
+
+        // Act
+        var report = await runner.RunTestsAsync(profile, null!, CancellationToken.None);
+
+        // Assert
+        Assert.Single(report.Results);
+        var result = report.Results.First();
+        Assert.Equal(TestStatus.Pass, result.Status);
+        Assert.True(promptCalled, "Prompt should be called when only credentialRef is provided");
+        Assert.NotNull(capturingTest.CapturedContext);
+        Assert.Equal("password-from-prompt", capturingTest.CapturedContext.Password);
+    }
+
+    #endregion
+
     private static ProfileModel CreateProfileWithTests(int testCount)
     {
         var tests = new List<TestDefinition>();
@@ -492,6 +690,4 @@ public class SequentialTestRunnerTests
         Assert.True(stopwatch.ElapsedMilliseconds < 500,
             $"Expected quick cancellation, but got {stopwatch.ElapsedMilliseconds}ms. Cancellation during delay should be immediate.");
     }
-
-    #endregion
 }

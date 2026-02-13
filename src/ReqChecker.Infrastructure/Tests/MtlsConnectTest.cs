@@ -325,7 +325,7 @@ public class MtlsConnectTest : ITest
         }
         catch (CryptographicException ex)
         {
-            evidence.ErrorDetail = $"Cannot load PFX file: incorrect password or corrupted file ({ex.Message})";
+            evidence.ErrorDetail = $"Cannot load PFX file: incorrect passphrase or corrupted file. Check the pfxPassword parameter in test configuration. ({ex.Message})";
             throw;
         }
 

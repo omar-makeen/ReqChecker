@@ -273,11 +273,18 @@
                                                        ToolTip="{Binding Label}"
                                                        MaxWidth="110"/>
 
-                                            <!-- Editable Field -->
+                                            <!-- Editable Field (non-password) -->
                                             <TextBox Grid.Column="1"
                                                      Style="{StaticResource InputField}"
                                                      Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                                     Visibility="{Binding IsEditable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                     Visibility="{Binding IsNotPassword, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                            <!-- Password Field (masked input) -->
+                                            <PasswordBox x:Name="ParameterPasswordBox"
+                                                         Grid.Column="1"
+                                                         Style="{StaticResource CredentialPasswordBox}"
+                                                         Visibility="{Binding IsPassword, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                         PasswordChanged="ParameterPasswordBox_PasswordChanged"/>
 
                                             <!-- Locked Field -->
                                             <controls:LockedFieldControl Grid.Column="1"

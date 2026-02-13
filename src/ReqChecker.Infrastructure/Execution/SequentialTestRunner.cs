@@ -300,6 +300,15 @@ public class SequentialTestRunner : ITestRunner
         if (testDefinition.Parameters == null)
             return null;
 
+        // Check for pfxPassword parameter first (takes precedence over credentialRef)
+        // This allows mTLS tests to read the passphrase directly from configuration without prompting
+        if (testDefinition.Parameters.ContainsKey("pfxPassword"))
+        {
+            var pfxPasswordNode = testDefinition.Parameters["pfxPassword"];
+            var pfxPassword = pfxPasswordNode?.ToString() ?? string.Empty;
+            return new TestExecutionContext(string.Empty, pfxPassword);
+        }
+
         // Check for credentialRef parameter (indicates PromptAtRun)
         if (testDefinition.Parameters.ContainsKey("credentialRef"))
         {

@@ -272,18 +272,18 @@
       "parameters": {
         "url": "https://client.badssl.com/",
         "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "pfxPassword": "badssl.com",
         "expectedStatus": 200,
         "timeout": 15000,
-        "skipServerCertValidation": false,
-        "credentialRef": "badssl-client-cert"
+        "skipServerCertValidation": false
       },
       "fieldPolicy": {
         "url": "Editable",
         "clientCertPath": "Editable",
+        "pfxPassword": "Editable",
         "expectedStatus": "Editable",
         "timeout": "Editable",
-        "skipServerCertValidation": "Editable",
-        "credentialRef": "Hidden"
+        "skipServerCertValidation": "Editable"
       },
       "timeout": null,
       "retryCount": null,
@@ -322,18 +322,18 @@
       "parameters": {
         "url": "https://client.badssl.com/",
         "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "pfxPassword": "badssl.com",
         "expectedStatus": 200,
         "timeout": 15000,
-        "skipServerCertValidation": true,
-        "credentialRef": "badssl-client-cert"
+        "skipServerCertValidation": true
       },
       "fieldPolicy": {
         "url": "Editable",
         "clientCertPath": "Editable",
+        "pfxPassword": "Editable",
         "expectedStatus": "Editable",
         "timeout": "Editable",
-        "skipServerCertValidation": "Editable",
-        "credentialRef": "Hidden"
+        "skipServerCertValidation": "Editable"
       },
       "timeout": null,
       "retryCount": null,
@@ -348,18 +348,18 @@
       "parameters": {
         "url": "https://client.badssl.com/",
         "clientCertPath": "C:\\temp\\badssl.com-client.p12",
+        "pfxPassword": "badssl.com",
         "expectedStatus": 201,
         "timeout": 15000,
-        "skipServerCertValidation": false,
-        "credentialRef": "badssl-client-cert"
+        "skipServerCertValidation": false
       },
       "fieldPolicy": {
         "url": "Editable",
         "clientCertPath": "Editable",
+        "pfxPassword": "Editable",
         "expectedStatus": "Editable",
         "timeout": "Editable",
-        "skipServerCertValidation": "Editable",
-        "credentialRef": "Hidden"
+        "skipServerCertValidation": "Editable"
       },
       "timeout": null,
       "retryCount": null,
