@@ -151,9 +151,9 @@
         "host": "8.8.8.8",
         "port": 53,
         "timeout": 5000,
-        "payload": "",
+        "payload": "00010100000100000000000003777777076578616d706c6503636f6d0000010001",
         "expectedResponse": "",
-        "encoding": "auto"
+        "encoding": "hex"
       },
       "fieldPolicy": {
         "host": "Editable",
@@ -166,7 +166,7 @@
       "timeout": null,
       "retryCount": null,
       "requiresAdmin": false,
-      "dependsOn": ["test-001"]
+      "dependsOn": []
     },
     {
       "id": "test-009",
