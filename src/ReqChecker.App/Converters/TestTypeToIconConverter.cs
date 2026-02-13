@@ -21,6 +21,7 @@ public class TestTypeToIconConverter : IValueConverter
                 "DnsLookup" => SymbolRegular.Link24,
                 "DnsResolve" => SymbolRegular.Link24,
                 "TcpPortOpen" => SymbolRegular.PlugConnected24,
+                "UdpPortOpen" => SymbolRegular.Connected24,
                 "WindowsService" => SymbolRegular.WindowApps24,
                 "DiskSpace" => SymbolRegular.HardDrive20,
                 "FileExists" => SymbolRegular.Document24,

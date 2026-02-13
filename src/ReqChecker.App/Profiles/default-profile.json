@@ -144,6 +144,32 @@
     },
     {
       "id": "test-008",
+      "type": "UdpPortOpen",
+      "displayName": "Check UDP Port Connectivity (DNS)",
+      "description": "Verifies that a UDP port is reachable by sending a datagram and waiting for a response. Tests DNS connectivity to Google DNS.",
+      "parameters": {
+        "host": "8.8.8.8",
+        "port": 53,
+        "timeout": 5000,
+        "payload": "",
+        "expectedResponse": "",
+        "encoding": "auto"
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "timeout": "Editable",
+        "payload": "Hidden",
+        "expectedResponse": "Hidden",
+        "encoding": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-009",
       "type": "DiskSpace",
       "displayName": "Check Disk Space",
       "description": "Verifies that a drive or mount point has at least a specified amount of free space.",
