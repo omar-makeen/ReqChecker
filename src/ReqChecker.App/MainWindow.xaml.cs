@@ -76,13 +76,14 @@ public partial class MainWindow : FluentWindow
         NavResults.IsActive = false;
         NavHistory.IsActive = false;
         NavDiagnostics.IsActive = false;
+        NavSettings.IsActive = false;
     }
 
     /// <summary>
     /// Sets the navigation selection to the specified tag.
     /// Clears all other selections before setting the new one.
     /// </summary>
-    /// <param name="tag">The navigation tag to select (Profiles, Tests, Results, Diagnostics)</param>
+    /// <param name="tag">The navigation tag to select (Profiles, Tests, Results, Diagnostics, Settings)</param>
     private void SetNavigationSelection(string tag)
     {
         ClearNavigationSelection();
@@ -102,6 +103,9 @@ public partial class MainWindow : FluentWindow
                 break;
             case "Diagnostics":
                 NavDiagnostics.IsActive = true;
+                break;
+            case "Settings":
+                NavSettings.IsActive = true;
                 break;
         }
     }
@@ -142,21 +146,6 @@ public partial class MainWindow : FluentWindow
 
         if (string.IsNullOrEmpty(tag)) return;
 
-        // Handle theme toggle separately - it's an action, not a navigation
-        if (tag == "Theme")
-        {
-            Serilog.Log.Information("Theme toggle clicked via sidebar - calling ToggleTheme");
-            _themeService.ToggleTheme();
-
-            // Deselect the theme item so it can be clicked again
-            // Mark it as not active since it's not a navigation destination
-            if (clickedItem != null)
-            {
-                clickedItem.IsActive = false;
-            }
-            return;
-        }
-
         NavigateWithAnimation(tag);
     }
 
@@ -181,6 +170,7 @@ public partial class MainWindow : FluentWindow
                 "Results" => "Test Results",
                 "History" => "Test History",
                 "Diagnostics" => "Diagnostics",
+                "Settings" => "Settings",
                 _ => tag
             };
 
@@ -200,6 +190,9 @@ public partial class MainWindow : FluentWindow
                     break;
                 case "Diagnostics":
                     _navigationService.NavigateToDiagnostics();
+                    break;
+                case "Settings":
+                    _navigationService.NavigateToSettings();
                     break;
             }
 

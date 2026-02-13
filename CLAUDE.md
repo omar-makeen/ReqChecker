@@ -44,6 +44,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (in-memory filtering on the already-loaded test collection) (035-test-list-search)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0 (all existing — no new packages) (036-test-config-ux)
 - N/A (UI-only enhancement, no data persistence changes) (036-test-config-ux)
+- `%APPDATA%/ReqChecker/preferences.json` (existing `IPreferencesService` / `PreferencesService`) (038-settings-window)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -63,9 +64,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 038-settings-window: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
+- 038-settings-window: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 - 037-fix-test-config-ux: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0 (all existing — no new packages)
-- 036-test-config-ux: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0 (all existing — no new packages)
-- 035-test-list-search: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 
 
 

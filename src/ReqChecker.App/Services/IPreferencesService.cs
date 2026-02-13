@@ -24,4 +24,9 @@ public interface IPreferencesService
     /// Saves current preferences to storage.
     /// </summary>
     void Save();
+
+    /// <summary>
+    /// Resets all preferences to their default values.
+    /// </summary>
+    void ResetToDefaults();
 }

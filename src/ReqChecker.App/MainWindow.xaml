@@ -135,16 +135,16 @@
 
                 <ui:NavigationView.FooterMenuItems>
                     <ui:NavigationViewItem
-                        x:Name="NavTheme"
-                        Content="{Binding DataContext.ThemeLabel, RelativeSource={RelativeSource AncestorType=Window}}"
-                        Tag="Theme"
+                        x:Name="NavSettings"
+                        Content="Settings"
+                        Tag="Settings"
                         Click="NavItem_Click"
-                        Icon="{ui:SymbolIcon WeatherMoon24}"
+                        Icon="{ui:SymbolIcon Settings24}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
                         <ui:NavigationViewItem.ToolTip>
-                            <ToolTip Style="{StaticResource ModernToolTip}" Content="Toggle dark/light theme"/>
+                            <ToolTip Style="{StaticResource ModernToolTip}" Content="Application settings"/>
                         </ui:NavigationViewItem.ToolTip>
                     </ui:NavigationViewItem>
                 </ui:NavigationView.FooterMenuItems>
@@ -205,17 +205,6 @@
 
                 <!-- Theme Toggle and Status -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- Theme Toggle Button -->
-                    <Button x:Name="ThemeToggleButton"
-                            Style="{StaticResource IconButton}"
-                            Command="{Binding DataContext.ThemeService.ToggleThemeCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                            ToolTip="Toggle dark/light theme"
-                            Width="32"
-                            Height="32"
-                            Margin="0,0,12,0">
-                        <ui:SymbolIcon Symbol="{Binding DataContext.ThemeIcon, RelativeSource={RelativeSource AncestorType=Window}}" FontSize="16"/>
-                    </Button>
-
                     <!-- Status Indicator -->
                     <Border Background="{DynamicResource StatusPass}"
                             CornerRadius="4"

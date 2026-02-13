@@ -224,6 +224,7 @@ public partial class App : System.Windows.Application
         services.AddTransient<ResultsViewModel>();
         services.AddTransient<HistoryViewModel>();
         services.AddTransient<DiagnosticsViewModel>();
+        services.AddTransient<SettingsViewModel>();
 
         // Build service provider
         Services = services.BuildServiceProvider();

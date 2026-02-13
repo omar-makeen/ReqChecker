@@ -209,6 +209,25 @@ public class NavigationService
     }
 
     /// <summary>
+    /// Navigates to settings view.
+    /// </summary>
+    public void NavigateToSettings()
+    {
+        Log.Information("NavigateToSettings: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to Settings: Frame not initialized");
+            return;
+        }
+        var viewModel = _serviceProvider.GetRequiredService<SettingsViewModel>();
+        TrackViewModel(viewModel);
+        var view = new Views.SettingsView(viewModel);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToSettings: Navigate result={Result}", result);
+        RaiseNavigated("Settings");
+    }
+
+    /// <summary>
     /// Tracks and disposes ViewModels that implement IDisposable.
     /// </summary>
     private void TrackViewModel(object? viewModel)

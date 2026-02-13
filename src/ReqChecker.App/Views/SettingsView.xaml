@@ -1,0 +1,327 @@
+<Page x:Class="ReqChecker.App.Views.SettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:services="clr-namespace:ReqChecker.App.Services"
+      mc:Ignorable="d"
+      Background="{DynamicResource BackgroundBase}"
+      FocusManager.FocusedElement="{Binding ElementName=DarkThemeCard}">
+
+    <Page.Resources>
+        <!-- Staggered entrance animation for cards -->
+        <Style x:Key="AnimatedSettingsCard" TargetType="Border">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="20"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0" To="1"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             From="20" To="0"
+                                             Duration="0:0:0.3">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Theme Card Button Style -->
+        <Style x:Key="ThemeCardButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32" KeyboardNavigation.TabNavigation="Once" KeyboardNavigation.DirectionalNavigation="Cycle">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
+
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="0" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Settings24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Settings"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Customize your application preferences"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+            <StackPanel>
+                <!-- Appearance Section -->
+                <StackPanel Margin="0,0,0,24">
+                    <!-- Section Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:SymbolIcon Symbol="PaintBrush24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
+                        <TextBlock Text="Appearance" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
+                    </StackPanel>
+
+                    <!-- Theme Cards Grid -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Dark Theme Card -->
+                        <Button Grid.Column="0"
+                                x:Name="DarkThemeCard"
+                                Style="{StaticResource ThemeCardButton}"
+                                Command="{Binding SelectDarkThemeCommand}"
+                                TabIndex="1">
+                            <Border Style="{StaticResource AnimatedSettingsCard}"
+                                    CornerRadius="12"
+                                    Background="{DynamicResource BackgroundElevated}"
+                                    Padding="16">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                                </Border.Effect>
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                                 To="-2" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                                 To="0" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                                <Border.RenderTransform>
+                                    <TranslateTransform Y="0"/>
+                                </Border.RenderTransform>
+                                <StackPanel HorizontalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="WeatherMoon24" FontSize="32" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Dark" 
+                                               Style="{DynamicResource TextBody}" 
+                                               Foreground="{DynamicResource TextPrimary}"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+
+                        <!-- Light Theme Card -->
+                        <Button Grid.Column="2"
+                                x:Name="LightThemeCard"
+                                Style="{StaticResource ThemeCardButton}"
+                                Command="{Binding SelectLightThemeCommand}"
+                                TabIndex="2">
+                            <Border Style="{StaticResource AnimatedSettingsCard}"
+                                    CornerRadius="12"
+                                    Background="{DynamicResource BackgroundElevated}"
+                                    Padding="16">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                                </Border.Effect>
+                                <Border.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                                 To="-2" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                                 To="0" Duration="0:0:0.15">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut"/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Border.Triggers>
+                                <Border.RenderTransform>
+                                    <TranslateTransform Y="0"/>
+                                </Border.RenderTransform>
+                                <StackPanel HorizontalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="WeatherSunny24" FontSize="32" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Light" 
+                                               Style="{DynamicResource TextBody}" 
+                                               Foreground="{DynamicResource TextPrimary}"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                    </Grid>
+
+                    <!-- Active Theme Indicators (using DataTrigger approach in code-behind) -->
+                    <Border x:Name="DarkThemeBorder" 
+                            Grid.Column="0"
+                            CornerRadius="12"
+                            BorderThickness="2"
+                            BorderBrush="Transparent"
+                            IsHitTestVisible="False"
+                            HorizontalAlignment="Left"
+                            Width="{Binding ActualWidth, ElementName=DarkThemeCard}"
+                            Height="{Binding ActualHeight, ElementName=DarkThemeCard}"
+                            Margin="0,-78,0,0">
+                    </Border>
+                    <Border x:Name="LightThemeBorder" 
+                            Grid.Column="2"
+                            CornerRadius="12"
+                            BorderThickness="2"
+                            BorderBrush="Transparent"
+                            IsHitTestVisible="False"
+                            HorizontalAlignment="Right"
+                            Width="{Binding ActualWidth, ElementName=LightThemeCard}"
+                            Height="{Binding ActualHeight, ElementName=LightThemeCard}"
+                            Margin="0,-78,0,0">
+                    </Border>
+                </StackPanel>
+
+                <!-- About Section -->
+                <StackPanel Margin="0,0,0,24">
+                    <!-- Section Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:SymbolIcon Symbol="Info24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
+                        <TextBlock Text="About" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
+                    </StackPanel>
+
+                    <!-- About Card -->
+                    <Border Style="{StaticResource AnimatedSettingsCard}"
+                            CornerRadius="12"
+                            Background="{DynamicResource BackgroundElevated}"
+                            Padding="16">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="ReqChecker" 
+                                       Style="{DynamicResource TextH2}" 
+                                       Foreground="{DynamicResource TextPrimary}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Text="Version " 
+                                           Style="{DynamicResource TextCaption}" 
+                                           Foreground="{DynamicResource TextSecondary}"/>
+                                <TextBlock Text="{Binding AppVersion}" 
+                                           Style="{DynamicResource TextCaption}" 
+                                           Foreground="{DynamicResource TextSecondary}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Reset Section -->
+                <StackPanel Margin="0,0,0,24">
+                    <!-- Section Header -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:SymbolIcon Symbol="ArrowReset24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
+                        <TextBlock Text="Reset" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
+                    </StackPanel>
+
+                    <!-- Reset Card -->
+                    <Border Style="{StaticResource AnimatedSettingsCard}"
+                            CornerRadius="12"
+                            Background="{DynamicResource BackgroundElevated}"
+                            Padding="16">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="Reset all settings to their default values" 
+                                       Style="{DynamicResource TextBody}" 
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       Margin="0,0,0,12"/>
+                            <Button Style="{StaticResource SecondaryButton}"
+                                    Content="Reset to Defaults"
+                                    Command="{Binding ResetToDefaultsCommand}"
+                                    TabIndex="3"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

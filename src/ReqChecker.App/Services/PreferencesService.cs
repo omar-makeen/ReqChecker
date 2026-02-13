@@ -110,4 +110,14 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
     {
         Save();
     }
+
+    /// <summary>
+    /// Resets all preferences to their default values.
+    /// </summary>
+    public void ResetToDefaults()
+    {
+        Theme = AppTheme.Dark;
+        SidebarExpanded = true;
+        // Auto-save triggers via OnThemeChanged and OnSidebarExpandedChanged
+    }
 }
