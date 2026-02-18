@@ -23,6 +23,7 @@ public class TestTypeToIconConverter : IValueConverter
                 "TcpPortOpen" => SymbolRegular.PlugConnected24,
                 "UdpPortOpen" => SymbolRegular.Connected24,
                 "MtlsConnect" => SymbolRegular.ShieldKeyhole24,
+                "CertificateExpiry" => SymbolRegular.Certificate24,
                 "WindowsService" => SymbolRegular.WindowApps24,
                 "DiskSpace" => SymbolRegular.HardDrive20,
                 "FileExists" => SymbolRegular.Document24,
