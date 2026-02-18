@@ -365,6 +365,66 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-017",
+      "type": "CertificateExpiry",
+      "displayName": "Check TLS Certificate — www.google.com",
+      "description": "Verifies the TLS certificate on www.google.com:443 is valid and does not expire within 30 days.",
+      "parameters": {
+        "host": "www.google.com",
+        "port": 443,
+        "warningDaysBeforeExpiry": 30,
+        "timeout": 10000,
+        "skipChainValidation": false,
+        "expectedSubject": null,
+        "expectedIssuer": null,
+        "expectedThumbprint": null
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "warningDaysBeforeExpiry": "Editable",
+        "timeout": "Editable",
+        "skipChainValidation": "Editable",
+        "expectedSubject": "Editable",
+        "expectedIssuer": "Editable",
+        "expectedThumbprint": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": ["test-001"]
+    },
+    {
+      "id": "test-018",
+      "type": "CertificateExpiry",
+      "displayName": "Check TLS Certificate — expired.badssl.com (Expected Fail)",
+      "description": "Tests the expired certificate detection path using badssl.com's known-expired endpoint. Expected to fail with a Validation error.",
+      "parameters": {
+        "host": "expired.badssl.com",
+        "port": 443,
+        "warningDaysBeforeExpiry": 30,
+        "timeout": 10000,
+        "skipChainValidation": true,
+        "expectedSubject": null,
+        "expectedIssuer": null,
+        "expectedThumbprint": null
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "warningDaysBeforeExpiry": "Editable",
+        "timeout": "Editable",
+        "skipChainValidation": "Editable",
+        "expectedSubject": "Editable",
+        "expectedIssuer": "Editable",
+        "expectedThumbprint": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
