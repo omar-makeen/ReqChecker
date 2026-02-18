@@ -116,7 +116,8 @@ public class TestResultSummaryConverter : IValueConverter
             "RegistryRead" => !string.IsNullOrEmpty(path)
                 ? $"Registry value retrieved: {path}"
                 : null,
-            _ => null
+            "OsVersion" => !string.IsNullOrEmpty(result.HumanSummary) ? result.HumanSummary : null,
+            _ => !string.IsNullOrEmpty(result.HumanSummary) ? result.HumanSummary : null
         };
     }
 }

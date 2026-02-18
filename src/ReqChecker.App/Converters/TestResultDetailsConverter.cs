@@ -50,6 +50,21 @@ public class TestResultDetailsConverter : IValueConverter
         sections.Add($"Attempts: {result.AttemptCount}");
         sections.Add(string.Empty);
 
+        // [OS Version] section — emitted when Evidence contains OS version data
+        if (evidenceData != null && evidenceData.ContainsKey("productName"))
+        {
+            sections.Add("[OS Version]");
+            if (evidenceData.TryGetValue("productName", out var pnObj) && pnObj != null)
+                sections.Add($"Product:      {pnObj}");
+            if (evidenceData.TryGetValue("version", out var vObj) && vObj != null)
+                sections.Add($"Version:      {vObj}");
+            if (evidenceData.TryGetValue("buildNumber", out var bnObj) && bnObj != null)
+                sections.Add($"Build:        {bnObj}");
+            if (evidenceData.TryGetValue("architecture", out var archObj) && archObj != null)
+                sections.Add($"Architecture: {archObj}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

@@ -30,6 +30,7 @@ public class TestTypeToIconConverter : IValueConverter
                 "DirectoryExists" => SymbolRegular.FolderOpen24,
                 "ProcessList" => SymbolRegular.TaskListLtr24,
                 "RegistryRead" => SymbolRegular.Settings24,
+                "OsVersion" => SymbolRegular.Desktop24,
                 _ => SymbolRegular.Beaker24  // Default fallback
             };
         }

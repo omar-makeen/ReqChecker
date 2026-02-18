@@ -425,6 +425,60 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-019",
+      "type": "OsVersion",
+      "displayName": "Check Windows Version",
+      "description": "Reports the local machine's Windows version, build number, and architecture. Configure minimumBuild or expectedVersion to enforce requirements.",
+      "parameters": {
+        "minimumBuild": null,
+        "expectedVersion": null
+      },
+      "fieldPolicy": {
+        "minimumBuild": "Editable",
+        "expectedVersion": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-020",
+      "type": "OsVersion",
+      "displayName": "Check Windows Minimum Build (19045)",
+      "description": "Verifies that the OS build number is at least 19045 (Windows 10 22H2). Fails on older builds.",
+      "parameters": {
+        "minimumBuild": 19045,
+        "expectedVersion": null
+      },
+      "fieldPolicy": {
+        "minimumBuild": "Editable",
+        "expectedVersion": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-021",
+      "type": "OsVersion",
+      "displayName": "Check Exact Windows Version (10.0.22631)",
+      "description": "Verifies that the OS version is exactly 10.0.22631 (Windows 11 23H2). Fails on any other version.",
+      "parameters": {
+        "minimumBuild": null,
+        "expectedVersion": "10.0.22631"
+      },
+      "fieldPolicy": {
+        "minimumBuild": "Hidden",
+        "expectedVersion": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
