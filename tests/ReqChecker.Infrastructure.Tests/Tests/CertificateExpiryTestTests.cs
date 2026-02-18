@@ -272,6 +272,27 @@ public class CertificateExpiryTestTests
         Assert.False(string.IsNullOrEmpty(result.Evidence.ResponseData));
     }
 
+    [Fact(Skip = "Integration test - requires network access to expired.badssl.com:443")]
+    public async Task ExecuteAsync_ExpiredCertWithChainValidationOn_ReturnsValidationFail()
+    {
+        // Verifies FR-004: expired cert with skipChainValidation=false must yield Validation,
+        // not Network (the P2 code review bug).
+        var definition = MakeDefinition(new JsonObject
+        {
+            ["host"] = "expired.badssl.com",
+            ["port"] = 443,
+            ["warningDaysBeforeExpiry"] = 30,
+            ["timeout"] = 10000,
+            ["skipChainValidation"] = false   // default — the previously-broken path
+        });
+
+        var result = await _test.ExecuteAsync(definition, null, CancellationToken.None);
+
+        Assert.Equal(TestStatus.Fail, result.Status);
+        Assert.Equal(ErrorCategory.Validation, result.Error?.Category);
+        Assert.Contains("expired", result.HumanSummary, StringComparison.OrdinalIgnoreCase);
+    }
+
     #endregion
 
     #region Helpers

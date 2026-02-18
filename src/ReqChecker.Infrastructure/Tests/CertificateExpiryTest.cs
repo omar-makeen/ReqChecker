@@ -307,7 +307,19 @@ public class CertificateExpiryTest : ITest
                         capturedCert = new X509Certificate2(cert);
                     if (parameters.SkipChainValidation)
                         return true;
-                    return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
+                    if (sslPolicyErrors == SslPolicyErrors.None)
+                        return true;
+                    // Allow time-validity errors through so EvaluateCertificate can produce
+                    // the correct Validation failure instead of a Network error (FR-004)
+                    if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors && chain != null)
+                    {
+                        const X509ChainStatusFlags timeFlags =
+                            X509ChainStatusFlags.NotTimeValid | X509ChainStatusFlags.NotTimeNested;
+                        if (chain.ChainStatus.Length > 0 &&
+                            chain.ChainStatus.All(s => (s.Status & ~timeFlags) == X509ChainStatusFlags.NoError))
+                            return true;
+                    }
+                    return false;
                 });
 
             try
