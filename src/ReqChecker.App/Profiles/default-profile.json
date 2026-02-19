@@ -479,6 +479,60 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-022",
+      "type": "InstalledSoftware",
+      "displayName": "Check Installed Software (Edge)",
+      "description": "Verifies that Microsoft Edge is installed on the machine.",
+      "parameters": {
+        "softwareName": "Microsoft Edge",
+        "minimumVersion": null
+      },
+      "fieldPolicy": {
+        "softwareName": "Editable",
+        "minimumVersion": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-023",
+      "type": "InstalledSoftware",
+      "displayName": "Check Edge Minimum Version (100.0)",
+      "description": "Verifies that Microsoft Edge version 100.0 or newer is installed.",
+      "parameters": {
+        "softwareName": "Microsoft Edge",
+        "minimumVersion": "100.0"
+      },
+      "fieldPolicy": {
+        "softwareName": "Editable",
+        "minimumVersion": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-024",
+      "type": "InstalledSoftware",
+      "displayName": "Check Nonexistent Software (Expected Fail)",
+      "description": "Tests the not-found error path by searching for software that does not exist. Expected to fail.",
+      "parameters": {
+        "softwareName": "NonExistentSoftware12345",
+        "minimumVersion": null
+      },
+      "fieldPolicy": {
+        "softwareName": "Editable",
+        "minimumVersion": "Hidden"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

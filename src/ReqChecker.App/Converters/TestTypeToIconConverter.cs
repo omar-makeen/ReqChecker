@@ -31,6 +31,7 @@ public class TestTypeToIconConverter : IValueConverter
                 "ProcessList" => SymbolRegular.TaskListLtr24,
                 "RegistryRead" => SymbolRegular.Settings24,
                 "OsVersion" => SymbolRegular.Desktop24,
+                "InstalledSoftware" => SymbolRegular.AppFolder24,
                 _ => SymbolRegular.Beaker24  // Default fallback
             };
         }

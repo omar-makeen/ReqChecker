@@ -65,6 +65,49 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Installed Software] section — emitted when Evidence contains installed software data (keyed on allMatches, which is unique to InstalledSoftwareTest)
+        if (evidenceData != null && evidenceData.ContainsKey("allMatches"))
+        {
+            sections.Add("[Installed Software]");
+            if (evidenceData.TryGetValue("displayName", out var dnObj) && dnObj != null)
+                sections.Add($"Name:         {dnObj}");
+            if (evidenceData.TryGetValue("version", out var isVerObj) && isVerObj != null)
+                sections.Add($"Version:      {isVerObj}");
+            if (evidenceData.TryGetValue("installLocation", out var locObj) && locObj != null && locObj.ToString() is { Length: > 0 } loc)
+                sections.Add($"Location:     {loc}");
+            if (evidenceData.TryGetValue("publisher", out var pubObj) && pubObj != null && pubObj.ToString() is { Length: > 0 } pub)
+                sections.Add($"Publisher:    {pub}");
+            if (evidenceData.TryGetValue("installDate", out var idObj) && idObj != null && idObj.ToString() is { Length: > 0 } id)
+                sections.Add($"Install Date: {id}");
+
+            // Show additional matches if more than one entry was found
+            if (evidenceData.TryGetValue("allMatches", out var amObj) && amObj?.ToString() is { } amStr)
+            {
+                try
+                {
+                    using var doc = System.Text.Json.JsonDocument.Parse(amStr);
+                    if (doc.RootElement.ValueKind == System.Text.Json.JsonValueKind.Array &&
+                        doc.RootElement.GetArrayLength() > 1)
+                    {
+                        sections.Add(string.Empty);
+                        sections.Add("[All Matches]");
+                        foreach (var match in doc.RootElement.EnumerateArray())
+                        {
+                            var mName = match.TryGetProperty("displayName", out var mn) ? mn.GetString() : null;
+                            var mVer = match.TryGetProperty("version", out var mv) ? mv.GetString() : null;
+                            sections.Add($"  {mName} ({mVer ?? "unknown"})");
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore parse errors for allMatches
+                }
+            }
+
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {
