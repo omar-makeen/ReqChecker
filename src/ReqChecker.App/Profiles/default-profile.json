@@ -533,6 +533,66 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-025",
+      "type": "EnvironmentVariable",
+      "displayName": "Check Environment Variable (PATH)",
+      "description": "Verifies that the PATH environment variable is defined on the machine.",
+      "parameters": {
+        "variableName": "PATH",
+        "expectedValue": null,
+        "matchType": null
+      },
+      "fieldPolicy": {
+        "variableName": "Editable",
+        "expectedValue": "Editable",
+        "matchType": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-026",
+      "type": "EnvironmentVariable",
+      "displayName": "Check OS Variable (Exact Match)",
+      "description": "Verifies that the OS environment variable equals 'Windows_NT'.",
+      "parameters": {
+        "variableName": "OS",
+        "expectedValue": "Windows_NT",
+        "matchType": "exact"
+      },
+      "fieldPolicy": {
+        "variableName": "Editable",
+        "expectedValue": "Editable",
+        "matchType": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-027",
+      "type": "EnvironmentVariable",
+      "displayName": "Check PATH Contains System32",
+      "description": "Verifies that the PATH variable contains C:\\Windows\\System32 as a directory entry.",
+      "parameters": {
+        "variableName": "PATH",
+        "expectedValue": "C:\\Windows\\System32",
+        "matchType": "pathContains"
+      },
+      "fieldPolicy": {
+        "variableName": "Editable",
+        "expectedValue": "Editable",
+        "matchType": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

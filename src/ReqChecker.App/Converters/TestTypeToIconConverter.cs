@@ -32,6 +32,7 @@ public class TestTypeToIconConverter : IValueConverter
                 "RegistryRead" => SymbolRegular.Settings24,
                 "OsVersion" => SymbolRegular.Desktop24,
                 "InstalledSoftware" => SymbolRegular.AppFolder24,
+                "EnvironmentVariable" => SymbolRegular.SlideText24,
                 _ => SymbolRegular.Beaker24  // Default fallback
             };
         }

@@ -108,6 +108,65 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Environment Variable] section — emitted when Evidence contains environment variable data (keyed on variableName AND found, unique to EnvironmentVariableTest)
+        if (evidenceData != null && evidenceData.ContainsKey("variableName") && evidenceData.ContainsKey("found"))
+        {
+            sections.Add("[Environment Variable]");
+            if (evidenceData.TryGetValue("variableName", out var vnObj) && vnObj != null)
+                sections.Add($"Variable:     {vnObj}");
+
+            var isFound = evidenceData.TryGetValue("found", out var foundObj) && foundObj?.ToString() is "True" or "true";
+            sections.Add($"Found:        {(isFound ? "yes" : "no")}");
+
+            if (isFound && evidenceData.TryGetValue("actualValue", out var avObj) && avObj != null)
+            {
+                var avStr = avObj.ToString() ?? string.Empty;
+                var display = avStr.Length > 200 ? avStr[..200] + "…" : avStr;
+                sections.Add($"Value:        {display}");
+            }
+            else if (!isFound)
+            {
+                sections.Add("Value:        N/A");
+            }
+
+            if (evidenceData.TryGetValue("matchType", out var mtObj) && mtObj?.ToString() is { } mt
+                && mt != "existence")
+            {
+                sections.Add($"Match Type:   {mt}");
+                if (evidenceData.TryGetValue("expectedValue", out var evObj) && evObj != null)
+                    sections.Add($"Expected:     {evObj}");
+                if (evidenceData.TryGetValue("matchResult", out var mrObj) && mrObj != null)
+                    sections.Add($"Match Result: {mrObj}");
+
+                // pathContains: show individual path entries
+                if (string.Equals(mt, "pathContains", StringComparison.OrdinalIgnoreCase) &&
+                    evidenceData.TryGetValue("pathEntries", out var peObj) && peObj?.ToString() is { } peStr)
+                {
+                    try
+                    {
+                        using var doc = System.Text.Json.JsonDocument.Parse(peStr);
+                        if (doc.RootElement.ValueKind == System.Text.Json.JsonValueKind.Array)
+                        {
+                            sections.Add(string.Empty);
+                            sections.Add("[Path Entries]");
+                            var entries = doc.RootElement.EnumerateArray().ToList();
+                            var shown = entries.Take(20).ToList();
+                            foreach (var entry in shown)
+                                sections.Add($"  {entry.GetString()}");
+                            if (entries.Count > 20)
+                                sections.Add($"  … and {entries.Count - 20} more");
+                        }
+                    }
+                    catch
+                    {
+                        // ignore parse errors
+                    }
+                }
+            }
+
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {
