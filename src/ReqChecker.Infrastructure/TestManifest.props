@@ -50,6 +50,8 @@
     <KnownTestType Include="OsVersion"          SourceFile="Tests\OsVersionTest.cs" />
     <KnownTestType Include="InstalledSoftware"  SourceFile="Tests\InstalledSoftwareTest.cs" />
     <KnownTestType Include="EnvironmentVariable" SourceFile="Tests\EnvironmentVariableTest.cs" />
+    <KnownTestType Include="SystemRam"          SourceFile="Tests\SystemRamTest.cs" />
+    <KnownTestType Include="CpuCores"           SourceFile="Tests\CpuCoresTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================
@@ -149,6 +151,14 @@
 
   <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';EnvironmentVariable;'))">
     <Compile Include="Tests\EnvironmentVariableTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';SystemRam;'))">
+    <Compile Include="Tests\SystemRamTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';CpuCores;'))">
+    <Compile Include="Tests\CpuCoresTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================

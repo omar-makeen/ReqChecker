@@ -167,6 +167,40 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [System RAM] section — emitted when Evidence contains SystemRam test data
+        if (evidenceData != null && evidenceData.ContainsKey("detectedGB"))
+        {
+            sections.Add("[System RAM]");
+            if (evidenceData.TryGetValue("detectedGB", out var dgObj) && dgObj != null)
+                sections.Add($"Detected:  {dgObj} GB");
+            if (evidenceData.TryGetValue("minimumGB", out var mgObj) && mgObj != null)
+                sections.Add($"Minimum:   {mgObj} GB");
+            else
+                sections.Add("Minimum:   none (informational)");
+            if (evidenceData.TryGetValue("thresholdMet", out var tmObj) && tmObj != null)
+                sections.Add($"Result:    {(tmObj.ToString() is "True" or "true" ? "meets requirement" : "below requirement")}");
+            else
+                sections.Add("Result:    — (informational)");
+            sections.Add(string.Empty);
+        }
+
+        // [CPU Cores] section — emitted when Evidence contains CpuCores test data
+        if (evidenceData != null && evidenceData.ContainsKey("detectedCores"))
+        {
+            sections.Add("[CPU Cores]");
+            if (evidenceData.TryGetValue("detectedCores", out var dcObj) && dcObj != null)
+                sections.Add($"Detected:  {dcObj} logical processors");
+            if (evidenceData.TryGetValue("minimumCores", out var mcObj) && mcObj != null)
+                sections.Add($"Minimum:   {mcObj}");
+            else
+                sections.Add("Minimum:   none (informational)");
+            if (evidenceData.TryGetValue("thresholdMet", out var tmcObj) && tmcObj != null)
+                sections.Add($"Result:    {(tmcObj.ToString() is "True" or "true" ? "meets requirement" : "below requirement")}");
+            else
+                sections.Add("Result:    — (informational)");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

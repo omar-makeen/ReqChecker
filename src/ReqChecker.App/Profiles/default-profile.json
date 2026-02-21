@@ -593,6 +593,102 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-028",
+      "type": "SystemRam",
+      "displayName": "Check System RAM",
+      "description": "Reports the machine's total installed physical RAM.",
+      "parameters": {
+        "minimumGB": null
+      },
+      "fieldPolicy": {
+        "minimumGB": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-029",
+      "type": "SystemRam",
+      "displayName": "Check Minimum RAM (4 GB)",
+      "description": "Verifies that the machine has at least 4 GB of RAM.",
+      "parameters": {
+        "minimumGB": 4
+      },
+      "fieldPolicy": {
+        "minimumGB": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-030",
+      "type": "SystemRam",
+      "displayName": "Check RAM 1024 GB (Expected Fail)",
+      "description": "Tests the failure path by requiring 1024 GB of RAM. Expected to fail on all machines.",
+      "parameters": {
+        "minimumGB": 1024
+      },
+      "fieldPolicy": {
+        "minimumGB": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-031",
+      "type": "CpuCores",
+      "displayName": "Check CPU Cores",
+      "description": "Reports the machine's logical processor count.",
+      "parameters": {
+        "minimumCores": null
+      },
+      "fieldPolicy": {
+        "minimumCores": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-032",
+      "type": "CpuCores",
+      "displayName": "Check Minimum CPU Cores (2)",
+      "description": "Verifies that the machine has at least 2 logical processors.",
+      "parameters": {
+        "minimumCores": 2
+      },
+      "fieldPolicy": {
+        "minimumCores": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-033",
+      "type": "CpuCores",
+      "displayName": "Check CPU Cores 256 (Expected Fail)",
+      "description": "Tests the failure path by requiring 256 logical processors. Expected to fail on most machines.",
+      "parameters": {
+        "minimumCores": 256
+      },
+      "fieldPolicy": {
+        "minimumCores": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
