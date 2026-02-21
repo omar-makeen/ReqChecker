@@ -689,6 +689,46 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-034",
+      "type": "WebSocket",
+      "displayName": "Check WebSocket Connectivity",
+      "description": "Verifies WebSocket handshake to a public echo server.",
+      "parameters": {
+        "url": "wss://echo.websocket.events",
+        "timeout": 10000
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "timeout": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-035",
+      "type": "WebSocket",
+      "displayName": "Check WebSocket Echo",
+      "description": "Sends a message to a WebSocket echo server and validates the response.",
+      "parameters": {
+        "url": "wss://echo.websocket.events",
+        "timeout": 10000,
+        "message": "hello",
+        "expectedResponse": "hello"
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "timeout": "Editable",
+        "message": "Editable",
+        "expectedResponse": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

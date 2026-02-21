@@ -50,6 +50,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0 LTS (net8.0 / net8.0-windows) + MSBuild (build system), GitHub Actions (CI/CD) — no new runtime packages (045-conditional-test-builds)
 - N/A (build-time only; no runtime data changes) (045-conditional-test-builds)
 - N/A (Markdown documentation only) (047-project-readme)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages) (048-websocket-test)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -69,9 +70,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 048-websocket-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages)
 - 047-project-readme: Added N/A (Markdown documentation only)
 - 046-hardware-tests: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
-- 045-conditional-test-builds: Added C# 12 / .NET 8.0 LTS (net8.0 / net8.0-windows) + MSBuild (build system), GitHub Actions (CI/CD) — no new runtime packages
 
 
 

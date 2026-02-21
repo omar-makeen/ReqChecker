@@ -201,6 +201,27 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [WebSocket] section — emitted when Evidence contains WebSocket test data
+        if (evidenceData != null && evidenceData.ContainsKey("wsUrl"))
+        {
+            sections.Add("[WebSocket]");
+            if (evidenceData.TryGetValue("wsUrl", out var wsUrlObj) && wsUrlObj != null)
+                sections.Add($"URL:        {wsUrlObj}");
+            if (evidenceData.TryGetValue("connected", out var connObj) && connObj != null)
+                sections.Add($"Connected:  {(connObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("connectTimeMs", out var ctmObj) && ctmObj != null)
+                sections.Add($"Connect:    {ctmObj} ms");
+            if (evidenceData.TryGetValue("subprotocol", out var spObj) && spObj != null && spObj.ToString() is { Length: > 0 } sp)
+                sections.Add($"Subprotocol: {sp}");
+            if (evidenceData.TryGetValue("messageSent", out var msObj) && msObj != null && msObj.ToString() is { Length: > 0 } sent)
+                sections.Add($"Sent:       {sent}");
+            if (evidenceData.TryGetValue("messageReceived", out var mrObj) && mrObj != null && mrObj.ToString() is { Length: > 0 } received)
+                sections.Add($"Received:   {received}");
+            if (evidenceData.TryGetValue("responseMatched", out var rmObj) && rmObj is JsonElement rmElem && rmElem.ValueKind != JsonValueKind.Null)
+                sections.Add($"Match:      {(rmElem.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

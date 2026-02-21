@@ -52,6 +52,7 @@
     <KnownTestType Include="EnvironmentVariable" SourceFile="Tests\EnvironmentVariableTest.cs" />
     <KnownTestType Include="SystemRam"          SourceFile="Tests\SystemRamTest.cs" />
     <KnownTestType Include="CpuCores"           SourceFile="Tests\CpuCoresTest.cs" />
+    <KnownTestType Include="WebSocket"          SourceFile="Tests\WebSocketTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================
@@ -159,6 +160,10 @@
 
   <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';CpuCores;'))">
     <Compile Include="Tests\CpuCoresTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';WebSocket;'))">
+    <Compile Include="Tests\WebSocketTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================
