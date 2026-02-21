@@ -47,6 +47,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - `%APPDATA%/ReqChecker/preferences.json` (existing `IPreferencesService` / `PreferencesService`) (038-settings-window)
 - Profile JSON files (System.Text.Json / JsonObject) (040-mtls-config-credentials)
 - N/A (in-memory test results; parameters persisted in profile JSON files) (041-cert-expiry-test)
+- C# 12 / .NET 8.0 LTS (net8.0 / net8.0-windows) + MSBuild (build system), GitHub Actions (CI/CD) — no new runtime packages (045-conditional-test-builds)
+- N/A (build-time only; no runtime data changes) (045-conditional-test-builds)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -66,9 +68,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 045-conditional-test-builds: Added C# 12 / .NET 8.0 LTS (net8.0 / net8.0-windows) + MSBuild (build system), GitHub Actions (CI/CD) — no new runtime packages
 - 043-installed-software-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 - 042-os-version-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
-- 041-cert-expiry-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 
 
 
