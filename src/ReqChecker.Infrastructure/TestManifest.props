@@ -1,0 +1,197 @@
+<Project>
+
+  <!--
+    TestManifest.props — Conditional Test Compilation Manifest
+
+    Controls which test type source files are compiled into the Infrastructure assembly.
+
+    Usage:
+      dotnet build                                    → all 22 test types included (default)
+      dotnet build /p:IncludeTests="Ping;HttpGet"     → only Ping and HttpGet included
+
+    Adding a new test type:
+      1. Add a <KnownTestType> entry below
+      2. Add a corresponding <ItemGroup Condition="..."> block below
+      That's it — the build system will enforce sync automatically.
+  -->
+
+  <!-- =========================================================
+       Step 1: Remove ALL *Test.cs files from the default glob.
+       Individual ItemGroups below re-add only the selected ones.
+       ========================================================= -->
+  <ItemGroup>
+    <Compile Remove="Tests\*Test.cs" />
+  </ItemGroup>
+
+  <!-- =========================================================
+       Step 2: Known test type registry.
+       Used by validation targets (ValidateIncludeTests,
+       ValidateManifestSync) added below.
+       ========================================================= -->
+  <ItemGroup>
+    <KnownTestType Include="Ping"               SourceFile="Tests\PingTest.cs" />
+    <KnownTestType Include="HttpGet"            SourceFile="Tests\HttpGetTest.cs" />
+    <KnownTestType Include="HttpPost"           SourceFile="Tests\HttpPostTest.cs" />
+    <KnownTestType Include="DnsResolve"         SourceFile="Tests\DnsResolveTest.cs" />
+    <KnownTestType Include="TcpPortOpen"        SourceFile="Tests\TcpPortOpenTest.cs" />
+    <KnownTestType Include="UdpPortOpen"        SourceFile="Tests\UdpPortOpenTest.cs" />
+    <KnownTestType Include="MtlsConnect"        SourceFile="Tests\MtlsConnectTest.cs" />
+    <KnownTestType Include="CertificateExpiry"  SourceFile="Tests\CertificateExpiryTest.cs" />
+    <KnownTestType Include="FileExists"         SourceFile="Tests\FileExistsTest.cs" />
+    <KnownTestType Include="DirectoryExists"    SourceFile="Tests\DirectoryExistsTest.cs" />
+    <KnownTestType Include="FileRead"           SourceFile="Tests\FileReadTest.cs" />
+    <KnownTestType Include="FileWrite"          SourceFile="Tests\FileWriteTest.cs" />
+    <KnownTestType Include="DiskSpace"          SourceFile="Tests\DiskSpaceTest.cs" />
+    <KnownTestType Include="ProcessList"        SourceFile="Tests\ProcessListTest.cs" />
+    <KnownTestType Include="RegistryRead"       SourceFile="Tests\RegistryReadTest.cs" />
+    <KnownTestType Include="WindowsService"     SourceFile="Tests\WindowsServiceTest.cs" />
+    <KnownTestType Include="FtpRead"            SourceFile="Tests\FtpReadTest.cs" />
+    <KnownTestType Include="FtpWrite"           SourceFile="Tests\FtpWriteTest.cs" />
+    <KnownTestType Include="OsVersion"          SourceFile="Tests\OsVersionTest.cs" />
+    <KnownTestType Include="InstalledSoftware"  SourceFile="Tests\InstalledSoftwareTest.cs" />
+    <KnownTestType Include="EnvironmentVariable" SourceFile="Tests\EnvironmentVariableTest.cs" />
+  </ItemGroup>
+
+  <!-- =========================================================
+       Step 3: Fenced property for exact-match checking.
+       Wraps IncludeTests with semicolons so we can check
+       ;TypeName; without partial substring matches.
+       ========================================================= -->
+  <PropertyGroup>
+    <_IncludeTestsFenced>;$(IncludeTests);</_IncludeTestsFenced>
+  </PropertyGroup>
+
+  <!-- =========================================================
+       Step 4: Conditional compile includes — one per test type.
+       Condition: include when IncludeTests is empty (full build)
+                  OR when this type's name appears in the list.
+       ========================================================= -->
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';Ping;'))">
+    <Compile Include="Tests\PingTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';HttpGet;'))">
+    <Compile Include="Tests\HttpGetTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';HttpPost;'))">
+    <Compile Include="Tests\HttpPostTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';DnsResolve;'))">
+    <Compile Include="Tests\DnsResolveTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';TcpPortOpen;'))">
+    <Compile Include="Tests\TcpPortOpenTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';UdpPortOpen;'))">
+    <Compile Include="Tests\UdpPortOpenTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';MtlsConnect;'))">
+    <Compile Include="Tests\MtlsConnectTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';CertificateExpiry;'))">
+    <Compile Include="Tests\CertificateExpiryTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';FileExists;'))">
+    <Compile Include="Tests\FileExistsTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';DirectoryExists;'))">
+    <Compile Include="Tests\DirectoryExistsTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';FileRead;'))">
+    <Compile Include="Tests\FileReadTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';FileWrite;'))">
+    <Compile Include="Tests\FileWriteTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';DiskSpace;'))">
+    <Compile Include="Tests\DiskSpaceTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';ProcessList;'))">
+    <Compile Include="Tests\ProcessListTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';RegistryRead;'))">
+    <Compile Include="Tests\RegistryReadTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';WindowsService;'))">
+    <Compile Include="Tests\WindowsServiceTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';FtpRead;'))">
+    <Compile Include="Tests\FtpReadTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';FtpWrite;'))">
+    <Compile Include="Tests\FtpWriteTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';OsVersion;'))">
+    <Compile Include="Tests\OsVersionTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';InstalledSoftware;'))">
+    <Compile Include="Tests\InstalledSoftwareTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';EnvironmentVariable;'))">
+    <Compile Include="Tests\EnvironmentVariableTest.cs" />
+  </ItemGroup>
+
+  <!-- =========================================================
+       Step 5: Validation targets
+       ========================================================= -->
+
+  <!-- FR-007: Fail if IncludeTests is explicitly set to empty -->
+  <Target Name="ValidateIncludeTestsNotEmpty" BeforeTargets="CoreCompile"
+          Condition="'$(IncludeTests)' != '' And '$(IncludeTests.Trim())' == ''">
+    <Error Text="IncludeTests was set but contains no test type names. Either omit it (to include all) or specify at least one type (e.g., /p:IncludeTests=&quot;Ping;HttpGet&quot;)." />
+  </Target>
+
+  <!-- FR-004: Fail if any name in IncludeTests is not a known test type -->
+  <Target Name="ValidateIncludeTests" BeforeTargets="CoreCompile"
+          Condition="'$(IncludeTests)' != ''">
+    <ItemGroup>
+      <!-- Expand semicolon-delimited IncludeTests into individual items -->
+      <_RequestedType Include="$(IncludeTests)" />
+      <!-- All known type names (from the registry above) -->
+      <_KnownTypeNames Include="%(KnownTestType.Identity)" />
+      <!-- Set subtraction: requested types NOT in the known list -->
+      <_InvalidType Include="@(_RequestedType)" Exclude="@(_KnownTypeNames)" />
+    </ItemGroup>
+    <Error Condition="'@(_InvalidType)' != ''"
+           Text="Unknown test type(s) in IncludeTests: '@(_InvalidType)'. Valid types are: @(_KnownTypeNames). Check for typos or add the new type to TestManifest.props." />
+  </Target>
+
+  <!-- FR-014: Fail if a *Test.cs file exists but has no KnownTestType entry -->
+  <Target Name="ValidateManifestSync" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <!-- All test implementation files on disk -->
+      <_AllTestFiles Include="Tests\*Test.cs" Exclude="Tests\TestTypeAttribute.cs" />
+      <!-- All files explicitly registered in the manifest -->
+      <_KnownSourceFiles Include="%(KnownTestType.SourceFile)" />
+      <!-- Files on disk that are NOT in the manifest (set subtraction via Exclude) -->
+      <_UnregisteredFile Include="@(_AllTestFiles)" Exclude="@(_KnownSourceFiles)" />
+    </ItemGroup>
+    <Error Condition="'@(_UnregisteredFile)' != ''"
+           Text="Unregistered test file(s) found: '@(_UnregisteredFile)'. Add a &lt;KnownTestType&gt; entry and a conditional &lt;Compile Include&gt; block to TestManifest.props (SC-005)." />
+  </Target>
+
+  <!-- FR-008: Warn if a selected test type's inclusion is blocked by dependsOn targets not included -->
+  <!-- Note: dependsOn is a profile-level concept (test IDs, not types), so this is a best-effort
+       advisory warning. Full dependsOn validation happens in the profile filter target in App.csproj. -->
+
+</Project>

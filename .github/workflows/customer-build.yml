@@ -1,0 +1,62 @@
+name: Customer Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tests:
+        description: 'Semicolon-separated test types to include (e.g. "Ping;HttpGet;TcpPortOpen"). Use "all" or leave empty for a full build.'
+        required: true
+        default: 'all'
+      customer-name:
+        description: 'Customer identifier used in the artifact name (e.g. "Acme").'
+        required: true
+      version:
+        description: 'Version string for the artifact (e.g. "1.0.0").'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build:
+    name: Build for ${{ inputs.customer-name }} v${{ inputs.version }}
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish (all tests)
+        if: ${{ inputs.tests == 'all' || inputs.tests == '' }}
+        run: |
+          dotnet publish src/ReqChecker.App/ReqChecker.App.csproj `
+            --configuration Release `
+            --output publish/
+
+      - name: Publish (selected tests)
+        if: ${{ inputs.tests != 'all' && inputs.tests != '' }}
+        run: |
+          dotnet publish src/ReqChecker.App/ReqChecker.App.csproj `
+            --configuration Release `
+            --output publish/ `
+            "/p:IncludeTests=${{ inputs.tests }}"
+
+      - name: Package artifact
+        run: |
+          $artifactName = "ReqChecker-${{ inputs.customer-name }}-v${{ inputs.version }}"
+          Compress-Archive -Path publish/* -DestinationPath "$artifactName.zip"
+          Write-Host "Created artifact: $artifactName.zip"
+        shell: pwsh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReqChecker-${{ inputs.customer-name }}-v${{ inputs.version }}
+          path: ReqChecker-${{ inputs.customer-name }}-v${{ inputs.version }}.zip
+          retention-days: 90

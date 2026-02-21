@@ -40,4 +40,51 @@
     <EmbeddedResource Include="Resources\Images\reqchecker-logo.png" />
   </ItemGroup>
 
+  <!--
+    FilterDefaultProfile target (FR-005, SC-006)
+    When IncludeTests is set, filter default-profile.json at build time so only
+    test entries matching the selected types are embedded. This prevents orphaned
+    entries in customer builds.
+
+    When IncludeTests is empty (full build), the original file is embedded as-is.
+  -->
+  <Target Name="FilterDefaultProfile" BeforeTargets="PrepareForBuild"
+          Condition="'$(IncludeTests)' != ''">
+
+    <PropertyGroup>
+      <_FilteredProfileDir>$(IntermediateOutputPath)filtered-profile\</_FilteredProfileDir>
+      <_FilteredProfilePath>$(_FilteredProfileDir)default-profile.json</_FilteredProfilePath>
+      <_ProfileSourcePath>$(MSBuildThisFileDirectory)Profiles\default-profile.json</_ProfileSourcePath>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(_FilteredProfileDir)" />
+
+    <!-- Invoke the filter script to parse and filter the JSON -->
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)filter-profile.ps1&quot; -SourcePath &quot;$(_ProfileSourcePath)&quot; -OutputPath &quot;$(_FilteredProfilePath)&quot; -IncludeTests &quot;$(IncludeTests)&quot;" />
+
+    <!-- Swap the embedded resource to point to the filtered copy -->
+    <ItemGroup>
+      <EmbeddedResource Remove="Profiles\default-profile.json" />
+      <EmbeddedResource Include="$(_FilteredProfilePath)">
+        <LogicalName>ReqChecker.App.Profiles.default-profile.json</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <!-- Filter sample-diagnostics.json the same way -->
+    <PropertyGroup>
+      <_SampleProfileSourcePath>$(MSBuildThisFileDirectory)Profiles\sample-diagnostics.json</_SampleProfileSourcePath>
+      <_FilteredSampleProfilePath>$(_FilteredProfileDir)sample-diagnostics.json</_FilteredSampleProfilePath>
+    </PropertyGroup>
+
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)filter-profile.ps1&quot; -SourcePath &quot;$(_SampleProfileSourcePath)&quot; -OutputPath &quot;$(_FilteredSampleProfilePath)&quot; -IncludeTests &quot;$(IncludeTests)&quot;" />
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Profiles\sample-diagnostics.json" />
+      <EmbeddedResource Include="$(_FilteredSampleProfilePath)">
+        <LogicalName>ReqChecker.App.Profiles.sample-diagnostics.json</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+
+  </Target>
+
 </Project>
