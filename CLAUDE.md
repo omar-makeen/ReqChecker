@@ -68,9 +68,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 046-hardware-tests: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 - 045-conditional-test-builds: Added C# 12 / .NET 8.0 LTS (net8.0 / net8.0-windows) + MSBuild (build system), GitHub Actions (CI/CD) — no new runtime packages
 - 043-installed-software-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
-- 042-os-version-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 
 
 
