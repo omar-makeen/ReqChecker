@@ -236,6 +236,26 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-00000000000e",
+      "type": "Traceroute",
+      "displayName": "Trace Route to DNS",
+      "description": "Traces the network path to Google DNS.",
+      "parameters": {
+        "host": "8.8.8.8",
+        "maxHops": 30,
+        "timeout": 5000
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "maxHops": "Editable",
+        "timeout": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

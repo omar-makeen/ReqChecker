@@ -251,6 +251,51 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Traceroute] section — emitted when Evidence contains Traceroute test data (host + hops keys)
+        if (evidenceData != null && evidenceData.ContainsKey("host") && evidenceData.ContainsKey("hops"))
+        {
+            sections.Add("[Traceroute]");
+            if (evidenceData.TryGetValue("host", out var hostObj) && hostObj != null)
+                sections.Add($"Host:       {hostObj}");
+            if (evidenceData.TryGetValue("resolvedIp", out var riObj) && riObj != null)
+                sections.Add($"Resolved:   {riObj}");
+            if (evidenceData.TryGetValue("hopCount", out var hcObj) && hcObj != null &&
+                evidenceData.TryGetValue("maxHops", out var mhObj) && mhObj != null)
+                sections.Add($"Hops:       {hcObj} / {mhObj}");
+            if (evidenceData.TryGetValue("reachedTarget", out var rtObj) && rtObj != null)
+                sections.Add($"Reached:    {(rtObj.ToString() is "True" or "true" ? "yes" : "no")}");
+
+            // Parse hops array and render tracert-style compact lines
+            if (evidenceData.TryGetValue("hops", out var hopsObj) && hopsObj?.ToString() is { } hopsStr)
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(hopsStr);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                    {
+                        sections.Add(string.Empty);
+                        foreach (var hop in doc.RootElement.EnumerateArray())
+                        {
+                            var hopNum = hop.TryGetProperty("hop", out var hn) ? hn.GetInt32() : 0;
+                            var address = hop.TryGetProperty("address", out var addr) ? addr.GetString() : "*";
+                            var roundtripMs = hop.TryGetProperty("roundtripMs", out var rtm) && rtm.ValueKind != JsonValueKind.Null
+                                ? rtm.GetInt32().ToString() + "ms"
+                                : "*";
+
+                            // Format: "  {hop}   {roundtripMs}ms  {address}" (tracert-style)
+                            sections.Add($"  {hopNum,-4} {roundtripMs,-6} {address}");
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore parse errors for hops array
+                }
+            }
+
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

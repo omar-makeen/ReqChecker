@@ -8,7 +8,7 @@ ReqChecker runs automated tests across network connectivity, file systems, syste
 
 ### Key Features
 
-- **25 Built-in Test Types** — Network, file system, system, security, FTP, and hardware tests
+- **26 Built-in Test Types** — Network, file system, system, security, FTP, and hardware tests
 - **JSON Profile Configuration** — Define test suites in version-controlled JSON files
 - **Test Dependencies** — Chain tests with `dependsOn` to create sequential validation flows
 - **Field Policies** — Control parameter visibility and editability (Locked, Editable, Hidden, PromptAtRun)
@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 25 test types (default)
+# Build with all 26 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 25 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 26 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 25 built-in test types organized into 6 categories:
+ReqChecker includes 26 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -131,6 +131,7 @@ ReqChecker includes 25 built-in test types organized into 6 categories:
 | Network | UdpPortOpen | UDP port reachability with optional response validation |
 | Network | WebSocket | WebSocket handshake and optional message exchange |
 | Network | ProxyConnectivity | HTTP/SOCKS proxy reachability with optional authentication |
+| Network | Traceroute | Trace network hops to target (diagnostic) |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -390,6 +391,30 @@ Tests HTTP/SOCKS proxy connectivity by connecting to a target URL through a spec
     "testUrl": "https://www.example.com",
     "proxyUsername": "serviceaccount",
     "proxyPassword": ""
+  }
+}
+```
+
+---
+
+#### Traceroute
+
+Traces the network path to a target host by sending ICMP echo requests with incrementing TTL values. Records each hop's responding IP address and round-trip time.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| host | string | Yes | — | Hostname or IP address to trace |
+| maxHops | int | No | 30 | Maximum number of hops to trace |
+| timeout | int | No | 5000 | Timeout in milliseconds per hop |
+
+**Example:**
+```json
+{
+  "type": "Traceroute",
+  "parameters": {
+    "host": "8.8.8.8",
+    "maxHops": 30,
+    "timeout": 5000
   }
 }
 ```
