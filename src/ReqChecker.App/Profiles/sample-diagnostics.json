@@ -214,6 +214,28 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "10000000-0000-0000-0000-00000000000d",
+      "type": "ProxyConnectivity",
+      "displayName": "Check HTTP Proxy",
+      "description": "Validates connectivity through an HTTP proxy server.",
+      "parameters": {
+        "proxyUrl": "http://proxy.example.com:8080",
+        "testUrl": "https://www.example.com",
+        "timeout": 30000,
+        "expectedStatus": 200
+      },
+      "fieldPolicy": {
+        "proxyUrl": "Editable",
+        "testUrl": "Editable",
+        "timeout": "Editable",
+        "expectedStatus": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

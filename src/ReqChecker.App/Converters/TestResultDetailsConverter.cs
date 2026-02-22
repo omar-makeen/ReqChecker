@@ -222,6 +222,35 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Proxy] section — emitted when Evidence contains Proxy test data
+        if (evidenceData != null && evidenceData.ContainsKey("proxyUrl"))
+        {
+            sections.Add("[Proxy]");
+            if (evidenceData.TryGetValue("proxyUrl", out var proxyUrlObj) && proxyUrlObj != null)
+                sections.Add($"Proxy:      {proxyUrlObj}");
+            if (evidenceData.TryGetValue("testUrl", out var testUrlObj) && testUrlObj != null)
+                sections.Add($"Target:     {testUrlObj}");
+            if (evidenceData.TryGetValue("proxyType", out var ptObj) && ptObj != null)
+                sections.Add($"Type:       {ptObj}");
+            if (evidenceData.TryGetValue("proxyReached", out var prObj) && prObj != null)
+                sections.Add($"Connected:  {(prObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("statusCode", out var scObj) && scObj != null)
+            {
+                if (int.TryParse(scObj.ToString(), out var statusCode))
+                {
+                    var statusText = GetStatusText(statusCode);
+                    sections.Add($"Status:     {statusCode} {statusText}");
+                }
+            }
+            if (evidenceData.TryGetValue("connectTimeMs", out var ctmObj) && ctmObj != null)
+                sections.Add($"Connect:    {ctmObj} ms");
+            if (evidenceData.TryGetValue("proxyUsername", out var puObj) && puObj != null && puObj.ToString() is { Length: > 0 } username)
+                sections.Add($"Username:   {username}");
+            if (evidenceData.TryGetValue("authSucceeded", out var asObj) && asObj is JsonElement asElem && asElem.ValueKind != JsonValueKind.Null)
+                sections.Add($"Auth:       {(asElem.ToString() is "True" or "true" ? "succeeded" : "failed")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

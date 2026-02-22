@@ -8,7 +8,7 @@ ReqChecker runs automated tests across network connectivity, file systems, syste
 
 ### Key Features
 
-- **24 Built-in Test Types** — Network, file system, system, security, FTP, and hardware tests
+- **25 Built-in Test Types** — Network, file system, system, security, FTP, and hardware tests
 - **JSON Profile Configuration** — Define test suites in version-controlled JSON files
 - **Test Dependencies** — Chain tests with `dependsOn` to create sequential validation flows
 - **Field Policies** — Control parameter visibility and editability (Locked, Editable, Hidden, PromptAtRun)
@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 24 test types (default)
+# Build with all 25 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 24 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 25 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 24 built-in test types organized into 6 categories:
+ReqChecker includes 25 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -130,6 +130,7 @@ ReqChecker includes 24 built-in test types organized into 6 categories:
 | Network | TcpPortOpen | TCP port connectivity check |
 | Network | UdpPortOpen | UDP port reachability with optional response validation |
 | Network | WebSocket | WebSocket handshake and optional message exchange |
+| Network | ProxyConnectivity | HTTP/SOCKS proxy reachability with optional authentication |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -348,6 +349,47 @@ Tests WebSocket connectivity by performing a handshake and optional message exch
     "timeout": 10000,
     "message": "hello",
     "expectedResponse": "hello"
+  }
+}
+```
+
+---
+
+#### ProxyConnectivity
+
+Tests HTTP/SOCKS proxy connectivity by connecting to a target URL through a specified proxy server.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| proxyUrl | string | Yes | — | Proxy URL (must start with `http://`, `https://`, `socks4://`, or `socks5://`) |
+| testUrl | string | Yes | — | Target URL to request through the proxy (must start with `http://` or `https://`) |
+| timeout | int | No | 30000 | Timeout in milliseconds |
+| expectedStatus | int | No | — | Expected HTTP status code (any 2xx/3xx passes if not specified) |
+| proxyUsername | string | No | — | Username for proxy authentication |
+| proxyPassword | string | No | — | Password for proxy authentication |
+
+**Example (basic HTTP proxy):**
+```json
+{
+  "type": "ProxyConnectivity",
+  "parameters": {
+    "proxyUrl": "http://proxy.example.com:8080",
+    "testUrl": "https://www.example.com",
+    "timeout": 30000,
+    "expectedStatus": 200
+  }
+}
+```
+
+**Example (authenticated proxy):**
+```json
+{
+  "type": "ProxyConnectivity",
+  "parameters": {
+    "proxyUrl": "http://proxy.example.com:8080",
+    "testUrl": "https://www.example.com",
+    "proxyUsername": "serviceaccount",
+    "proxyPassword": ""
   }
 }
 ```

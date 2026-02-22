@@ -51,6 +51,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (build-time only; no runtime data changes) (045-conditional-test-builds)
 - N/A (Markdown documentation only) (047-project-readme)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages) (048-websocket-test)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Http (HttpClient, HttpClientHandler, WebProxy — all built-in, no new packages) (049-proxy-test)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -70,9 +71,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 049-proxy-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Http (HttpClient, HttpClientHandler, WebProxy — all built-in, no new packages)
 - 048-websocket-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages)
 - 047-project-readme: Added N/A (Markdown documentation only)
-- 046-hardware-tests: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection (all existing — no new packages)
 
 
 
