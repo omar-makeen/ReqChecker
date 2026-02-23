@@ -236,7 +236,7 @@ public class TestResultDetailsConverter : IValueConverter
                 sections.Add($"Connected:  {(prObj.ToString() is "True" or "true" ? "yes" : "no")}");
             if (evidenceData.TryGetValue("statusCode", out var scObj) && scObj != null)
             {
-                if (int.TryParse(scObj.ToString(), out var statusCode))
+                if (int.TryParse(scObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var statusCode))
                 {
                     var statusText = GetStatusText(statusCode);
                     sections.Add($"Status:     {statusCode} {statusText}");
@@ -513,7 +513,7 @@ public class TestResultDetailsConverter : IValueConverter
                     sections.Add($"Expected:   {(fseObj.ToString() is "True" or "true" ? "yes" : "no")}");
                 if (evidenceData.TryGetValue("size", out var fsObj) && fsObj != null)
                 {
-                    if (long.TryParse(fsObj.ToString(), out var sizeBytes))
+                    if (long.TryParse(fsObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var sizeBytes))
                         sections.Add($"Size:       {FormatBytes(sizeBytes)}");
                     else
                         sections.Add($"Size:       {fsObj} bytes");
@@ -543,6 +543,25 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Bandwidth] section — emitted when Evidence contains bandwidth test data (measuredMbps + bytesDownloaded)
+        if (evidenceData != null && evidenceData.ContainsKey("measuredMbps") && evidenceData.ContainsKey("bytesDownloaded"))
+        {
+            sections.Add("[Bandwidth]");
+            if (evidenceData.TryGetValue("url", out var bwUrlObj) && bwUrlObj != null)
+                sections.Add($"URL:        {bwUrlObj}");
+            if (evidenceData.TryGetValue("measuredMbps", out var bwSpeedObj) && bwSpeedObj != null && double.TryParse(bwSpeedObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var bwSpeed))
+                sections.Add($"Speed:      {bwSpeed:F2} Mbps");
+            if (evidenceData.TryGetValue("minimumMbps", out var bwMinObj) && bwMinObj != null && double.TryParse(bwMinObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var bwMin))
+                sections.Add($"Minimum:    {bwMin:F2} Mbps");
+            if (evidenceData.TryGetValue("bytesDownloaded", out var bwBytesObj) && bwBytesObj != null && long.TryParse(bwBytesObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var bwBytes))
+                sections.Add($"Downloaded: {FormatBytes(bwBytes)}");
+            if (evidenceData.TryGetValue("elapsedSeconds", out var bwDurObj) && bwDurObj != null && double.TryParse(bwDurObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var bwDur))
+                sections.Add($"Duration:   {bwDur:F2} s");
+            if (evidenceData.TryGetValue("thresholdMet", out var bwThreshObj) && bwThreshObj != null)
+                sections.Add($"Threshold:  {(bwThreshObj.ToString() is "True" or "true" ? "met" : "not met")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {
@@ -554,7 +573,7 @@ public class TestResultDetailsConverter : IValueConverter
             // Try to get response time from evidence data
             if (evidenceData != null && evidenceData.TryGetValue("responseTime", out var rtObj))
             {
-                if (rtObj != null && int.TryParse(rtObj.ToString(), out var responseTime))
+                if (rtObj != null && int.TryParse(rtObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var responseTime))
                 {
                     sections.Add($"Response Time: {responseTime}ms");
                 }
@@ -570,7 +589,7 @@ public class TestResultDetailsConverter : IValueConverter
             // Try to get content length from evidence data
             if (evidenceData != null && evidenceData.TryGetValue("contentLength", out var clObj))
             {
-                if (clObj != null && int.TryParse(clObj.ToString(), out var contentLength))
+                if (clObj != null && int.TryParse(clObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var contentLength))
                 {
                     sections.Add($"Content-Length: {contentLength} bytes");
                 }

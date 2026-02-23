@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 26 built-in test types organized into 6 categories:
+ReqChecker includes 27 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -132,6 +132,7 @@ ReqChecker includes 26 built-in test types organized into 6 categories:
 | Network | WebSocket | WebSocket handshake and optional message exchange |
 | Network | ProxyConnectivity | HTTP/SOCKS proxy reachability with optional authentication |
 | Network | Traceroute | Trace network hops to target (diagnostic) |
+| Network | Bandwidth | Minimum download throughput check |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -415,6 +416,30 @@ Traces the network path to a target host by sending ICMP echo requests with incr
     "host": "8.8.8.8",
     "maxHops": 30,
     "timeout": 5000
+  }
+}
+```
+
+---
+
+#### Bandwidth
+
+Tests network download throughput by downloading data from a URL for a configurable duration and comparing the measured speed against a minimum threshold.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| url | string | Yes | — | URL to download from (must start with http:// or https://) |
+| minimumMbps | number | No | 0 | Minimum required throughput in Mbps |
+| durationSeconds | int | No | 10 | Maximum download duration in seconds |
+
+**Example:**
+```json
+{
+  "type": "Bandwidth",
+  "parameters": {
+    "url": "https://speed.cloudflare.com/__down?bytes=10000000",
+    "minimumMbps": 10,
+    "durationSeconds": 5
   }
 }
 ```
