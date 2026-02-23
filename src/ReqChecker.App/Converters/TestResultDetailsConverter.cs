@@ -296,6 +296,253 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Ping] section — emitted when Evidence contains Ping test data (successRate + pingResults keys)
+        if (evidenceData != null && evidenceData.ContainsKey("successRate") && evidenceData.ContainsKey("pingResults"))
+        {
+            sections.Add("[Ping]");
+            if (evidenceData.TryGetValue("host", out var pingHostObj) && pingHostObj != null)
+                sections.Add($"Host:       {pingHostObj}");
+            if (evidenceData.TryGetValue("successfulCount", out var scObj) && scObj != null &&
+                evidenceData.TryGetValue("totalCount", out var tcObj) && tcObj != null)
+                sections.Add($"Success:    {scObj}/{tcObj}");
+            if (evidenceData.TryGetValue("successRate", out var srObj) && srObj != null)
+                sections.Add($"Rate:       {srObj}");
+            if (evidenceData.TryGetValue("averageRoundtripTime", out var artObj) && artObj != null)
+                sections.Add($"Avg RTT:    {artObj}");
+
+            // Parse pingResults array and render per-attempt lines
+            if (evidenceData.TryGetValue("pingResults", out var prObj) && prObj?.ToString() is { } prStr)
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(prStr);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                    {
+                        sections.Add(string.Empty);
+                        foreach (var attempt in doc.RootElement.EnumerateArray())
+                        {
+                            var attemptNum = attempt.TryGetProperty("attempt", out var an) ? an.GetInt32() : 0;
+                            var status = attempt.TryGetProperty("status", out var st) ? st.GetString() : "unknown";
+                            var rtt = attempt.TryGetProperty("roundtripTime", out var rttProp) && rttProp.ValueKind != JsonValueKind.Null
+                                ? rttProp.ToString()
+                                : "*";
+                            sections.Add($"  Attempt {attemptNum}: {status} ({rtt})");
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore parse errors for pingResults array
+                }
+            }
+
+            sections.Add(string.Empty);
+        }
+
+        // [DNS] section — emitted when Evidence contains DnsResolve test data (hostname + addresses keys)
+        if (evidenceData != null && evidenceData.ContainsKey("hostname") && evidenceData.ContainsKey("addresses"))
+        {
+            sections.Add("[DNS]");
+            if (evidenceData.TryGetValue("hostname", out var hostnameObj) && hostnameObj != null)
+                sections.Add($"Hostname:   {hostnameObj}");
+
+            // Parse addresses array and render indented IP lines
+            if (evidenceData.TryGetValue("addresses", out var addrObj) && addrObj?.ToString() is { } addrStr)
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(addrStr);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                    {
+                        sections.Add("Addresses:");
+                        foreach (var addr in doc.RootElement.EnumerateArray())
+                        {
+                            var ip = addr.GetString();
+                            sections.Add($"  {ip}");
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore parse errors for addresses array
+                }
+            }
+
+            if (evidenceData.TryGetValue("addressCount", out var acObj) && acObj != null)
+                sections.Add($"Count:      {acObj}");
+            if (evidenceData.TryGetValue("resolutionTimeMs", out var rtmObj) && rtmObj != null)
+                sections.Add($"Resolution: {rtmObj} ms");
+
+            sections.Add(string.Empty);
+        }
+
+        // [TCP] section — emitted when Evidence contains TcpPortOpen test data (host + port + connected keys)
+        if (evidenceData != null && evidenceData.ContainsKey("host") && evidenceData.ContainsKey("port") && evidenceData.ContainsKey("connected"))
+        {
+            // Avoid collision with Traceroute which also has "host" but has "hops" instead of "port"
+            if (!evidenceData.ContainsKey("hops"))
+            {
+                sections.Add("[TCP]");
+                if (evidenceData.TryGetValue("host", out var tcpHostObj) && tcpHostObj != null)
+                    sections.Add($"Host:       {tcpHostObj}");
+                if (evidenceData.TryGetValue("port", out var portObj) && portObj != null)
+                    sections.Add($"Port:       {portObj}");
+                if (evidenceData.TryGetValue("connected", out var connObj) && connObj != null)
+                    sections.Add($"Connected:  {(connObj.ToString() is "True" or "true" ? "yes" : "no")}");
+                if (evidenceData.TryGetValue("connectTimeMs", out var ctmObj) && ctmObj != null)
+                    sections.Add($"Connect:    {ctmObj} ms");
+                sections.Add(string.Empty);
+            }
+        }
+
+        // [UDP] section — emitted when Evidence contains UdpPortOpen test data (Responded + PayloadSentBytes keys)
+        if (evidenceData != null && evidenceData.ContainsKey("Responded") && evidenceData.ContainsKey("PayloadSentBytes"))
+        {
+            sections.Add("[UDP]");
+            if (evidenceData.TryGetValue("Responded", out var respObj) && respObj != null)
+                sections.Add($"Responded:  {(respObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("RoundTripTimeMs", out var rttObj) && rttObj != null)
+                sections.Add($"RTT:        {rttObj} ms");
+            if (evidenceData.TryGetValue("PayloadSentBytes", out var psbObj) && psbObj != null)
+                sections.Add($"Sent:       {psbObj} bytes");
+            if (evidenceData.TryGetValue("PayloadReceivedBytes", out var prbObj) && prbObj != null)
+                sections.Add($"Received:   {prbObj} bytes");
+            if (evidenceData.TryGetValue("ResponseDataPreview", out var rdpObj) && rdpObj != null && rdpObj.ToString() is { Length: > 0 } preview)
+                sections.Add($"Data:       {preview}");
+            sections.Add(string.Empty);
+        }
+
+        // [Disk Space] section — emitted when Evidence contains DiskSpace test data (totalSpaceGB + freeSpaceGB keys)
+        if (evidenceData != null && evidenceData.ContainsKey("totalSpaceGB") && evidenceData.ContainsKey("freeSpaceGB"))
+        {
+            sections.Add("[Disk Space]");
+            if (evidenceData.TryGetValue("path", out var dspObj) && dspObj != null)
+                sections.Add($"Path:       {dspObj}");
+            if (evidenceData.TryGetValue("totalSpaceGB", out var tsgObj) && tsgObj != null)
+                sections.Add($"Total:      {tsgObj} GB");
+            if (evidenceData.TryGetValue("freeSpaceGB", out var fsgObj) && fsgObj != null)
+                sections.Add($"Free:       {fsgObj} GB");
+            if (evidenceData.TryGetValue("percentFree", out var pfObj) && pfObj != null)
+                sections.Add($"Free %:     {pfObj}%");
+            if (evidenceData.TryGetValue("minimumFreeGB", out var mfgObj) && mfgObj != null)
+                sections.Add($"Minimum:    {mfgObj} GB");
+            if (evidenceData.TryGetValue("thresholdMet", out var tmObj) && tmObj != null)
+                sections.Add($"Threshold:  {(tmObj.ToString() is "True" or "true" ? "met" : "not met")}");
+            sections.Add(string.Empty);
+        }
+
+        // [Service] section — emitted when Evidence contains WindowsService test data (serviceName + expectedStatus keys)
+        if (evidenceData != null && evidenceData.ContainsKey("serviceName") && evidenceData.ContainsKey("expectedStatus"))
+        {
+            sections.Add("[Service]");
+            if (evidenceData.TryGetValue("serviceName", out var snObj) && snObj != null)
+                sections.Add($"Service:    {snObj}");
+            if (evidenceData.TryGetValue("displayName", out var dnObj) && dnObj != null && dnObj.ToString() is { Length: > 0 } dn)
+                sections.Add($"Display:    {dn}");
+            if (evidenceData.TryGetValue("status", out var stObj) && stObj != null)
+                sections.Add($"Status:     {stObj}");
+            if (evidenceData.TryGetValue("expectedStatus", out var esObj) && esObj != null)
+                sections.Add($"Expected:   {esObj}");
+            if (evidenceData.TryGetValue("startType", out var sttObj) && sttObj != null && sttObj.ToString() is { Length: > 0 } stt)
+                sections.Add($"Start Type: {stt}");
+            if (evidenceData.TryGetValue("statusMatch", out var smObj) && smObj != null)
+                sections.Add($"Match:      {(smObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
+        // [mTLS] section — emitted when Evidence contains MtlsConnect test data (CertificateSubject + CertificateThumbprint keys)
+        if (evidenceData != null && evidenceData.ContainsKey("CertificateSubject") && evidenceData.ContainsKey("CertificateThumbprint"))
+        {
+            sections.Add("[mTLS]");
+            if (evidenceData.TryGetValue("Connected", out var mconnObj) && mconnObj != null)
+                sections.Add($"Connected:  {(mconnObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("ResponseTimeMs", out var rtmObj) && rtmObj != null)
+                sections.Add($"Response:   {rtmObj} ms");
+            if (evidenceData.TryGetValue("CertificateSubject", out var csObj) && csObj != null)
+                sections.Add($"Subject:    {csObj}");
+            if (evidenceData.TryGetValue("CertificateIssuer", out var ciObj) && ciObj != null && ciObj.ToString() is { Length: > 0 } ci)
+                sections.Add($"Issuer:     {ci}");
+            if (evidenceData.TryGetValue("CertificateThumbprint", out var ctObj) && ctObj != null)
+                sections.Add($"Thumbprint: {ctObj}");
+            if (evidenceData.TryGetValue("CertificateNotBefore", out var cnbObj) && cnbObj != null && cnbObj.ToString() is { Length: > 0 } cnb)
+                sections.Add($"Valid From: {cnb}");
+            if (evidenceData.TryGetValue("CertificateNotAfter", out var cnaObj) && cnaObj != null && cnaObj.ToString() is { Length: > 0 } cna)
+                sections.Add($"Valid To:   {cna}");
+            if (evidenceData.TryGetValue("CertificateHasPrivateKey", out var chpkObj) && chpkObj != null)
+                sections.Add($"Private Key: {(chpkObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
+        // [Certificate] section — emitted when Evidence contains CertificateExpiry test data (DaysUntilExpiry + IsExpired keys)
+        if (evidenceData != null && evidenceData.ContainsKey("DaysUntilExpiry") && evidenceData.ContainsKey("IsExpired"))
+        {
+            sections.Add("[Certificate]");
+            if (evidenceData.TryGetValue("Host", out var chostObj) && chostObj != null)
+                sections.Add($"Host:       {chostObj}");
+            if (evidenceData.TryGetValue("Port", out var cportObj) && cportObj != null)
+                sections.Add($"Port:       {cportObj}");
+            if (evidenceData.TryGetValue("Subject", out var csubObj) && csubObj != null)
+                sections.Add($"Subject:    {csubObj}");
+            if (evidenceData.TryGetValue("Issuer", out var cissObj) && cissObj != null && cissObj.ToString() is { Length: > 0 } ciss)
+                sections.Add($"Issuer:     {ciss}");
+            if (evidenceData.TryGetValue("Thumbprint", out var cthumbObj) && cthumbObj != null && cthumbObj.ToString() is { Length: > 0 } cthumb)
+                sections.Add($"Thumbprint: {cthumb}");
+            if (evidenceData.TryGetValue("NotAfter", out var cnaObj) && cnaObj != null)
+                sections.Add($"Expires:    {cnaObj}");
+            if (evidenceData.TryGetValue("DaysUntilExpiry", out var dueObj) && dueObj != null)
+                sections.Add($"Days Left:  {dueObj}");
+            if (evidenceData.TryGetValue("IsExpired", out var ieObj) && ieObj != null)
+                sections.Add($"Expired:    {(ieObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("IsNotYetValid", out var inyvObj) && inyvObj != null && inyvObj.ToString() is "True" or "true")
+                sections.Add($"Not Yet Valid: yes");
+            sections.Add(string.Empty);
+        }
+
+        // [File] section — emitted when Evidence contains FileExists test data (category == "file")
+        if (evidenceData != null && evidenceData.TryGetValue("category", out var fileCatObj) && fileCatObj?.ToString() == "file")
+        {
+            // Avoid collision with DirectoryExists which has path + exists but has directoryCount instead of size
+            if (!evidenceData.ContainsKey("directoryCount"))
+            {
+                sections.Add("[File]");
+                if (evidenceData.TryGetValue("path", out var fpathObj) && fpathObj != null)
+                    sections.Add($"Path:       {fpathObj}");
+                if (evidenceData.TryGetValue("exists", out var fexObj) && fexObj != null)
+                    sections.Add($"Exists:     {(fexObj.ToString() is "True" or "true" ? "yes" : "no")}");
+                if (evidenceData.TryGetValue("shouldExist", out var fseObj) && fseObj != null)
+                    sections.Add($"Expected:   {(fseObj.ToString() is "True" or "true" ? "yes" : "no")}");
+                if (evidenceData.TryGetValue("size", out var fsObj) && fsObj != null)
+                {
+                    if (long.TryParse(fsObj.ToString(), out var sizeBytes))
+                        sections.Add($"Size:       {FormatBytes(sizeBytes)}");
+                    else
+                        sections.Add($"Size:       {fsObj} bytes");
+                }
+                if (evidenceData.TryGetValue("lastModified", out var flmObj) && flmObj != null && flmObj.ToString() is { Length: > 0 } flm)
+                    sections.Add($"Modified:   {flm}");
+                sections.Add(string.Empty);
+            }
+        }
+
+        // [Directory] section — emitted when Evidence contains DirectoryExists test data (category == "directory")
+        if (evidenceData != null && evidenceData.TryGetValue("category", out var dirCatObj) && dirCatObj?.ToString() == "directory")
+        {
+            sections.Add("[Directory]");
+            if (evidenceData.TryGetValue("path", out var dpathObj) && dpathObj != null)
+                sections.Add($"Path:       {dpathObj}");
+            if (evidenceData.TryGetValue("exists", out var dexObj) && dexObj != null)
+                sections.Add($"Exists:     {(dexObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("shouldExist", out var dseObj) && dseObj != null)
+                sections.Add($"Expected:   {(dseObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            if (evidenceData.TryGetValue("fileCount", out var dfcObj) && dfcObj != null)
+                sections.Add($"Files:      {dfcObj}");
+            if (evidenceData.TryGetValue("directoryCount", out var ddcObj) && ddcObj != null)
+                sections.Add($"Directories: {ddcObj}");
+            if (evidenceData.TryGetValue("creationTime", out var dctObj) && dctObj != null && dctObj.ToString() is { Length: > 0 } dct)
+                sections.Add($"Created:    {dct}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {
@@ -434,5 +681,22 @@ public class TestResultDetailsConverter : IValueConverter
             504 => "Gateway Timeout",
             _ => string.Empty
         };
+    }
+
+    private static string FormatBytes(long bytes)
+    {
+        string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+        int suffixIndex = 0;
+        double size = bytes;
+
+        while (size >= 1024 && suffixIndex < suffixes.Length - 1)
+        {
+            size /= 1024;
+            suffixIndex++;
+        }
+
+        return suffixIndex == 0
+            ? $"{size:F0} {suffixes[suffixIndex]}"
+            : $"{size:F2} {suffixes[suffixIndex]}";
     }
 }

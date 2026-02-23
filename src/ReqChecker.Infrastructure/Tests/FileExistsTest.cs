@@ -52,7 +52,8 @@ public class FileExistsTest : ITest
                 ["path"] = path,
                 ["exists"] = exists,
                 ["shouldExist"] = shouldExist,
-                ["isPass"] = isPass
+                ["isPass"] = isPass,
+                ["category"] = "file"
             };
 
             // If file exists, get additional info

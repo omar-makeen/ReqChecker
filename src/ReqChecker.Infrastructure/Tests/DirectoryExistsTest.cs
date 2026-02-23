@@ -52,7 +52,8 @@ public class DirectoryExistsTest : ITest
                 ["path"] = path,
                 ["exists"] = exists,
                 ["shouldExist"] = shouldExist,
-                ["isPass"] = isPass
+                ["isPass"] = isPass,
+                ["category"] = "directory"
             };
 
             // If directory exists, get additional info

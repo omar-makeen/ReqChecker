@@ -53,6 +53,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages) (048-websocket-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Http (HttpClient, HttpClientHandler, WebProxy — all built-in, no new packages) (049-proxy-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.NetworkInformation (Ping, PingOptions, PingReply — all built-in, no new packages) (050-traceroute-test)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, System.Text.Json (existing — no new packages) (051-test-details-output)
+- N/A (in-memory TestResult evidence data) (051-test-details-output)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -72,9 +74,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 051-test-details-output: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, System.Text.Json (existing — no new packages)
 - 050-traceroute-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.NetworkInformation (Ping, PingOptions, PingReply — all built-in, no new packages)
 - 049-proxy-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Http (HttpClient, HttpClientHandler, WebProxy — all built-in, no new packages)
-- 048-websocket-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.WebSockets.ClientWebSocket (built-in, no new packages)
 
 
 
