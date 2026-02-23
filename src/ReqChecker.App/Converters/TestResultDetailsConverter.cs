@@ -562,6 +562,53 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [Latency] section — emitted when Evidence contains latency test data (averageLatencyMs + minLatencyMs)
+        if (evidenceData != null && evidenceData.ContainsKey("averageLatencyMs") && evidenceData.ContainsKey("minLatencyMs"))
+        {
+            sections.Add("[Latency]");
+            if (evidenceData.TryGetValue("host", out var latHostObj) && latHostObj != null)
+                sections.Add($"Host:       {latHostObj}");
+            if (evidenceData.TryGetValue("averageLatencyMs", out var latAvgObj) && latAvgObj != null && double.TryParse(latAvgObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var latAvg))
+                sections.Add($"Avg:        {latAvg:F2} ms");
+            if (evidenceData.TryGetValue("minLatencyMs", out var latMinObj) && latMinObj != null && double.TryParse(latMinObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var latMin))
+                sections.Add($"Min:        {latMin:F2} ms");
+            if (evidenceData.TryGetValue("maxLatencyMs", out var latMaxObj) && latMaxObj != null && double.TryParse(latMaxObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var latMax))
+                sections.Add($"Max:        {latMax:F2} ms");
+            if (evidenceData.TryGetValue("maxThresholdMs", out var latThreshObj) && latThreshObj != null && double.TryParse(latThreshObj.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var latThresh))
+                sections.Add($"Threshold:  {(latThresh == 0 ? "0.00 ms (reachability)" : $"{latThresh:F2} ms")}");
+            if (evidenceData.TryGetValue("successfulCount", out var latSucObj) && latSucObj != null &&
+                evidenceData.TryGetValue("sampleCount", out var latCountObj) && latCountObj != null)
+                sections.Add($"Samples:    {latSucObj}/{latCountObj}");
+            if (evidenceData.TryGetValue("thresholdMet", out var latMetObj) && latMetObj != null)
+                sections.Add($"Result:     {(latMetObj.ToString() is "True" or "true" ? "met" : "not met")}");
+            sections.Add(string.Empty);
+        }
+
+        // [SmtpConnect] section — emitted when Evidence contains SMTP test data (serverBanner + responseTimeMs)
+        if (evidenceData != null && evidenceData.ContainsKey("serverBanner") && evidenceData.ContainsKey("responseTimeMs"))
+        {
+            sections.Add("[SmtpConnect]");
+            if (evidenceData.TryGetValue("host", out var smtpHostObj) && smtpHostObj != null)
+                sections.Add($"Host:       {smtpHostObj}");
+            if (evidenceData.TryGetValue("port", out var smtpPortObj) && smtpPortObj != null)
+                sections.Add($"Port:       {smtpPortObj}");
+            if (evidenceData.TryGetValue("serverBanner", out var smtpBannerObj) && smtpBannerObj != null)
+                sections.Add($"Banner:     {smtpBannerObj}");
+            if (evidenceData.TryGetValue("responseTimeMs", out var smtpTimeObj) && smtpTimeObj != null &&
+                long.TryParse(smtpTimeObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var smtpTime))
+                sections.Add($"Time:       {smtpTime} ms");
+            // Conditional TLS line - only shown when tlsNegotiated exists and is true
+            if (evidenceData.TryGetValue("tlsNegotiated", out var tlsNegObj) && tlsNegObj?.ToString() is "True" or "true")
+            {
+                if (evidenceData.TryGetValue("tlsVersion", out var tlsVerObj) && tlsVerObj != null)
+                    sections.Add($"TLS:        {tlsVerObj}");
+            }
+            // Conditional Auth line - only shown when authenticated key exists
+            if (evidenceData.TryGetValue("authenticated", out var authObj) && authObj != null)
+                sections.Add($"Auth:       {(authObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

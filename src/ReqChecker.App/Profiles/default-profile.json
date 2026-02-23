@@ -791,6 +791,47 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-039",
+      "type": "Latency",
+      "displayName": "Cloud DNS Latency",
+      "description": "Measures round-trip latency to Google DNS and verifies it meets a maximum threshold.",
+      "parameters": {
+        "host": "8.8.8.8",
+        "maxLatencyMs": 200,
+        "sampleCount": 4
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "maxLatencyMs": "Editable",
+        "sampleCount": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-040",
+      "type": "SmtpConnect",
+      "displayName": "SMTP Server Check",
+      "description": "Verifies SMTP mail server connectivity and greeting response.",
+      "parameters": {
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "useTls": true
+      },
+      "fieldPolicy": {
+        "host": "Editable",
+        "port": "Editable",
+        "useTls": "Editable",
+        "credentialRef": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

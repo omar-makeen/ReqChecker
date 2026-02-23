@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 26 test types (default)
+# Build with all 29 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 26 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 29 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 27 built-in test types organized into 6 categories:
+ReqChecker includes 29 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -133,6 +133,8 @@ ReqChecker includes 27 built-in test types organized into 6 categories:
 | Network | ProxyConnectivity | HTTP/SOCKS proxy reachability with optional authentication |
 | Network | Traceroute | Trace network hops to target (diagnostic) |
 | Network | Bandwidth | Minimum download throughput check |
+| Network | Latency | Round-trip latency threshold check |
+| Network | SmtpConnect | SMTP mail server connectivity and greeting check |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -440,6 +442,55 @@ Tests network download throughput by downloading data from a URL for a configura
     "url": "https://speed.cloudflare.com/__down?bytes=10000000",
     "minimumMbps": 10,
     "durationSeconds": 5
+  }
+}
+```
+
+---
+
+#### Latency
+
+Tests network latency to a host using multiple ICMP ping samples. Calculates average/min/max round-trip times and compares the average against a maximum threshold.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| host | string | Yes | — | Target hostname or IP address |
+| maxLatencyMs | number | No | 0 | Maximum acceptable average latency in ms (0 = reachability mode) |
+| sampleCount | int | No | 4 | Number of ICMP ping samples to send |
+
+**Example:**
+```json
+{
+  "type": "Latency",
+  "parameters": {
+    "host": "8.8.8.8",
+    "maxLatencyMs": 200,
+    "sampleCount": 5
+  }
+}
+```
+
+---
+
+#### SmtpConnect
+
+Tests SMTP mail server connectivity by connecting, reading the server greeting, and optionally negotiating TLS and authenticating.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| host | string | Yes | — | SMTP server hostname or IP address |
+| port | int | No | 25 | SMTP server port |
+| useTls | bool | No | false | Negotiate TLS (STARTTLS or implicit TLS on port 465) |
+| credentialRef | string | No | — | Credential reference for SMTP authentication |
+
+**Example:**
+```json
+{
+  "type": "SmtpConnect",
+  "parameters": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "useTls": true
   }
 }
 ```
