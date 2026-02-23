@@ -819,7 +819,7 @@
       "description": "Verifies SMTP mail server connectivity and greeting response.",
       "parameters": {
         "host": "smtp.gmail.com",
-        "port": 587,
+        "port": 465,
         "useTls": true
       },
       "fieldPolicy": {
