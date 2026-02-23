@@ -771,6 +771,26 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-038",
+      "type": "Bandwidth",
+      "displayName": "Download Speed Check",
+      "description": "Measures download throughput and verifies it meets a minimum threshold.",
+      "parameters": {
+        "url": "https://speed.cloudflare.com/__down?bytes=10000000",
+        "minimumMbps": 10,
+        "durationSeconds": 10
+      },
+      "fieldPolicy": {
+        "url": "Editable",
+        "minimumMbps": "Editable",
+        "durationSeconds": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
