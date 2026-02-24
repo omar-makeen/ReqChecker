@@ -609,6 +609,68 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [DotNetVersion] section — emitted when Evidence contains .NET version test data (runtimeType + minimumSatisfied)
+        if (evidenceData != null && evidenceData.ContainsKey("runtimeType") && evidenceData.ContainsKey("minimumSatisfied"))
+        {
+            sections.Add("[DotNetVersion]");
+            if (evidenceData.TryGetValue("runtimeType", out var runtimeTypeObj) && runtimeTypeObj != null)
+                sections.Add($"Type:       {runtimeTypeObj}");
+            if (evidenceData.TryGetValue("minimumVersion", out var minVerObj) && minVerObj != null)
+            {
+                var minVerStr = minVerObj.ToString();
+                sections.Add($"Minimum:    {(minVerStr == "0.0.0" ? "0.0.0 (presence check)" : minVerStr)}");
+            }
+            if (evidenceData.TryGetValue("installedVersions", out var installedObj) && installedObj != null)
+            {
+                var installedStr = installedObj.ToString();
+                if (string.IsNullOrEmpty(installedStr))
+                {
+                    sections.Add("Installed:  none");
+                }
+                else
+                {
+                    var versions = installedStr.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    if (versions.Length == 0)
+                    {
+                        sections.Add("Installed:  none");
+                    }
+                    else
+                    {
+                        // First version on the label line
+                        sections.Add($"Installed:  {versions[0]}");
+                        // Subsequent versions on indented lines (12-space indent)
+                        for (int i = 1; i < versions.Length; i++)
+                        {
+                            sections.Add($"            {versions[i]}");
+                        }
+                    }
+                }
+            }
+            if (evidenceData.TryGetValue("minimumSatisfied", out var satisfiedObj) && satisfiedObj != null)
+                sections.Add($"Satisfied:  {(satisfiedObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
+        // [RegistryWrite] section — emitted when Evidence contains registry write test data (writeSucceeded + cleanupSucceeded)
+        if (evidenceData != null && evidenceData.ContainsKey("writeSucceeded") && evidenceData.ContainsKey("cleanupSucceeded"))
+        {
+            sections.Add("[RegistryWrite]");
+            if (evidenceData.TryGetValue("target", out var targetObj) && targetObj != null)
+                sections.Add($"Target:      {targetObj}");
+            if (evidenceData.TryGetValue("keyPath", out var keyPathObj) && keyPathObj != null)
+                sections.Add($"Key Path:    {keyPathObj}");
+            if (evidenceData.TryGetValue("testValueName", out var testValueNameObj) && testValueNameObj != null)
+                sections.Add($"Test Value:  {testValueNameObj}");
+            if (evidenceData.TryGetValue("writeSucceeded", out var writeObj) && writeObj != null)
+            {
+                var writeSucceeded = writeObj.ToString() is "True" or "true";
+                sections.Add($"Writable:    {(writeSucceeded ? "yes" : "no")}");
+                if (evidenceData.TryGetValue("cleanupSucceeded", out var cleanupObj) && cleanupObj != null)
+                    sections.Add($"Cleanup:     {(writeSucceeded ? (cleanupObj.ToString() is "True" or "true" ? "yes" : "no") : "n/a")}");
+            }
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

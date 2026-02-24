@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 29 test types (default)
+# Build with all 31 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 29 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 31 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 29 built-in test types organized into 6 categories:
+ReqChecker includes 31 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -146,6 +146,8 @@ ReqChecker includes 29 built-in test types organized into 6 categories:
 | System | OsVersion | Validate Windows version and build number |
 | System | InstalledSoftware | Detect installed software via registry with version check |
 | System | EnvironmentVariable | Verify environment variable existence and value |
+| System | DotNetVersion | Verify .NET runtime or SDK version meets a minimum |
+| System | RegistryWrite | Verify registry write access to a key |
 | Security | MtlsConnect | Mutual TLS client certificate authentication test |
 | Security | CertificateExpiry | SSL/TLS certificate validity and expiry check |
 | FTP | FtpRead | Read a file from an FTP server |
@@ -618,6 +620,51 @@ Tests if a drive has at least a specified amount of free space.
 ---
 
 ### System Tests
+
+#### DotNetVersion
+
+Tests that the installed .NET runtime or SDK meets a minimum version requirement by scanning the dotnet installation directory and comparing all discovered versions.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| runtimeType | string | Yes | — | `"runtime"` (Microsoft.NETCore.App) or `"sdk"` (.NET SDK) |
+| minimumVersion | string | No | 0.0.0 | Minimum acceptable version (e.g., `"8.0.0"`); omit to check presence only |
+
+**Example:**
+```json
+{
+  "type": "DotNetVersion",
+  "parameters": {
+    "runtimeType": "runtime",
+    "minimumVersion": "8.0.0"
+  }
+}
+```
+
+---
+
+#### RegistryWrite
+
+Tests write access to a Windows registry key by writing a temporary value, reading it back to confirm success, then deleting it to clean up.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| target | string | Yes | — | Registry hive: `"HKLM"` (Local Machine) or `"HKCU"` (Current User) |
+| keyPath | string | Yes | — | Registry subkey path without hive prefix (e.g., `SOFTWARE\MyApp`) |
+| testValueName | string | No | `_ReqChecker_WriteTest` | Name of the temporary value to write and delete |
+
+**Example:**
+```json
+{
+  "type": "RegistryWrite",
+  "parameters": {
+    "target": "HKCU",
+    "keyPath": "SOFTWARE\\ReqChecker"
+  }
+}
+```
+
+---
 
 #### ProcessList
 

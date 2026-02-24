@@ -832,6 +832,43 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-041",
+      "type": "DotNetVersion",
+      "displayName": ".NET Runtime Version Check",
+      "description": "Verifies that .NET 8.0 runtime or later is installed on this machine.",
+      "parameters": {
+        "runtimeType": "runtime",
+        "minimumVersion": "8.0.0"
+      },
+      "fieldPolicy": {
+        "runtimeType": "Editable",
+        "minimumVersion": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
+    },
+    {
+      "id": "test-042",
+      "type": "RegistryWrite",
+      "displayName": "Registry Write Access (HKCU)",
+      "description": "Verifies write access to HKCU\\SOFTWARE\\ReqChecker.",
+      "parameters": {
+        "target": "HKCU",
+        "keyPath": "SOFTWARE\\ReqChecker"
+      },
+      "fieldPolicy": {
+        "target": "Editable",
+        "keyPath": "Editable",
+        "testValueName": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

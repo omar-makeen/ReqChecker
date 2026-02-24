@@ -59,6 +59,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (in-memory test results) (052-bandwidth-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.NetworkInformation (Ping, PingReply, IPStatus — built-in, no new packages) (053-latency-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Sockets (TcpClient), System.Net.Security (SslStream), System.Text.Json — all built-in, no new packages (054-smtp-test)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `System.IO` (Directory.Exists, Directory.GetDirectories — built-in, no new packages) (055-dotnet-version-test)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages) (056-registry-write-test)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -78,9 +80,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 056-registry-write-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages)
+- 055-dotnet-version-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `System.IO` (Directory.Exists, Directory.GetDirectories — built-in, no new packages)
 - 054-smtp-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Sockets (TcpClient), System.Net.Security (SslStream), System.Text.Json — all built-in, no new packages
-- 053-latency-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.NetworkInformation (Ping, PingReply, IPStatus — built-in, no new packages)
-- 052-bandwidth-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Http (HttpClient — built-in, no new packages)
 
 
 
