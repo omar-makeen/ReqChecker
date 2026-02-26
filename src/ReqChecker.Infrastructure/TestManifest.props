@@ -6,7 +6,7 @@
     Controls which test type source files are compiled into the Infrastructure assembly.
 
     Usage:
-      dotnet build                                    → all 32 test types included (default)
+      dotnet build                                    → all 33 test types included (default)
       dotnet build /p:IncludeTests="Ping;HttpGet"     → only Ping and HttpGet included
 
     Adding a new test type:
@@ -61,6 +61,7 @@
     <KnownTestType Include="DotNetVersion"      SourceFile="Tests\DotNetVersionTest.cs" />
     <KnownTestType Include="RegistryWrite"      SourceFile="Tests\RegistryWriteTest.cs" />
     <KnownTestType Include="LdapBind"           SourceFile="Tests\LdapBindTest.cs" />
+    <KnownTestType Include="SqlConnection"      SourceFile="Tests\SqlConnectionTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================
@@ -204,6 +205,10 @@
 
   <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';LdapBind;'))">
     <Compile Include="Tests\LdapBindTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeTests)' == '' Or $(_IncludeTestsFenced.Contains(';SqlConnection;'))">
+    <Compile Include="Tests\SqlConnectionTest.cs" />
   </ItemGroup>
 
   <!-- =========================================================
