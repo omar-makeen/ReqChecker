@@ -61,6 +61,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Sockets (TcpClient), System.Net.Security (SslStream), System.Text.Json — all built-in, no new packages (054-smtp-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `System.IO` (Directory.Exists, Directory.GetDirectories — built-in, no new packages) (055-dotnet-version-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages) (056-registry-write-test)
+- C# 12 / .NET 8.0 (net8.0 TFM) + `System.DirectoryServices.Protocols` 8.0.0 (new NuGet package), existing project infrastructure (057-ldap-bind-test)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -80,9 +81,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 057-ldap-bind-test: Added C# 12 / .NET 8.0 (net8.0 TFM) + `System.DirectoryServices.Protocols` 8.0.0 (new NuGet package), existing project infrastructure
 - 056-registry-write-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages)
 - 055-dotnet-version-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `System.IO` (Directory.Exists, Directory.GetDirectories — built-in, no new packages)
-- 054-smtp-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + System.Net.Sockets (TcpClient), System.Net.Security (SslStream), System.Text.Json — all built-in, no new packages
 
 
 

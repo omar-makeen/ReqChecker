@@ -671,6 +671,33 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [LdapBind] section — emitted when Evidence contains LDAP bind test data (bindType + responseTimeMs)
+        if (evidenceData != null && evidenceData.ContainsKey("bindType") && evidenceData.ContainsKey("responseTimeMs"))
+        {
+            sections.Add("[LdapBind]");
+            if (evidenceData.TryGetValue("server", out var ldapServerObj) && ldapServerObj != null)
+                sections.Add($"Server:     {ldapServerObj}");
+            if (evidenceData.TryGetValue("port", out var ldapPortObj) && ldapPortObj != null)
+                sections.Add($"Port:       {ldapPortObj}");
+            if (evidenceData.TryGetValue("bindType", out var bindTypeObj) && bindTypeObj != null)
+                sections.Add($"Bind:       {bindTypeObj}");
+            if (evidenceData.TryGetValue("responseTimeMs", out var ldapTimeObj) && ldapTimeObj != null &&
+                long.TryParse(ldapTimeObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var ldapTime))
+                sections.Add($"Time:       {(ldapTime >= 0 ? $"{ldapTime} ms" : "n/a")}");
+            // Conditional TLS line — only shown when tlsNegotiated is true
+            if (evidenceData.TryGetValue("tlsNegotiated", out var ldapTlsNegObj) && ldapTlsNegObj?.ToString() is "True" or "true")
+            {
+                if (evidenceData.TryGetValue("tlsVersion", out var ldapTlsVerObj) && ldapTlsVerObj != null)
+                    sections.Add($"TLS:        {ldapTlsVerObj}");
+                else
+                    sections.Add($"TLS:        yes");
+            }
+            // Conditional Auth line — only shown when authenticated key exists
+            if (evidenceData.TryGetValue("authenticated", out var ldapAuthObj) && ldapAuthObj != null)
+                sections.Add($"Auth:       {(ldapAuthObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {

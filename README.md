@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 31 test types (default)
+# Build with all 32 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 31 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 32 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 31 built-in test types organized into 6 categories:
+ReqChecker includes 32 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -135,6 +135,7 @@ ReqChecker includes 31 built-in test types organized into 6 categories:
 | Network | Bandwidth | Minimum download throughput check |
 | Network | Latency | Round-trip latency threshold check |
 | Network | SmtpConnect | SMTP mail server connectivity and greeting check |
+| Network | LdapBind | LDAP/Active Directory server connectivity via bind |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -493,6 +494,31 @@ Tests SMTP mail server connectivity by connecting, reading the server greeting, 
     "host": "smtp.gmail.com",
     "port": 587,
     "useTls": true
+  }
+}
+```
+
+---
+
+#### LdapBind
+
+Tests LDAP/Active Directory server connectivity by performing a bind operation. Supports anonymous binds for connectivity checks and authenticated simple binds for credential validation, with optional implicit SSL/TLS (LDAPS). Referral chasing is disabled — only the specified server is evaluated.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| server | string | Yes | — | LDAP server hostname or IP address |
+| port | int | No | 389 (plain) / 636 (SSL) | LDAP server port |
+| useSsl | bool | No | false | Use implicit SSL/TLS (LDAPS) |
+| credentialRef | string | No | — | Credential reference for authenticated simple bind |
+
+**Example:**
+```json
+{
+  "type": "LdapBind",
+  "parameters": {
+    "server": "dc.example.com",
+    "port": 636,
+    "useSsl": true
   }
 }
 ```
