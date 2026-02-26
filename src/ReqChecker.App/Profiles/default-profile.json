@@ -869,6 +869,26 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-043",
+      "type": "LdapBind",
+      "displayName": "LDAP Server Bind Check",
+      "description": "Verifies LDAP/Active Directory server connectivity via anonymous bind.",
+      "parameters": {
+        "server": "dc.example.com",
+        "port": 389
+      },
+      "fieldPolicy": {
+        "server": "Editable",
+        "port": "Editable",
+        "useSsl": "Editable",
+        "credentialRef": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null
