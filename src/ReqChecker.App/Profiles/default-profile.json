@@ -889,6 +889,25 @@
       "retryCount": null,
       "requiresAdmin": false,
       "dependsOn": []
+    },
+    {
+      "id": "test-044",
+      "type": "SqlConnection",
+      "displayName": "SQL Server Connectivity Check",
+      "description": "Verifies SQL Server database connectivity via connection and health-check query.",
+      "parameters": {
+        "dbType": "SqlServer",
+        "connectionString": "Server=db.example.com;Database=master;Integrated Security=true;"
+      },
+      "fieldPolicy": {
+        "dbType": "Editable",
+        "connectionString": "Editable",
+        "credentialRef": "Editable"
+      },
+      "timeout": null,
+      "retryCount": null,
+      "requiresAdmin": false,
+      "dependsOn": []
     }
   ],
   "signature": null

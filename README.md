@@ -88,7 +88,7 @@ dotnet run --project src/ReqChecker.App
 ReqChecker supports conditional compilation to include only specific test types in the build:
 
 ```bash
-# Build with all 32 test types (default)
+# Build with all 33 test types (default)
 dotnet build
 
 # Build with only specific test types
@@ -98,7 +98,7 @@ dotnet build /p:IncludeTests="Ping;HttpGet;DnsResolve"
 dotnet build /p:IncludeTests="Ping"
 ```
 
-The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 32 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
+The `IncludeTests` parameter accepts a semicolon-delimited list of test type names. When omitted, all 33 test types are compiled. When specified, only the listed types are included. The build will fail if an unknown type name is provided. See the [Test Types](#test-types) table for valid type names.
 
 ---
 
@@ -119,7 +119,7 @@ ReqChecker organizes functionality into six main navigation pages:
 
 ## Test Types
 
-ReqChecker includes 32 built-in test types organized into 6 categories:
+ReqChecker includes 33 built-in test types organized into 6 categories:
 
 | Category | Type | Description |
 |----------|------|-------------|
@@ -136,6 +136,7 @@ ReqChecker includes 32 built-in test types organized into 6 categories:
 | Network | Latency | Round-trip latency threshold check |
 | Network | SmtpConnect | SMTP mail server connectivity and greeting check |
 | Network | LdapBind | LDAP/Active Directory server connectivity via bind |
+| Network | SqlConnection | Database connectivity check (SQL Server, PostgreSQL, MySQL) |
 | File System | FileExists | Verify a file exists (or does not exist) at a path |
 | File System | DirectoryExists | Verify a directory exists (or does not exist) at a path |
 | File System | FileRead | Read file content with optional content matching |
@@ -519,6 +520,29 @@ Tests LDAP/Active Directory server connectivity by performing a bind operation. 
     "server": "dc.example.com",
     "port": 636,
     "useSsl": true
+  }
+}
+```
+
+---
+
+#### SqlConnection
+
+Tests database server connectivity for SQL Server, PostgreSQL, and MySQL by opening a connection and executing a lightweight health-check query (`SELECT 1`). Connection pooling is always disabled to measure real TCP connection establishment time. Credentials can be supplied via the credential store using `credentialRef`.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| connectionString | string | Yes | — | Database connection string (driver-specific format) |
+| dbType | string | Yes | — | Database engine: `SqlServer`, `PostgreSQL`, or `MySQL` (case-insensitive) |
+| credentialRef | string | No | — | Credential reference for username/password from the credential store |
+
+**Example:**
+```json
+{
+  "type": "SqlConnection",
+  "parameters": {
+    "dbType": "SqlServer",
+    "connectionString": "Server=db.example.com;Database=master;Integrated Security=true;"
   }
 }
 ```

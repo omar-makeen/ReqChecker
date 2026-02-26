@@ -698,6 +698,27 @@ public class TestResultDetailsConverter : IValueConverter
             sections.Add(string.Empty);
         }
 
+        // [SqlConnection] section — emitted when Evidence contains SQL connection test data (dbType + connectionSucceeded)
+        if (evidenceData != null && evidenceData.ContainsKey("dbType") && evidenceData.ContainsKey("connectionSucceeded"))
+        {
+            sections.Add("[SqlConnection]");
+            if (evidenceData.TryGetValue("dbType", out var sqlDbTypeObj) && sqlDbTypeObj != null)
+                sections.Add($"Type:       {sqlDbTypeObj}");
+            if (evidenceData.TryGetValue("server", out var sqlServerObj) && sqlServerObj != null)
+                sections.Add($"Server:     {sqlServerObj}");
+            if (evidenceData.TryGetValue("database", out var sqlDatabaseObj) && sqlDatabaseObj != null)
+                sections.Add($"Database:   {sqlDatabaseObj}");
+            if (evidenceData.TryGetValue("serverVersion", out var sqlVersionObj) && sqlVersionObj != null)
+                sections.Add($"Version:    {sqlVersionObj}");
+            if (evidenceData.TryGetValue("responseTimeMs", out var sqlTimeObj) && sqlTimeObj != null &&
+                long.TryParse(sqlTimeObj.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var sqlTime))
+                sections.Add($"Time:       {(sqlTime >= 0 ? $"{sqlTime} ms" : "n/a")}");
+            // Conditional Auth line — only shown when authenticated key exists
+            if (evidenceData.TryGetValue("authenticated", out var sqlAuthObj) && sqlAuthObj != null)
+                sections.Add($"Auth:       {(sqlAuthObj.ToString() is "True" or "true" ? "yes" : "no")}");
+            sections.Add(string.Empty);
+        }
+
         // [Response] section - if ResponseCode is set
         if (result.Evidence.ResponseCode.HasValue)
         {
