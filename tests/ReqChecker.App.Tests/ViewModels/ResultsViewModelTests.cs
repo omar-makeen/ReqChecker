@@ -377,120 +377,6 @@ public class ResultsViewModelTests
     }
 
     [Fact]
-    public void CanExport_ReturnsTrueWhenReportIsSet()
-    {
-        // Arrange
-        var jsonExporter = CreateJsonExporter();
-        var csvExporter = CreateCsvExporter();
-        var mockAppState = new Mock<IAppState>();
-
-        var report = new RunReport
-        {
-            RunId = "test-run-id",
-            Results = new List<TestResult>()
-        };
-
-        var viewModel = new ResultsViewModel(
-            jsonExporter,
-            csvExporter,
-            CreatePdfExporter(),
-            mockAppState.Object);
-
-        // Act
-        viewModel.Report = report;
-
-        // Assert
-        Assert.True(viewModel.CanExport);
-    }
-
-    [Fact]
-    public void CanExport_ReturnsFalseWhenReportIsNull()
-    {
-        // Arrange
-        var jsonExporter = CreateJsonExporter();
-        var csvExporter = CreateCsvExporter();
-        var mockAppState = new Mock<IAppState>();
-
-        var viewModel = new ResultsViewModel(
-            jsonExporter,
-            csvExporter,
-            CreatePdfExporter(),
-            mockAppState.Object);
-
-        // Act - Report is null by default
-        var canExport = viewModel.CanExport;
-
-        // Assert
-        Assert.False(canExport);
-    }
-
-    [Fact]
-    public void SettingReport_RaisesPropertyChangedForCanExport()
-    {
-        // Arrange
-        var jsonExporter = CreateJsonExporter();
-        var csvExporter = CreateCsvExporter();
-        var mockAppState = new Mock<IAppState>();
-
-        var report = new RunReport
-        {
-            RunId = "test-run-id",
-            Results = new List<TestResult>()
-        };
-
-        var viewModel = new ResultsViewModel(
-            jsonExporter,
-            csvExporter,
-            CreatePdfExporter(),
-            mockAppState.Object);
-
-        var propertyChangedEvents = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            if (args.PropertyName != null)
-                propertyChangedEvents.Add(args.PropertyName);
-        };
-
-        // Act
-        viewModel.Report = report;
-
-        // Assert
-        Assert.Contains(nameof(viewModel.CanExport), propertyChangedEvents);
-    }
-
-    [Fact]
-    public void SettingReportToNull_RaisesPropertyChangedForCanExport()
-    {
-        // Arrange - simulates NavigationService loading Report from AppState when null
-        var jsonExporter = CreateJsonExporter();
-        var csvExporter = CreateCsvExporter();
-        var mockAppState = new Mock<IAppState>();
-
-        var viewModel = new ResultsViewModel(
-            jsonExporter,
-            csvExporter,
-            CreatePdfExporter(),
-            mockAppState.Object);
-
-        // Set initial report
-        viewModel.Report = new RunReport { RunId = "initial" };
-
-        var propertyChangedEvents = new List<string>();
-        viewModel.PropertyChanged += (sender, args) =>
-        {
-            if (args.PropertyName != null)
-                propertyChangedEvents.Add(args.PropertyName);
-        };
-
-        // Act - Set to null (simulates navigating when no report in AppState)
-        viewModel.Report = null;
-
-        // Assert - CanExport should update even when set to null
-        Assert.Contains(nameof(viewModel.CanExport), propertyChangedEvents);
-        Assert.False(viewModel.CanExport);
-    }
-
-    [Fact]
     public void SettingReportFromAppState_ConfiguresViewModelCorrectly()
     {
         // Arrange - simulates what NavigationService.NavigateToResults() does
@@ -522,8 +408,319 @@ public class ResultsViewModelTests
         // Assert - Verify the integration behavior
         Assert.Equal(expectedReport, viewModel.Report);
         Assert.Equal("from-appstate", viewModel.Report?.RunId);
-        Assert.True(viewModel.CanExport);
+        Assert.True(viewModel.CanExportNow);
         Assert.NotNull(viewModel.FilteredResults);
         Assert.Single(viewModel.FilteredResults.Cast<TestResult>());
+    }
+
+    [Fact]
+    public void CanExportNow_ReturnsTrueWhenReportIsSetAndNotExporting()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+
+        // Act
+        viewModel.Report = report;
+
+        // Assert
+        Assert.True(viewModel.CanExportNow);
+    }
+
+    [Fact]
+    public void CanExportNow_ReturnsFalseWhenReportIsNull()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+
+        // Act - Report is null by default
+        var canExportNow = viewModel.CanExportNow;
+
+        // Assert
+        Assert.False(canExportNow);
+    }
+
+    [Fact]
+    public void CanExportNow_ReturnsFalseWhenIsExportingIsTrue()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+
+        // Act
+        viewModel.IsExporting = true;
+
+        // Assert
+        Assert.False(viewModel.CanExportNow);
+    }
+
+    [Fact]
+    public void ToggleExportMenuCommand_TogglesIsExportMenuOpen()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+
+        // Act - Toggle open
+        viewModel.ToggleExportMenuCommand.Execute(null);
+
+        // Assert
+        Assert.True(viewModel.IsExportMenuOpen);
+
+        // Act - Toggle closed
+        viewModel.ToggleExportMenuCommand.Execute(null);
+
+        // Assert
+        Assert.False(viewModel.IsExportMenuOpen);
+    }
+
+    [Fact]
+    public void ToggleExportMenuCommand_CannotExecuteWhenReportIsNull()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+
+        // Act
+        var canExecute = viewModel.ToggleExportMenuCommand.CanExecute(null);
+
+        // Assert
+        Assert.False(canExecute);
+    }
+
+    [Fact]
+    public void ToggleExportMenuCommand_CannotExecuteWhenIsExportingIsTrue()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+        viewModel.IsExporting = true;
+
+        // Act
+        var canExecute = viewModel.ToggleExportMenuCommand.CanExecute(null);
+
+        // Assert
+        Assert.False(canExecute);
+    }
+
+    [Fact]
+    public void CloseExportMenu_SetsIsExportMenuOpenToFalse()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+        viewModel.IsExportMenuOpen = true;
+
+        // Act
+        viewModel.CloseExportMenu();
+
+        // Assert
+        Assert.False(viewModel.IsExportMenuOpen);
+    }
+
+    [Fact]
+    public void SettingIsExporting_RaisesPropertyChangedForCanExportNow()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+
+        var propertyChangedEvents = new List<string>();
+        viewModel.PropertyChanged += (sender, args) =>
+        {
+            if (args.PropertyName != null)
+                propertyChangedEvents.Add(args.PropertyName);
+        };
+
+        // Act
+        viewModel.IsExporting = true;
+
+        // Assert
+        Assert.Contains(nameof(viewModel.CanExportNow), propertyChangedEvents);
+    }
+
+    [Fact]
+    public async Task ExportToJsonCommand_ClosesExportMenu()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+        viewModel.IsExportMenuOpen = true;
+
+        // Act
+        await viewModel.ExportToJsonCommand.ExecuteAsync(null);
+
+        // Assert
+        Assert.False(viewModel.IsExportMenuOpen);
+    }
+
+    [Fact]
+    public async Task ExportToCsvCommand_ClosesExportMenu()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+        viewModel.IsExportMenuOpen = true;
+
+        // Act
+        await viewModel.ExportToCsvCommand.ExecuteAsync(null);
+
+        // Assert
+        Assert.False(viewModel.IsExportMenuOpen);
+    }
+
+    [Fact]
+    public async Task ExportToPdfCommand_ClosesExportMenu()
+    {
+        // Arrange
+        var jsonExporter = CreateJsonExporter();
+        var csvExporter = CreateCsvExporter();
+        var mockAppState = new Mock<IAppState>();
+
+        var report = new RunReport
+        {
+            RunId = "test-run-id",
+            Results = new List<TestResult>()
+        };
+
+        var viewModel = new ResultsViewModel(
+            jsonExporter,
+            csvExporter,
+            CreatePdfExporter(),
+            mockAppState.Object);
+        viewModel.Report = report;
+        viewModel.IsExportMenuOpen = true;
+
+        // Act
+        await viewModel.ExportToPdfCommand.ExecuteAsync(null);
+
+        // Assert
+        Assert.False(viewModel.IsExportMenuOpen);
     }
 }

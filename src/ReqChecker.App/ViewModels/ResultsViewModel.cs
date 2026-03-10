@@ -53,10 +53,13 @@ public partial class ResultsViewModel : ObservableObject
     [ObservableProperty]
     private bool _isExporting;
 
+    [ObservableProperty]
+    private bool _isExportMenuOpen;
+
     /// <summary>
-    /// Gets whether export is available (when Report is set).
+    /// Gets whether export dropdown can be opened (when Report is set and not currently exporting).
     /// </summary>
-    public bool CanExport => Report != null;
+    public bool CanExportNow => Report != null && !IsExporting;
 
     /// <summary>
     /// Gets whether a report is available (not null).
@@ -106,12 +109,17 @@ public partial class ResultsViewModel : ObservableObject
             _appState.SetLastRunReport(value);
             SetupFilteredResults();
         }
-        // Notify that CanExport, HasReport, and HasFailedTests have changed (depend on Report)
-        OnPropertyChanged(nameof(CanExport));
         OnPropertyChanged(nameof(HasReport));
         OnPropertyChanged(nameof(HasFailedTests));
-        // Update the re-run failed tests command's CanExecute state
+        OnPropertyChanged(nameof(CanExportNow));
         RerunFailedTestsCommand.NotifyCanExecuteChanged();
+        ToggleExportMenuCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsExportingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CanExportNow));
+        ToggleExportMenuCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
@@ -169,11 +177,32 @@ public partial class ResultsViewModel : ObservableObject
     }
 
     /// <summary>
+    /// Toggles the export menu dropdown.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanExportNow))]
+    private void ToggleExportMenu()
+    {
+        IsExportMenuOpen = !IsExportMenuOpen;
+    }
+
+    /// <summary>
+    /// Closes the export menu dropdown.
+    /// Note: All export commands (ExportToJsonAsync, ExportToCsvAsync, ExportToPdfAsync) call this
+    /// at the start. Any new export methods must follow the same pattern to ensure the menu closes
+    /// before the save dialog appears.
+    /// </summary>
+    public void CloseExportMenu()
+    {
+        IsExportMenuOpen = false;
+    }
+
+    /// <summary>
     /// Exports the test results to JSON format.
     /// </summary>
     [RelayCommand]
     private async Task ExportToJsonAsync()
     {
+        CloseExportMenu();
         if (DialogService == null || Report == null)
         {
             return;
@@ -197,6 +226,7 @@ public partial class ResultsViewModel : ObservableObject
     [RelayCommand]
     private async Task ExportToCsvAsync()
     {
+        CloseExportMenu();
         if (DialogService == null || Report == null)
         {
             return;
@@ -220,6 +250,7 @@ public partial class ResultsViewModel : ObservableObject
     [RelayCommand]
     private async Task ExportToPdfAsync()
     {
+        CloseExportMenu();
         if (DialogService == null || Report == null)
         {
             return;
