@@ -125,11 +125,27 @@
                                  Command="{Binding RunAllTestsCommand}"
                                  IsEnabled="{Binding HasSelectedTests}"
                                  TabIndex="1"
-                                 ToolTip="Execute all selected tests and view results"
-                                 ToolTipService.InitialShowDelay="400">
+                                 ToolTipService.InitialShowDelay="400"
+                                 ToolTipService.ShowOnDisabled="True">
+                              <Button.ToolTip>
+                                  <ToolTip Style="{StaticResource ModernToolTip}">
+                                      <TextBlock>
+                                          <TextBlock.Style>
+                                              <Style TargetType="TextBlock">
+                                                  <Setter Property="Text" Value="Execute all selected tests and view results"/>
+                                                  <Style.Triggers>
+                                                      <DataTrigger Binding="{Binding HasSelectedTests}" Value="False">
+                                                          <Setter Property="Text" Value="Select at least one test to run"/>
+                                                      </DataTrigger>
+                                                  </Style.Triggers>
+                                              </Style>
+                                          </TextBlock.Style>
+                                      </TextBlock>
+                                  </ToolTip>
+                              </Button.ToolTip>
                              <StackPanel Orientation="Horizontal">
                                  <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
-                                 <TextBlock Text="{Binding RunButtonLabel}" FontSize="15"/>
+                                 <TextBlock Text="{Binding RunButtonLabel}"/>
                              </StackPanel>
                          </Button>
                     </StackPanel>
