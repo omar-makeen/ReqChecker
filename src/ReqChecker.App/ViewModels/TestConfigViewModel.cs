@@ -12,6 +12,8 @@ public partial class TestConfigViewModel : ObservableObject
 {
     private readonly TestDefinition _testDefinition;
     private readonly NavigationService _navigationService;
+    private readonly DialogService _dialogService;
+    private Dictionary<string, string?> _baseline = new();
 
     [ObservableProperty]
     private string _testName = string.Empty;
@@ -50,16 +52,37 @@ public partial class TestConfigViewModel : ObservableObject
     public ICommand BackCommand { get; }
     public ICommand PromptForCredentialsCommand { get; }
 
-    public TestConfigViewModel(TestDefinition testDefinition, NavigationService navigationService)
+    public bool HasUnsavedChanges
+    {
+        get
+        {
+            if (Timeout?.ToString() != _baseline.GetValueOrDefault("Timeout"))
+                return true;
+            if (RetryCount?.ToString() != _baseline.GetValueOrDefault("RetryCount"))
+                return true;
+            
+            foreach (var param in Parameters.Where(p => p.IsEditable || p.IsPassword))
+            {
+                if (param.Value != _baseline.GetValueOrDefault(param.Name))
+                    return true;
+            }
+            
+            return false;
+        }
+    }
+
+    public TestConfigViewModel(TestDefinition testDefinition, NavigationService navigationService, DialogService dialogService)
     {
         _testDefinition = testDefinition ?? throw new ArgumentNullException(nameof(testDefinition));
         _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
         TestName = testDefinition.DisplayName;
         TestType = testDefinition.Type;
         RequiresAdmin = testDefinition.RequiresAdmin;
         Timeout = testDefinition.Timeout;
         RetryCount = testDefinition.RetryCount;
         InitializeParameters();
+        CaptureBaseline();
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         BackCommand = new RelayCommand(OnBack);
         PromptForCredentialsCommand = new RelayCommand(OnPromptForCredentials);
@@ -86,6 +109,20 @@ public partial class TestConfigViewModel : ObservableObject
         return FieldPolicyType.Editable;
     }
 
+    private void CaptureBaseline()
+    {
+        _baseline = new Dictionary<string, string?>
+        {
+            ["Timeout"] = Timeout?.ToString(),
+            ["RetryCount"] = RetryCount?.ToString()
+        };
+        
+        foreach (var param in Parameters.Where(p => p.IsEditable || p.IsPassword))
+        {
+            _baseline[param.Name] = param.Value;
+        }
+    }
+
     private async Task SaveAsync()
     {
         IsSaving = true;
@@ -99,6 +136,8 @@ public partial class TestConfigViewModel : ObservableObject
                 _testDefinition.Parameters[param.Name] = param.Value;
             }
             await Task.Delay(100);
+            CaptureBaseline();
+            OnPropertyChanged(nameof(HasUnsavedChanges));
         }
         finally
         {
@@ -108,6 +147,18 @@ public partial class TestConfigViewModel : ObservableObject
 
     private void OnBack()
     {
+        if (HasUnsavedChanges)
+        {
+            var discard = _dialogService.ShowConfirmationDialog(
+                "Unsaved Changes",
+                "You have unsaved changes. Do you want to discard them?");
+            
+            if (!discard)
+            {
+                return;
+            }
+        }
+        
         _navigationService.GoBack();
     }
 

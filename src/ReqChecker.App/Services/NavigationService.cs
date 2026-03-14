@@ -67,7 +67,8 @@ public class NavigationService
         }
         if (test != null)
         {
-            var viewModel = new TestConfigViewModel(test, this);
+            var dialogService = _serviceProvider.GetRequiredService<DialogService>();
+            var viewModel = new TestConfigViewModel(test, this, dialogService);
             TrackViewModel(viewModel);
             var view = new Views.TestConfigView(viewModel);
             var result = _frame.Navigate(view);
@@ -181,7 +182,7 @@ public class NavigationService
     /// <summary>
     /// Navigates back to previous view.
     /// </summary>
-    public void GoBack()
+    public virtual void GoBack()
     {
         if (_frame != null && _frame.CanGoBack)
         {

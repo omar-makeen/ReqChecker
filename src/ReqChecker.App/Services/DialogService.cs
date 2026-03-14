@@ -1,3 +1,4 @@
+using System.Windows;
 using Microsoft.Win32;
 
 namespace ReqChecker.App.Services;
@@ -52,5 +53,17 @@ public class DialogService
 
         var result = dialog.ShowDialog();
         return result == true ? dialog.FileName : null;
+    }
+
+    /// <summary>
+    /// Shows a confirmation dialog with Yes/No buttons.
+    /// </summary>
+    /// <param name="title">The dialog title.</param>
+    /// <param name="message">The message to display.</param>
+    /// <returns>True if user clicks Yes (discard), False if user clicks No (stay).</returns>
+    public virtual bool ShowConfirmationDialog(string title, string message)
+    {
+        var result = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        return result == MessageBoxResult.Yes;
     }
 }
