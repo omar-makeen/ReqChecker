@@ -92,7 +92,9 @@
                                 <TextBlock Text="Test Suite" VerticalAlignment="Center"/>
                                 <Border
                                     x:Name="TestCountBadge"
-                                    Background="{DynamicResource AccentPrimaryBrush}"
+                                    Background="{DynamicResource BackgroundSurface}"
+                                    BorderBrush="{DynamicResource BorderSubtle}"
+                                    BorderThickness="1"
                                     CornerRadius="8"
                                     Padding="6,2"
                                     VerticalAlignment="Center"
@@ -101,8 +103,8 @@
                                     <TextBlock
                                         Text="{Binding DataContext.TestCount, RelativeSource={RelativeSource AncestorType=Window}}"
                                         FontSize="10"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                        FontWeight="Normal"
+                                        Foreground="{DynamicResource TextSecondary}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"/>
                                 </Border>

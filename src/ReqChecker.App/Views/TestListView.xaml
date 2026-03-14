@@ -109,13 +109,15 @@
                     <!-- Action Buttons -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
                         <!-- Enhanced Count Badge -->
-                        <Border Background="{DynamicResource AccentPrimary}"
-                                CornerRadius="16"
-                                Padding="16,8"
+                        <Border Background="{DynamicResource BackgroundSurface}"
+                                BorderBrush="{DynamicResource BorderSubtle}"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="10,6"
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Center"
                                 Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Foreground="White" FontWeight="SemiBold"
+                            <TextBlock Foreground="{DynamicResource TextSecondary}" FontWeight="Normal"
                                        Text="{Binding TestCountDisplay}"/>
                         </Border>
 
