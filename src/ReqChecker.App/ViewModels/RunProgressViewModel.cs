@@ -87,6 +87,8 @@ public partial class RunProgressViewModel : ObservableObject, IDisposable
 
     partial void OnIsCancellingChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
 
+    partial void OnCurrentProfileChanged(Profile? value) => OnPropertyChanged(nameof(ProfileName));
+
     [ObservableProperty]
     private int _failedTests;
 
@@ -138,6 +140,8 @@ public partial class RunProgressViewModel : ObservableObject, IDisposable
         FailedTests == 0 && SkippedTests == 0 && CompletedTests > 0
             ? $"All {TotalTests} tests passed"
             : $"{CompletedTests} passed, {FailedTests} failed, {SkippedTests} skipped";
+
+    public string ProfileName => CurrentProfile?.Name ?? string.Empty;
 
     [ObservableProperty]
     private TestStatus? _currentStatus;

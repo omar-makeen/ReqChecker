@@ -280,4 +280,27 @@ public class RunProgressViewModelTests
 
         Assert.Equal("Complete", viewModel.ProgressLabel);
     }
+
+    [Fact]
+    public void ProfileName_ShouldReturnProfileName_WhenProfileLoaded()
+    {
+        var profile = new Profile
+        {
+            Name = "My Test Profile",
+            SchemaVersion = 2,
+            Tests = []
+        };
+
+        var viewModel = CreateViewModel(profile);
+
+        Assert.Equal("My Test Profile", viewModel.ProfileName);
+    }
+
+    [Fact]
+    public void ProfileName_ShouldReturnEmpty_WhenProfileIsNull()
+    {
+        var viewModel = CreateViewModel(profile: null);
+
+        Assert.Equal(string.Empty, viewModel.ProfileName);
+    }
 }

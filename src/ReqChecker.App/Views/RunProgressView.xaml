@@ -86,6 +86,24 @@
                         <TextBlock Text="Test Execution"
                                    FontSize="24" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="{Binding ProfileName}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,2,0,0"
+                                   TextTrimming="CharacterEllipsis"
+                                   ToolTipService.ShowOnDisabled="True">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="ToolTip" Value="{Binding ProfileName}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProfileName}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="ToolTip" Value="{x:Null}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBlock Text="{Binding HeaderSubtitle}"
                                    Style="{DynamicResource TextBody}"
                                    Foreground="{DynamicResource TextSecondary}"
