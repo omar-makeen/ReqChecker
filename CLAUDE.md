@@ -68,6 +68,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - `%APPDATA%/ReqChecker/preferences.json` (existing `PreferencesService` / `UserPreferences`) (060-first-run-onboarding)
 - N/A (in-memory session-only dirty tracking; no persistence) (061-unsaved-changes-warning)
 - N/A (in-memory session-only; no persistence changes) (062-test-progress-bar)
+- N/A (UI-only change) (064-subtle-chip-badge)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -87,9 +88,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 064-subtle-chip-badge: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 - 063-ux-quick-wins: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 - 062-test-progress-bar: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
-- 061-unsaved-changes-warning: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 
 
 

@@ -48,6 +48,9 @@
     <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}"/>
     <SolidColorBrush x:Key="AccentSecondaryBrush" Color="{StaticResource AccentSecondaryColor}"/>
 
+    <!-- Semi-transparent accent tint (10% opacity of accent cyan) -->
+    <SolidColorBrush x:Key="AccentSubtle" Color="#1A00d9ff"/>
+
     <!-- Accent Gradient -->
     <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{StaticResource AccentPrimaryColor}" Offset="0"/>
