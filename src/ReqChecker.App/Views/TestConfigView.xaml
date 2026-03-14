@@ -63,16 +63,16 @@
             </Grid.ColumnDefinitions>
 
             <Button x:Name="BackButton"
-                    Style="{StaticResource GhostButton}"
+                    Style="{StaticResource SecondaryButton}"
                     Command="{Binding BackCommand}"
                     TabIndex="0"
                     Margin="0,0,16,0"
-                    ToolTip="Return to test list"
+                    ToolTip="Return to the test suite"
                     ToolTipService.InitialShowDelay="400"
                     ToolTipService.ShowOnDisabled="True">
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                    <TextBlock Text="Back"/>
+                    <TextBlock Text="Back to Tests"/>
                 </StackPanel>
             </Button>
 

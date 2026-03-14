@@ -70,12 +70,29 @@
                 <Grid Grid.Row="1" Margin="0,16,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Back Button -->
+                    <Button x:Name="BackToTestsButton"
+                            Grid.Column="0"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding NavigateToTestListCommand}"
+                            Margin="0,0,16,0"
+                            VerticalAlignment="Center"
+                            ToolTip="Return to the test suite"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="Back to Tests"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- Icon Container -->
-                    <Border Grid.Column="0" Width="48" Height="48"
+                    <Border Grid.Column="1" Width="48" Height="48"
                             Background="{DynamicResource AccentPrimary}"
                             CornerRadius="12" Margin="0,0,16,0">
                         <ui:SymbolIcon Symbol="History24"
@@ -86,7 +103,7 @@
                     </Border>
 
                     <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
                         <TextBlock Text="Test History"
                                    FontSize="24" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimary}"/>
@@ -97,29 +114,16 @@
                     </StackPanel>
 
                     <!-- Action Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <StackPanel Grid.Column="3" Orientation="Horizontal">
                         <Button Style="{StaticResource SecondaryButton}"
                                 Command="{Binding ClearAllCommand}"
                                 Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}"
                                 ToolTip="Delete all test history records"
                                 ToolTipService.InitialShowDelay="400"
-                                ToolTipService.ShowOnDisabled="True"
-                                Margin="0,0,8,0">
+                                ToolTipService.ShowOnDisabled="True">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Delete24" FontSize="16" Margin="0,0,8,0"/>
                                 <TextBlock Text="Clear All"/>
-                            </StackPanel>
-                        </Button>
-                        <Button x:Name="BackToTestsButton"
-                                Style="{StaticResource SecondaryButton}"
-                                Command="{Binding NavigateToTestListCommand}"
-                                TabIndex="1"
-                                ToolTip="Return to the test suite"
-                                ToolTipService.InitialShowDelay="400"
-                                ToolTipService.ShowOnDisabled="True">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Back to Tests"/>
                             </StackPanel>
                         </Button>
                     </StackPanel>

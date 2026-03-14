@@ -66,12 +66,29 @@
                 <Grid Grid.Row="1" Margin="0,16,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Back Button (shown when complete) -->
+                    <Button Grid.Column="0"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding NavigateToTestListCommand}"
+                            Margin="0,0,16,0"
+                            VerticalAlignment="Center"
+                            ToolTip="Return to the test suite"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True"
+                            Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="Back to Tests"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- Icon Container -->
-                    <Border Grid.Column="0" Width="48" Height="48"
+                    <Border Grid.Column="1" Width="48" Height="48"
                             Background="{DynamicResource AccentPrimary}"
                             CornerRadius="12" Margin="0,0,16,0">
                         <ui:SymbolIcon Symbol="Play24"
@@ -82,7 +99,7 @@
                     </Border>
 
                     <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
                         <TextBlock Text="Test Execution"
                                    FontSize="24" FontWeight="SemiBold"
                                    Foreground="{DynamicResource TextPrimary}"/>
@@ -111,7 +128,7 @@
                     </StackPanel>
 
                     <!-- Action Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <StackPanel Grid.Column="3" Orientation="Horizontal">
                         <!-- Cancel button - shown when running -->
                         <Button x:Name="CancelButton"
                                 Style="{StaticResource SecondaryButton}"
@@ -139,33 +156,19 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- Navigation buttons - shown when complete or cancelled -->
-                        <StackPanel Orientation="Horizontal"
-                                   Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Button Style="{StaticResource PrimaryButton}"
-                                    Command="{Binding NavigateToTestListCommand}"
-                                    TabIndex="1"
-                                    ToolTip="Return to the test suite"
-                                    ToolTipService.InitialShowDelay="400"
-                                    ToolTipService.ShowOnDisabled="True"
-                                    Margin="0,0,8,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Back to Tests"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding ViewResultsCommand}"
-                                    TabIndex="2"
-                                    ToolTip="View detailed test results"
-                                    ToolTipService.InitialShowDelay="400"
-                                    ToolTipService.ShowOnDisabled="True">
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="DataHistogram24" FontSize="16" Margin="0,0,8,0"/>
-                                    <TextBlock Text="View Results"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        <!-- View Results button - shown when complete -->
+                        <Button Style="{StaticResource SecondaryButton}"
+                                Command="{Binding ViewResultsCommand}"
+                                TabIndex="2"
+                                ToolTip="View detailed test results"
+                                ToolTipService.InitialShowDelay="400"
+                                ToolTipService.ShowOnDisabled="True"
+                                Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="DataHistogram24" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="View Results"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Grid>
