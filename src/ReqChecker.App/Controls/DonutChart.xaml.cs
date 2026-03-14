@@ -194,6 +194,10 @@ public partial class DonutChart : UserControl
     private static void UpdateArcGeometry(Path path, double centerX, double centerY,
         double radius, double startAngle, double sweepAngle)
     {
+        // Clamp to avoid degenerate arc when sweep is exactly 360° (start == end point)
+        if (sweepAngle >= 360)
+            sweepAngle = 359.99;
+
         var startAngleRad = startAngle * Math.PI / 180;
         var endAngleRad = (startAngle + sweepAngle) * Math.PI / 180;
 

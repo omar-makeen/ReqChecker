@@ -7,19 +7,22 @@ using ReqChecker.App.Services;
 using ReqChecker.Infrastructure.History;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace ReqChecker.App.ViewModels;
 
 /// <summary>
 /// View model for run progress view.
 /// </summary>
-public partial class RunProgressViewModel : ObservableObject
+public partial class RunProgressViewModel : ObservableObject, IDisposable
 {
     private readonly IAppState _appState;
     private readonly ITestRunner _testRunner;
     private readonly NavigationService _navigationService;
     private readonly IPreferencesService _preferencesService;
     private readonly IHistoryService _historyService;
+    private DispatcherTimer? _autoNavTimer;
+    private bool _disposed;
 
     [ObservableProperty]
     private Profile? _currentProfile;
@@ -46,6 +49,7 @@ public partial class RunProgressViewModel : ObservableObject
     partial void OnFailedTestsChanged(int value)
     {
         OnPropertyChanged(nameof(ProgressPercentage));
+        OnPropertyChanged(nameof(HasFailures));
     }
 
     partial void OnSkippedTestsChanged(int value)
@@ -62,18 +66,23 @@ public partial class RunProgressViewModel : ObservableObject
     partial void OnCurrentTestIndexChanged(int value)
     {
         OnPropertyChanged(nameof(HeaderSubtitle));
+        OnPropertyChanged(nameof(TestPositionText));
+        OnPropertyChanged(nameof(ProgressLabel));
     }
 
     partial void OnIsRunningChanged(bool value)
     {
         OnPropertyChanged(nameof(IsTestRunning));
         OnPropertyChanged(nameof(HeaderSubtitle));
+        OnPropertyChanged(nameof(TestPositionText));
+        OnPropertyChanged(nameof(ProgressLabel));
     }
 
     partial void OnIsCompleteChanged(bool value)
     {
         OnPropertyChanged(nameof(IsTestRunning));
         OnPropertyChanged(nameof(HeaderSubtitle));
+        OnPropertyChanged(nameof(CompletionSummaryText));
     }
 
     partial void OnIsCancellingChanged(bool value) => OnPropertyChanged(nameof(IsTestRunning));
@@ -90,6 +99,11 @@ public partial class RunProgressViewModel : ObservableObject
     public bool HasResults => TestResults.Count > 0;
 
     /// <summary>
+    /// Gets whether there are any failed tests.
+    /// </summary>
+    public bool HasFailures => FailedTests > 0;
+
+    /// <summary>
     /// Gets whether a test is actively executing (not just IsRunning).
     /// </summary>
     public bool IsTestRunning => IsRunning && !IsComplete && !IsCancelling;
@@ -102,6 +116,28 @@ public partial class RunProgressViewModel : ObservableObject
         : IsRunning
             ? $"Running {CurrentTestIndex + 1} of {TotalTests} tests"
             : "Ready to run";
+
+    /// <summary>
+    /// Gets the test position text displayed near the progress ring during execution.
+    /// </summary>
+    public string TestPositionText => IsRunning
+        ? $"Test {CurrentTestIndex + 1} of {TotalTests}"
+        : string.Empty;
+
+    /// <summary>
+    /// Gets the label displayed inside the progress ring — shows test position when running, "Complete" when done.
+    /// </summary>
+    public string ProgressLabel => IsRunning
+        ? $"Test {CurrentTestIndex + 1} of {TotalTests}"
+        : "Complete";
+
+    /// <summary>
+    /// Gets the completion summary text displayed in the completion card.
+    /// </summary>
+    public string CompletionSummaryText =>
+        FailedTests == 0 && SkippedTests == 0 && CompletedTests > 0
+            ? $"All {TotalTests} tests passed"
+            : $"{CompletedTests} passed, {FailedTests} failed, {SkippedTests} skipped";
 
     [ObservableProperty]
     private TestStatus? _currentStatus;
@@ -250,16 +286,66 @@ public partial class RunProgressViewModel : ObservableObject
     /// </summary>
     private void OnCompletion()
     {
-        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+        var wasCancelled = IsCancelling;
+        var runReport = RunReport;
+
+        if (System.Windows.Application.Current != null)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            {
+                IsRunning = false;
+                IsComplete = true;
+                IsCancelling = false;
+                CurrentTestName = null;
+            });
+        }
+        else
         {
             IsRunning = false;
             IsComplete = true;
             IsCancelling = false;
             CurrentTestName = null;
-        });
+        }
 
         // Fire-and-forget with proper error handling
         _ = SaveToHistoryAsync();
+
+        // Start auto-navigation timer if not cancelled
+        if (!wasCancelled && runReport != null)
+        {
+            StartAutoNavigationTimer();
+        }
+    }
+
+    /// <summary>
+    /// Starts the auto-navigation timer to navigate to results after 3 seconds.
+    /// </summary>
+    private void StartAutoNavigationTimer()
+    {
+        StopAutoNavigationTimer();
+
+        _autoNavTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(3)
+        };
+        _autoNavTimer.Tick += (s, e) =>
+        {
+            StopAutoNavigationTimer();
+            ViewResults();
+        };
+        _autoNavTimer.Start();
+    }
+
+    /// <summary>
+    /// Stops and disposes the auto-navigation timer.
+    /// </summary>
+    private void StopAutoNavigationTimer()
+    {
+        if (_autoNavTimer != null)
+        {
+            _autoNavTimer.Stop();
+            _autoNavTimer = null;
+        }
     }
 
     /// <summary>
@@ -302,6 +388,7 @@ public partial class RunProgressViewModel : ObservableObject
     [RelayCommand]
     private void NavigateToTestList()
     {
+        StopAutoNavigationTimer();
         _navigationService.NavigateToTestList();
     }
 
@@ -311,10 +398,27 @@ public partial class RunProgressViewModel : ObservableObject
     [RelayCommand]
     private void ViewResults()
     {
+        StopAutoNavigationTimer();
         if (RunReport != null)
         {
             _appState.SetLastRunReport(RunReport);
             _navigationService.NavigateToResults();
         }
+    }
+
+    /// <summary>
+    /// Disposes resources used by the view model.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        StopAutoNavigationTimer();
+        Cts?.Dispose();
+        Cts = null;
+        _disposed = true;
     }
 }
