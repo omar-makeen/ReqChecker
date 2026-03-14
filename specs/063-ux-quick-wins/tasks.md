@@ -55,7 +55,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T007 [US3] Add `KeyBinding` with `Key="E" Modifiers="Ctrl"` bound to `ToggleExportMenuCommand` in the `InputBindings` section of `src/ReqChecker.App/Views/ResultsView.xaml`
+- [X] T007 [US3] Add `KeyBinding` with `Key="E" Modifiers="Ctrl"` bound to `ToggleExportMenuCommand` in the `InputBindings` section of `src/ReqChecker.App/Views/ResultsView.xaml`
 
 **Checkpoint**: Ctrl+E toggles export dropdown on Results page. Ignored on other pages and when export in progress.
 
@@ -69,8 +69,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T008 [P] [US4] Add `x:Name` to the results ListBox (or its container) and define fade-out/fade-in Storyboard resources (opacity 1→0 in 100ms QuadraticEase EaseIn, opacity 0→1 in 100ms QuadraticEase EaseOut) in `src/ReqChecker.App/Views/ResultsView.xaml`
-- [ ] T009 [US4] Add filter transition logic in code-behind: subscribe to ViewModel `ActiveFilter` property changes, trigger fade-out storyboard, apply filter refresh on completion callback, then trigger fade-in storyboard. Handle rapid switching by stopping any in-progress animation and snapping to final state before starting new transition in `src/ReqChecker.App/Views/ResultsView.xaml.cs`
+- [X] T008 [P] [US4] Add `x:Name` to the results ListBox (or its container) and define fade-out/fade-in Storyboard resources (opacity 1→0 in 100ms QuadraticEase EaseIn, opacity 0→1 in 100ms QuadraticEase EaseOut) in `src/ReqChecker.App/Views/ResultsView.xaml`
+- [X] T009 [US4] Add filter transition logic in code-behind: subscribe to ViewModel `ActiveFilter` property changes, trigger fade-out storyboard, apply filter refresh on completion callback, then trigger fade-in storyboard. Handle rapid switching by stopping any in-progress animation and snapping to final state before starting new transition in `src/ReqChecker.App/Views/ResultsView.xaml.cs`
 
 **Checkpoint**: Filter tab switches play smooth fade transition. Rapid switching has no glitches. Empty state fades in correctly.
 
@@ -84,8 +84,8 @@
 
 ### Implementation for User Story 5
 
-- [ ] T010 [P] [US5] Audit all XAML views in `src/ReqChecker.App/Views/` for interactive buttons and controls missing tooltips — document gaps
-- [ ] T011 [US5] Add missing tooltips to all identified controls using pattern: `ToolTipService.InitialShowDelay="400"`, `ToolTipService.ShowOnDisabled="True"`, `ToolTip` with `ModernToolTip` style, across all view files in `src/ReqChecker.App/Views/` and `src/ReqChecker.App/Controls/`
+- [X] T010 [P] [US5] Audit all XAML views in `src/ReqChecker.App/Views/` for interactive buttons and controls missing tooltips — document gaps
+- [X] T011 [US5] Add missing tooltips to all identified controls using pattern: `ToolTipService.InitialShowDelay="400"`, `ToolTipService.ShowOnDisabled="True"`, `ToolTip` with `ModernToolTip` style, across all view files in `src/ReqChecker.App/Views/` and `src/ReqChecker.App/Controls/`
 
 **Checkpoint**: 100% tooltip coverage on interactive controls. All use 400ms delay and ShowOnDisabled.
 
@@ -95,8 +95,8 @@
 
 **Purpose**: Final verification and cleanup
 
-- [ ] T012 Run all existing unit tests to verify no regressions: `dotnet test tests/ReqChecker.App.Tests/`
-- [ ] T013 Verify all 5 features work together in a full manual walkthrough: load profile → check badge → run tests → check header → switch filters → Ctrl+E export → hover tooltips
+- [X] T012 Run all existing unit tests to verify no regressions: `dotnet test tests/ReqChecker.App.Tests/`
+- [X] T013 Verify all 5 features work together in a full manual walkthrough: load profile → check badge → run tests → check header → switch filters → Ctrl+E export → hover tooltips
 
 ---
 

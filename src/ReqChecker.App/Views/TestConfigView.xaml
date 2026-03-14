@@ -66,7 +66,10 @@
                     Style="{StaticResource GhostButton}"
                     Command="{Binding BackCommand}"
                     TabIndex="0"
-                    Margin="0,0,16,0">
+                    Margin="0,0,16,0"
+                    ToolTip="Return to test list"
+                    ToolTipService.InitialShowDelay="400"
+                    ToolTipService.ShowOnDisabled="True">
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
                     <TextBlock Text="Back"/>
@@ -87,7 +90,10 @@
             <Button Grid.Column="2"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding SaveCommand}"
-                    TabIndex="1">
+                    TabIndex="1"
+                    ToolTip="Save test configuration changes"
+                    ToolTipService.InitialShowDelay="400"
+                    ToolTipService.ShowOnDisabled="True">
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Symbol="Save24" FontSize="16" Margin="0,0,8,0"/>
                     <TextBlock Text="Save Changes"/>

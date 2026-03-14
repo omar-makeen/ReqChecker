@@ -227,6 +227,9 @@
                                 BorderThickness="0"
                                 Cursor="Hand"
                                 Command="{Binding ClearSearchCommand}"
+                                ToolTip="Clear search"
+                                ToolTipService.InitialShowDelay="400"
+                                ToolTipService.ShowOnDisabled="True"
                                 Visibility="{Binding IsFilterActive, Converter={StaticResource BoolToVisibilityConverter}}">
                             <ui:SymbolIcon Symbol="Dismiss16"
                                            FontSize="14"
@@ -294,7 +297,10 @@
                 <Button Style="{StaticResource PrimaryButton}"
                         Command="{Binding NavigateToProfilesCommand}"
                         HorizontalAlignment="Center"
-                        Padding="24,0">
+                        Padding="24,0"
+                        ToolTip="Load a test profile"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.ShowOnDisabled="True">
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
                         <TextBlock Text="Load Profile"/>

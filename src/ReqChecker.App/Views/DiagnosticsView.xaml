@@ -98,6 +98,9 @@
                                 Style="{StaticResource SecondaryButton}"
                                 Command="{Binding OpenLogsFolderCommand}"
                                 TabIndex="1"
+                                ToolTip="Open the logs folder in File Explorer"
+                                ToolTipService.InitialShowDelay="400"
+                                ToolTipService.ShowOnDisabled="True"
                                 Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="FolderOpen24" FontSize="16" Margin="0,0,8,0"/>
@@ -108,7 +111,10 @@
                         <Button Style="{StaticResource PrimaryButton}"
                                 Command="{Binding CopyDetailsCommand}"
                                 IsEnabled="{Binding HasLastRun}"
-                                TabIndex="2">
+                                TabIndex="2"
+                                ToolTip="Copy diagnostic details to clipboard"
+                                ToolTipService.InitialShowDelay="400"
+                                ToolTipService.ShowOnDisabled="True">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Copy24" FontSize="16" Margin="0,0,8,0"/>
                                 <TextBlock Text="Copy Details"/>

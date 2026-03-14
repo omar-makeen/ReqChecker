@@ -205,7 +205,10 @@
                             TabIndex="3"
                             Width="40" Height="40"
                             Padding="0"
-                            VerticalAlignment="Top">
+                            VerticalAlignment="Top"
+                            ToolTip="Dismiss welcome banner"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True">
                         <ui:SymbolIcon Symbol="DismissCircle24" FontSize="20"
                                        Foreground="{DynamicResource TextSecondary}"/>
                     </Button>
@@ -251,7 +254,10 @@
                         Style="{StaticResource GhostButton}"
                         Command="{Binding ClearErrorCommand}"
                         Content="Dismiss"
-                        TabIndex="3"/>
+                        TabIndex="3"
+                        ToolTip="Dismiss error message"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.ShowOnDisabled="True"/>
             </Grid>
         </Border>
 

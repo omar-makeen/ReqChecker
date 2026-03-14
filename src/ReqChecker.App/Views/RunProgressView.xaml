@@ -119,6 +119,9 @@
                                 IsEnabled="{Binding IsRunning}"
                                 IsCancel="True"
                                 TabIndex="1"
+                                ToolTip="Cancel the running test execution"
+                                ToolTipService.InitialShowDelay="400"
+                                ToolTipService.ShowOnDisabled="True"
                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <ui:SymbolIcon Symbol="Dismiss24" FontSize="16" Margin="0,0,8,0"/>
@@ -142,6 +145,9 @@
                             <Button Style="{StaticResource PrimaryButton}"
                                     Command="{Binding NavigateToTestListCommand}"
                                     TabIndex="1"
+                                    ToolTip="Return to the test suite"
+                                    ToolTipService.InitialShowDelay="400"
+                                    ToolTipService.ShowOnDisabled="True"
                                     Margin="0,0,8,0">
                                 <StackPanel Orientation="Horizontal">
                                     <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
@@ -150,7 +156,10 @@
                             </Button>
                             <Button Style="{StaticResource SecondaryButton}"
                                     Command="{Binding ViewResultsCommand}"
-                                    TabIndex="2">
+                                    TabIndex="2"
+                                    ToolTip="View detailed test results"
+                                    ToolTipService.InitialShowDelay="400"
+                                    ToolTipService.ShowOnDisabled="True">
                                 <StackPanel Orientation="Horizontal">
                                     <ui:SymbolIcon Symbol="DataHistogram24" FontSize="16" Margin="0,0,8,0"/>
                                     <TextBlock Text="View Results"/>

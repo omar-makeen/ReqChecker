@@ -123,11 +123,11 @@ public partial class ResultsViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Called when ActiveFilter changes. Updates the filtered results.
+    /// Called when ActiveFilter changes. The filter refresh is handled by ResultsView code-behind
+    /// to coordinate with the fade transition animation.
     /// </summary>
     partial void OnActiveFilterChanged(ResultsFilter value)
     {
-        FilteredResults?.Refresh();
     }
 
     private void SetupFilteredResults()

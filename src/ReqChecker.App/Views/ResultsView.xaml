@@ -32,6 +32,28 @@
             </DoubleAnimation>
         </Storyboard>
 
+        <!-- Filter transition fade-out storyboard -->
+        <Storyboard x:Key="FilterFadeOutStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="0:0:0.1">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!-- Filter transition fade-in storyboard -->
+        <Storyboard x:Key="FilterFadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1"
+                             Duration="0:0:0.1">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
         <!-- Staggered entrance animation for result items -->
         <Style x:Key="AnimatedResultItem" TargetType="controls:ExpanderCard">
             <Setter Property="Opacity" Value="0"/>
@@ -64,6 +86,10 @@
             </Style.Triggers>
         </Style>
     </Page.Resources>
+
+    <Page.InputBindings>
+        <KeyBinding Key="E" Modifiers="Ctrl" Command="{Binding ToggleExportMenuCommand}"/>
+    </Page.InputBindings>
 
     <Grid Margin="32">
         <Grid.RowDefinitions>
@@ -192,21 +218,30 @@
                                     </Border.Effect>
                                     <StackPanel x:Name="ExportMenuItems">
                                         <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToPdfCommand}">
+                                                Command="{Binding ExportToPdfCommand}"
+                                                ToolTip="Export results as a formatted PDF document"
+                                                ToolTipService.InitialShowDelay="400"
+                                                ToolTipService.ShowOnDisabled="True">
                                             <StackPanel Orientation="Horizontal">
                                                 <ui:SymbolIcon Symbol="Document24" FontSize="16" Margin="0,0,10,0"/>
                                                 <TextBlock Text="PDF Document"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToCsvCommand}">
+                                                Command="{Binding ExportToCsvCommand}"
+                                                ToolTip="Export results as a CSV spreadsheet for analysis"
+                                                ToolTipService.InitialShowDelay="400"
+                                                ToolTipService.ShowOnDisabled="True">
                                             <StackPanel Orientation="Horizontal">
                                                 <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,10,0"/>
                                                 <TextBlock Text="CSV Spreadsheet"/>
                                             </StackPanel>
                                         </Button>
                                         <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToJsonCommand}">
+                                                Command="{Binding ExportToJsonCommand}"
+                                                ToolTip="Export results as JSON data for integration"
+                                                ToolTipService.InitialShowDelay="400"
+                                                ToolTipService.ShowOnDisabled="True">
                                             <StackPanel Orientation="Horizontal">
                                                 <ui:SymbolIcon Symbol="Code24" FontSize="16" Margin="0,0,10,0"/>
                                                 <TextBlock Text="JSON Data"/>
@@ -377,9 +412,12 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,12"/>
                 <Button Style="{StaticResource GhostButton}"
-                        Content="Go to Tests"
-                        Command="{Binding NavigateToTestListCommand}"
-                        HorizontalAlignment="Center"/>
+                         Content="Go to Tests"
+                         Command="{Binding NavigateToTestListCommand}"
+                         HorizontalAlignment="Center"
+                         ToolTip="Navigate to the test suite"
+                         ToolTipService.InitialShowDelay="400"
+                         ToolTipService.ShowOnDisabled="True"/>
             </StackPanel>
         </Border>
 
@@ -428,18 +466,18 @@
         </Border>
 
         <!-- Test Results List with virtualization -->
-        <ListBox Grid.Row="4"
-                 ItemsSource="{Binding FilteredResults}"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling"
-                 VirtualizingPanel.ScrollUnit="Pixel"
-                 SelectionMode="Single"
-                 AutomationProperties.Name="Test results list"
-                 Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+        <Grid x:Name="FilterTransitionContainer" Grid.Row="4">
+            <ListBox ItemsSource="{Binding FilteredResults}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
+                     VirtualizingPanel.ScrollUnit="Pixel"
+                     SelectionMode="Single"
+                     AutomationProperties.Name="Test results list"
+                     Visibility="{Binding HasReport, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>
@@ -480,8 +518,7 @@
         </ListBox>
 
         <!-- Empty state when filtered results are empty -->
-        <Border Grid.Row="4"
-                Background="{DynamicResource BackgroundSurface}"
+        <Border Background="{DynamicResource BackgroundSurface}"
                 BorderBrush="{DynamicResource BorderSubtle}"
                 BorderThickness="1"
                 CornerRadius="8"
@@ -500,12 +537,16 @@
                            HorizontalAlignment="Center"
                            Margin="0,16,0,0"/>
                 <Button Style="{StaticResource GhostButton}"
-                        Content="Clear Filter"
-                        Command="{Binding SetFilterCommand}"
-                        CommandParameter="{x:Static vm:ResultsFilter.All}"
-                        HorizontalAlignment="Center"
-                        Margin="0,12,0,0"/>
+                         Content="Clear Filter"
+                         Command="{Binding SetFilterCommand}"
+                         CommandParameter="{x:Static vm:ResultsFilter.All}"
+                         HorizontalAlignment="Center"
+                         Margin="0,12,0,0"
+                         ToolTip="Show all test results"
+                         ToolTipService.InitialShowDelay="400"
+                         ToolTipService.ShowOnDisabled="True"/>
             </StackPanel>
         </Border>
     </Grid>
+</Grid>
 </Page>
