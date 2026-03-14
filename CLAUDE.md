@@ -63,6 +63,10 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages) (056-registry-write-test)
 - C# 12 / .NET 8.0 (net8.0 TFM) + `System.DirectoryServices.Protocols` 8.0.0 (new NuGet package), existing project infrastructure (057-ldap-bind-test)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + Microsoft.Data.SqlClient 6.1.4, Npgsql 10.0.1, MySqlConnector 2.5.0 (all NuGet — not built-in) (058-sql-connection-test)
+- C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2 (059-export-dropdown)
+- N/A (in-memory RunReport via IAppState; no data persistence changes) (059-export-dropdown)
+- `%APPDATA%/ReqChecker/preferences.json` (existing `PreferencesService` / `UserPreferences`) (060-first-run-onboarding)
+- N/A (in-memory session-only dirty tracking; no persistence) (061-unsaved-changes-warning)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -82,9 +86,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
-- 058-sql-connection-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + Microsoft.Data.SqlClient 6.1.4, Npgsql 10.0.1, MySqlConnector 2.5.0 (all NuGet — not built-in)
-- 057-ldap-bind-test: Added C# 12 / .NET 8.0 (net8.0 TFM) + `System.DirectoryServices.Protocols` 8.0.0 (new NuGet package), existing project infrastructure
-- 056-registry-write-test: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + `Microsoft.Win32` (RegistryKey, RegistryHive, RegistryView — built-in, no new packages)
+- 061-unsaved-changes-warning: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
+- 060-first-run-onboarding: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
+- 059-export-dropdown: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 
 
 

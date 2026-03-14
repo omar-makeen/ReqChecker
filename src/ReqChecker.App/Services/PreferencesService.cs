@@ -11,6 +11,7 @@ public class UserPreferences
 {
     public string Theme { get; set; } = "Dark";
     public bool SidebarExpanded { get; set; } = true;
+    public bool HasSeenOnboarding { get; set; } = false;
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 }
 
@@ -38,6 +39,9 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
     [ObservableProperty]
     private bool _sidebarExpanded = true;
 
+    [ObservableProperty]
+    private bool _hasSeenOnboarding = false;
+
     public PreferencesService()
     {
         Load();
@@ -62,6 +66,7 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
                         Theme = theme;
                     }
                     SidebarExpanded = prefs.SidebarExpanded;
+                    HasSeenOnboarding = prefs.HasSeenOnboarding;
                 }
             }
         }
@@ -91,6 +96,7 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
             {
                 Theme = Theme.ToString(),
                 SidebarExpanded = SidebarExpanded,
+                HasSeenOnboarding = HasSeenOnboarding,
                 LastUpdated = DateTime.UtcNow
             };
 
@@ -113,6 +119,11 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
         if (!_suppressSave) Save();
     }
 
+    partial void OnHasSeenOnboardingChanged(bool value)
+    {
+        if (!_suppressSave) Save();
+    }
+
     /// <summary>
     /// Resets all preferences to their default values.
     /// </summary>
@@ -121,6 +132,7 @@ public partial class PreferencesService : ObservableObject, IPreferencesService
         _suppressSave = true;
         Theme = AppTheme.Dark;
         SidebarExpanded = true;
+        HasSeenOnboarding = false;
         _suppressSave = false;
         Save();
     }

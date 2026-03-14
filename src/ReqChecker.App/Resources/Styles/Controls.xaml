@@ -1066,6 +1066,45 @@
     </Style>
 
     <!-- ============================================ -->
+    <!-- WELCOME BANNER STYLE                         -->
+    <!-- ============================================ -->
+
+    <Style x:Key="WelcomeBanner" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="24"/>
+        <Setter Property="Margin" Value="0,0,0,16"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
+                                  BlurRadius="15"
+                                  ShadowDepth="0"
+                                  Opacity="0.15"
+                                  Direction="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- RECOMMENDED BADGE STYLE                      -->
+    <!-- ============================================ -->
+
+    <Style x:Key="RecommendedBadge" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
+                                  BlurRadius="6"
+                                  ShadowDepth="0"
+                                  Opacity="0.3"
+                                  Direction="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
     <!-- PAGE HEADER STYLES                           -->
     <!-- ============================================ -->
 
@@ -1245,6 +1284,45 @@
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter TargetName="FocusRing" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================ -->
+    <!-- EXPORT MENU ITEM BUTTON                      -->
+    <!-- ============================================ -->
+
+    <Style x:Key="ExportMenuItemButton" TargetType="Button">
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Focusable" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BackgroundOverlay}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource BackgroundOverlay}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -7,6 +7,8 @@ using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.App.Services;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using Serilog;
 
@@ -15,8 +17,10 @@ namespace ReqChecker.App.ViewModels;
 /// <summary>
 /// View model for profile selection and management.
 /// </summary>
-public partial class ProfileSelectorViewModel : ObservableObject
+public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
 {
+    public const string DefaultProfileId = "00000001-0000-0000-0000-000000000001";
+
     private readonly IProfileLoader _profileLoader;
     private readonly IProfileValidator _profileValidator;
     private readonly ProfileMigrationPipeline _profileMigrator;
@@ -24,6 +28,8 @@ public partial class ProfileSelectorViewModel : ObservableObject
     private readonly DialogService _dialogService;
     private readonly NavigationService _navigationService;
     private readonly IProfileStorageService _profileStorageService;
+    private readonly IPreferencesService _preferencesService;
+    private bool _disposed;
 
     [ObservableProperty]
     private ObservableCollection<Profile> _profiles = new();
@@ -40,6 +46,8 @@ public partial class ProfileSelectorViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasError;
 
+    public bool ShowWelcomeBanner => !_preferencesService.HasSeenOnboarding;
+
     public ProfileSelectorViewModel(
         IProfileLoader profileLoader,
         IProfileValidator profileValidator,
@@ -47,7 +55,8 @@ public partial class ProfileSelectorViewModel : ObservableObject
         IAppState appState,
         DialogService dialogService,
         NavigationService navigationService,
-        IProfileStorageService profileStorageService)
+        IProfileStorageService profileStorageService,
+        IPreferencesService preferencesService)
     {
         _profileLoader = profileLoader;
         _profileValidator = profileValidator;
@@ -56,9 +65,24 @@ public partial class ProfileSelectorViewModel : ObservableObject
         _dialogService = dialogService;
         _navigationService = navigationService;
         _profileStorageService = profileStorageService;
+        _preferencesService = preferencesService;
 
-        // Load profiles on initialization
+        _preferencesService.PropertyChanged += OnPreferencesPropertyChanged;
+
         _ = LoadProfilesAsync();
+    }
+
+    private void OnPreferencesPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(IPreferencesService.HasSeenOnboarding))
+        {
+            OnPropertyChanged(nameof(ShowWelcomeBanner));
+        }
+    }
+
+    public bool IsRecommendedProfile(Profile profile)
+    {
+        return profile.Id == DefaultProfileId;
     }
 
     /// <summary>
@@ -251,9 +275,19 @@ public partial class ProfileSelectorViewModel : ObservableObject
             return;
         }
 
+        DismissWelcomeBanner();
         SelectedProfile = profile;
         _appState.SetCurrentProfile(profile);
         _navigationService.NavigateToTestList();
+    }
+
+    /// <summary>
+    /// Dismisses the welcome banner by marking onboarding as seen.
+    /// </summary>
+    [RelayCommand]
+    private void DismissWelcomeBanner()
+    {
+        _preferencesService.HasSeenOnboarding = true;
     }
 
     /// <summary>
@@ -264,5 +298,16 @@ public partial class ProfileSelectorViewModel : ObservableObject
     {
         HasError = false;
         ErrorMessage = null;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _preferencesService.PropertyChanged -= OnPreferencesPropertyChanged;
+        _disposed = true;
     }
 }

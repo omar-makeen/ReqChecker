@@ -121,4 +121,68 @@ public class PreferencesServiceTests
         Assert.NotEqual(originalValue, afterFirstToggle);
         Assert.Equal(originalValue, afterSecondToggle);
     }
+
+    [Fact]
+    public void HasSeenOnboarding_DefaultValue_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var service = new PreferencesService();
+
+        // Assert
+        Assert.False(service.HasSeenOnboarding);
+    }
+
+    [Fact]
+    public void UserPreferences_DefaultHasSeenOnboarding_ShouldBeFalse()
+    {
+        // Arrange & Act
+        var prefs = new UserPreferences();
+
+        // Assert
+        Assert.False(prefs.HasSeenOnboarding);
+    }
+
+    [Fact]
+    public void HasSeenOnboarding_CanBeSetToTrue()
+    {
+        // Arrange
+        var service = new PreferencesService();
+
+        // Act
+        service.HasSeenOnboarding = true;
+
+        // Assert
+        Assert.True(service.HasSeenOnboarding);
+    }
+
+    [Fact]
+    public void HasSeenOnboarding_CanBeToggled()
+    {
+        // Arrange
+        var service = new PreferencesService();
+
+        // Act - Toggle twice
+        service.HasSeenOnboarding = true;
+        var afterFirstToggle = service.HasSeenOnboarding;
+        service.HasSeenOnboarding = false;
+        var afterSecondToggle = service.HasSeenOnboarding;
+
+        // Assert
+        Assert.True(afterFirstToggle);
+        Assert.False(afterSecondToggle);
+    }
+
+    [Fact]
+    public void ResetToDefaults_ShouldResetHasSeenOnboardingToFalse()
+    {
+        // Arrange
+        var service = new PreferencesService();
+        service.HasSeenOnboarding = true;
+
+        // Act
+        service.ResetToDefaults();
+
+        // Assert
+        Assert.False(service.HasSeenOnboarding);
+    }
 }

@@ -6,6 +6,7 @@ using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.Infrastructure.ProfileManagement.Migrations;
 using System.IO;
+using System.ComponentModel;
 
 namespace ReqChecker.App.Tests.ViewModels;
 
@@ -17,6 +18,14 @@ public class ProfileSelectorViewModelTests
     private static ProfileMigrationPipeline CreateMigrationPipeline()
     {
         return new ProfileMigrationPipeline(new List<IProfileMigrator> { new V1ToV2Migration(), new V2ToV3Migration() });
+    }
+
+    private static Mock<IPreferencesService> CreateMockPreferencesService()
+    {
+        var mock = new Mock<IPreferencesService>();
+        mock.SetupAllProperties();
+        mock.Setup(x => x.HasSeenOnboarding).Returns(false);
+        return mock;
     }
 
     [Fact]
@@ -31,6 +40,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockProfileLoader.Setup(x => x.LoadFromStreamAsync(It.IsAny<Stream>()))
             .ReturnsAsync(new Profile { Name = "Test Profile", SchemaVersion = 2 });
@@ -47,7 +57,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Assert
         Assert.NotNull(viewModel);
@@ -66,6 +77,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         var invalidProfile = new Profile { Name = "Invalid Profile", SchemaVersion = 2 };
         var validationErrors = new List<string> { "Missing required field: Name" };
@@ -85,7 +97,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.ImportProfileCommand.ExecuteAsync(null);
@@ -109,6 +122,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockDialogService.Setup(x => x.OpenProfileFileDialog()).Returns(string.Empty);
         mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
@@ -121,7 +135,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.ImportProfileCommand.ExecuteAsync(null);
@@ -144,6 +159,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         // V1 profile that needs migration
         var v1Profile = new Profile { Name = "V1 Profile", SchemaVersion = 1 };
@@ -163,7 +179,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.ImportProfileCommand.ExecuteAsync(null);
@@ -186,6 +203,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         // Profile at current schema version (3) so no migration is needed
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 3, Tests = new List<TestDefinition>() };
@@ -206,7 +224,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.ImportProfileCommand.ExecuteAsync(null);
@@ -229,6 +248,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockDialogService.Setup(x => x.OpenProfileFileDialog()).Returns("C:\\test\\profile.json");
         mockProfileLoader.Setup(x => x.LoadFromFileAsync(It.IsAny<string>()))
@@ -243,7 +263,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.ImportProfileCommand.ExecuteAsync(null);
@@ -266,6 +287,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var navigationService = new NavigationService(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
 
@@ -279,7 +301,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             navigationService,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act - Execute will try to navigate which will fail due to missing service provider registrations
         // But we can verify that SelectedProfile is set correctly
@@ -309,6 +332,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
             .Returns(Array.Empty<string>());
@@ -320,7 +344,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         viewModel.SelectProfileCommand.Execute(null);
@@ -342,6 +367,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
             .Returns(Array.Empty<string>());
@@ -353,7 +379,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Simulate error state
         viewModel.HasError = true;
@@ -379,6 +406,7 @@ public class ProfileSelectorViewModelTests
         var mockServiceProvider = new Mock<IServiceProvider>();
         var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
         var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
 
         mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
             .Throws(new IOException("Directory not found"));
@@ -390,7 +418,8 @@ public class ProfileSelectorViewModelTests
             mockAppState.Object,
             mockDialogService.Object,
             mockNavigationService.Object,
-            mockProfileStorageService.Object);
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
 
         // Act
         await viewModel.LoadProfilesCommand.ExecuteAsync(null);
@@ -399,5 +428,277 @@ public class ProfileSelectorViewModelTests
         Assert.True(viewModel.HasError);
         Assert.Contains("Failed to load profiles", viewModel.ErrorMessage);
         Assert.False(viewModel.IsLoading);
+    }
+
+    [Fact]
+    public void ShowWelcomeBanner_ShouldReturnTrue_WhenHasSeenOnboardingIsFalse()
+    {
+        // Arrange
+        var mockPreferencesService = CreateMockPreferencesService();
+        mockPreferencesService.Setup(x => x.HasSeenOnboarding).Returns(false);
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        // Assert
+        Assert.True(viewModel.ShowWelcomeBanner);
+    }
+
+    [Fact]
+    public void ShowWelcomeBanner_ShouldReturnFalse_WhenHasSeenOnboardingIsTrue()
+    {
+        // Arrange
+        var mockPreferencesService = CreateMockPreferencesService();
+        mockPreferencesService.Setup(x => x.HasSeenOnboarding).Returns(true);
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        // Assert
+        Assert.False(viewModel.ShowWelcomeBanner);
+    }
+
+    [Fact]
+    public void DismissWelcomeBannerCommand_ShouldSetHasSeenOnboardingToTrue()
+    {
+        // Arrange
+        var mockPreferencesService = CreateMockPreferencesService();
+        mockPreferencesService.Setup(x => x.HasSeenOnboarding).Returns(false);
+        mockPreferencesService.SetupSet(x => x.HasSeenOnboarding = It.IsAny<bool>())
+            .Callback<bool>(value => mockPreferencesService.Setup(x => x.HasSeenOnboarding).Returns(value));
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        // Act
+        viewModel.DismissWelcomeBannerCommand.Execute(null);
+
+        // Assert
+        mockPreferencesService.VerifySet(x => x.HasSeenOnboarding = true, Times.Once);
+    }
+
+    [Fact]
+    public void IsRecommendedProfile_ShouldReturnTrue_ForDefaultProfileId()
+    {
+        // Arrange
+        var mockPreferencesService = CreateMockPreferencesService();
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        var profile = new Profile { Id = "00000001-0000-0000-0000-000000000001", Name = "Default Profile" };
+
+        // Act & Assert
+        Assert.True(viewModel.IsRecommendedProfile(profile));
+    }
+
+    [Fact]
+    public void IsRecommendedProfile_ShouldReturnFalse_ForOtherProfileIds()
+    {
+        // Arrange
+        var mockPreferencesService = CreateMockPreferencesService();
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        var profile = new Profile { Id = "00000002-0000-0000-0000-000000000002", Name = "Other Profile" };
+
+        // Act & Assert
+        Assert.False(viewModel.IsRecommendedProfile(profile));
+    }
+
+    [Fact]
+    public void ShowWelcomeBanner_ShouldUpdate_WhenPreferencesPropertyChangedFires()
+    {
+        // Arrange
+        var preferencesService = new PreferencesService();
+        preferencesService.HasSeenOnboarding = false;
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            preferencesService);
+
+        // Assert initial state
+        Assert.True(viewModel.ShowWelcomeBanner);
+
+        // Track property changed events
+        bool showWelcomeBannerChanged = false;
+        viewModel.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(viewModel.ShowWelcomeBanner))
+            {
+                showWelcomeBannerChanged = true;
+            }
+        };
+
+        // Act - change the preference
+        preferencesService.HasSeenOnboarding = true;
+
+        // Assert
+        Assert.True(showWelcomeBannerChanged, "ShowWelcomeBanner PropertyChanged should have been raised");
+        Assert.False(viewModel.ShowWelcomeBanner);
+
+        // Cleanup
+        viewModel.Dispose();
+    }
+
+    [Fact]
+    public void Dispose_ShouldUnsubscribeFromPreferencesPropertyChanged()
+    {
+        // Arrange
+        var preferencesService = new PreferencesService();
+        preferencesService.HasSeenOnboarding = false;
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            preferencesService);
+
+        // Act - dispose the view model
+        viewModel.Dispose();
+
+        // Track property changed events after disposal
+        bool showWelcomeBannerChanged = false;
+        viewModel.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(viewModel.ShowWelcomeBanner))
+            {
+                showWelcomeBannerChanged = true;
+            }
+        };
+
+        // Change the preference - should NOT trigger the disposed handler
+        preferencesService.HasSeenOnboarding = true;
+
+        // Assert - no change should be detected since we unsubscribed
+        Assert.False(showWelcomeBannerChanged, "ShowWelcomeBanner PropertyChanged should NOT have been raised after disposal");
     }
 }

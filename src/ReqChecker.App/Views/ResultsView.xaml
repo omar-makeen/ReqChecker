@@ -117,44 +117,50 @@
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <Button x:Name="BackToTestsButton"
-                                Style="{StaticResource SecondaryButton}"
-                                Command="{Binding NavigateToTestListCommand}"
-                                TabIndex="1"
-                                Margin="0,0,8,0">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Back to Tests"/>
-                            </StackPanel>
-                        </Button>
+                     <!-- Action Buttons -->
+                     <StackPanel Grid.Column="2" Orientation="Horizontal">
+                         <Button x:Name="BackToTestsButton"
+                                 Style="{StaticResource SecondaryButton}"
+                                 Command="{Binding NavigateToTestListCommand}"
+                                 TabIndex="1"
+                                 ToolTip="Return to the test suite"
+                                 ToolTipService.InitialShowDelay="400"
+                                 Margin="0,0,8,0">
+                             <StackPanel Orientation="Horizontal">
+                                 <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                                 <TextBlock Text="Back to Tests"/>
+                             </StackPanel>
+                         </Button>
 
-                        <Button Style="{StaticResource PrimaryButton}"
-                                Command="{Binding RerunFailedTestsCommand}"
-                                Visibility="{Binding HasFailedTests, Converter={StaticResource BoolToVisibilityConverter}}"
-                                TabIndex="2"
-                                Margin="0,0,8,0">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="ArrowRepeatAll24" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Re-run Failed"/>
-                            </StackPanel>
-                        </Button>
+                         <Button Style="{StaticResource PrimaryButton}"
+                                 Command="{Binding RerunFailedTestsCommand}"
+                                 Visibility="{Binding HasFailedTests, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 TabIndex="2"
+                                 ToolTip="Re-execute only the tests that failed or were skipped due to dependencies"
+                                 ToolTipService.InitialShowDelay="400"
+                                 Margin="0,0,8,0">
+                             <StackPanel Orientation="Horizontal">
+                                 <ui:SymbolIcon Symbol="ArrowRepeatAll24" FontSize="16" Margin="0,0,8,0"/>
+                                 <TextBlock Text="Re-run Failed"/>
+                             </StackPanel>
+                         </Button>
 
-                        <!-- Export Dropdown -->
-                        <Grid>
-                            <Button x:Name="ExportDropdownButton"
-                                    Style="{StaticResource SecondaryButton}"
-                                    Command="{Binding ToggleExportMenuCommand}"
-                                    IsEnabled="{Binding CanExportNow}"
-                                    TabIndex="3">
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Export"/>
-                                    <ui:SymbolIcon Symbol="ChevronDown20" FontSize="12" Margin="4,0,0,0"
-                                                   Foreground="{DynamicResource TextSecondary}"/>
-                                </StackPanel>
-                            </Button>
+                         <!-- Export Dropdown -->
+                         <Grid>
+                             <Button x:Name="ExportDropdownButton"
+                                     Style="{StaticResource SecondaryButton}"
+                                     Command="{Binding ToggleExportMenuCommand}"
+                                     IsEnabled="{Binding CanExportNow}"
+                                     TabIndex="3"
+                                     ToolTip="Save test results in PDF, CSV, or JSON format"
+                                     ToolTipService.InitialShowDelay="400">
+                                 <StackPanel Orientation="Horizontal">
+                                     <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
+                                     <TextBlock Text="Export"/>
+                                     <ui:SymbolIcon Symbol="ChevronDown20" FontSize="12" Margin="4,0,0,0"
+                                                    Foreground="{DynamicResource TextSecondary}"/>
+                                 </StackPanel>
+                             </Button>
 
                             <Popup x:Name="ExportPopup"
                                    PlacementTarget="{Binding ElementName=ExportDropdownButton}"

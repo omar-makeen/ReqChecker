@@ -119,17 +119,19 @@
                                        Text="{Binding TestCountDisplay}"/>
                         </Border>
 
-                        <!-- Run All Tests Button -->
-                        <Button x:Name="RunAllTestsButton"
-                                Style="{StaticResource PrimaryButtonLarge}"
-                                Command="{Binding RunAllTestsCommand}"
-                                IsEnabled="{Binding HasSelectedTests}"
-                                TabIndex="1">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
-                                <TextBlock Text="{Binding RunButtonLabel}" FontSize="15"/>
-                            </StackPanel>
-                        </Button>
+                         <!-- Run All Tests Button -->
+                         <Button x:Name="RunAllTestsButton"
+                                 Style="{StaticResource PrimaryButtonLarge}"
+                                 Command="{Binding RunAllTestsCommand}"
+                                 IsEnabled="{Binding HasSelectedTests}"
+                                 TabIndex="1"
+                                 ToolTip="Execute all selected tests and view results"
+                                 ToolTipService.InitialShowDelay="400">
+                             <StackPanel Orientation="Horizontal">
+                                 <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
+                                 <TextBlock Text="{Binding RunButtonLabel}" FontSize="15"/>
+                             </StackPanel>
+                         </Button>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -233,19 +235,21 @@
                     </Grid>
                 </Border>
 
-                <!-- Select All Checkbox -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
-                    <CheckBox Style="{StaticResource AccentCheckBox}"
-                              IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
-                              IsThreeState="False"
-                              VerticalAlignment="Center"
-                              Margin="0,0,8,0">
-                    </CheckBox>
-                    <TextBlock Text="Select All"
-                               Style="{DynamicResource TextBody}"
-                               Foreground="{DynamicResource TextPrimary}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                 <!-- Select All Checkbox -->
+                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0">
+                     <CheckBox Style="{StaticResource AccentCheckBox}"
+                               IsChecked="{Binding IsAllSelected, Mode=TwoWay}"
+                               IsThreeState="False"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"
+                               ToolTip="Select or deselect all visible tests"
+                               ToolTipService.InitialShowDelay="400">
+                     </CheckBox>
+                     <TextBlock Text="Select All"
+                                Style="{DynamicResource TextBody}"
+                                Foreground="{DynamicResource TextPrimary}"
+                                VerticalAlignment="Center"/>
+                 </StackPanel>
             </Grid>
         </Border>
 
