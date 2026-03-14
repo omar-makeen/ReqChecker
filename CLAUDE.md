@@ -67,6 +67,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (in-memory RunReport via IAppState; no data persistence changes) (059-export-dropdown)
 - `%APPDATA%/ReqChecker/preferences.json` (existing `PreferencesService` / `UserPreferences`) (060-first-run-onboarding)
 - N/A (in-memory session-only dirty tracking; no persistence) (061-unsaved-changes-warning)
+- N/A (in-memory session-only; no persistence changes) (062-test-progress-bar)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -86,9 +87,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 062-test-progress-bar: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 - 061-unsaved-changes-warning: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 - 060-first-run-onboarding: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
-- 059-export-dropdown: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2
 
 
 

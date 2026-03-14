@@ -165,7 +165,7 @@
                                        Width="160"
                                        Height="160"
                                        Progress="{Binding ProgressPercentage}"
-                                       Label="Complete"
+                                       Label="{Binding ProgressLabel}"
                                        ShowPercentage="True"
                                        HorizontalAlignment="Center">
                     <controls:ProgressRing.Effect>
@@ -235,21 +235,44 @@
                             MinWidth="300"
                             Visibility="{Binding IsComplete, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel HorizontalAlignment="Center">
-                            <ui:SymbolIcon Symbol="CheckmarkCircle24"
-                                           FontSize="24"
-                                           Foreground="{DynamicResource StatusPass}"
+                            <ui:SymbolIcon FontSize="24"
                                            HorizontalAlignment="Center"
-                                           Margin="0,0,0,8"/>
-                            <TextBlock Text="All tests completed"
+                                           Margin="0,0,0,8">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Symbol" Value="CheckmarkCircle24"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource StatusPass}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasFailures}" Value="True">
+                                                <Setter Property="Symbol" Value="ErrorCircle24"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource StatusFail}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
+                            <TextBlock Text="{Binding CompletionSummaryText}"
                                        Style="{DynamicResource TextBody}"
                                        Foreground="{DynamicResource TextPrimary}"
                                        HorizontalAlignment="Center"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding TotalTests, StringFormat='{}{0} tests executed'}"
-                                       Style="{DynamicResource TextCaption}"
-                                       Foreground="{DynamicResource TextSecondary}"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,4,0,0"/>
+                                       FontWeight="SemiBold"
+                                       TextAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,8,0,0">
+                                <TextBlock Text="{Binding CompletedTests, StringFormat='{}{0} passed'}"
+                                           Style="{DynamicResource TextCaption}"
+                                           Foreground="{DynamicResource StatusPass}"
+                                           Margin="0,0,12,0"/>
+                                <TextBlock Text="{Binding FailedTests, StringFormat='{}{0} failed'}"
+                                           Style="{DynamicResource TextCaption}"
+                                           Foreground="{DynamicResource StatusFail}"
+                                           Margin="0,0,12,0"/>
+                                <TextBlock Text="{Binding SkippedTests, StringFormat='{}{0} skipped'}"
+                                           Style="{DynamicResource TextCaption}"
+                                           Foreground="{DynamicResource StatusSkip}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </Grid>
