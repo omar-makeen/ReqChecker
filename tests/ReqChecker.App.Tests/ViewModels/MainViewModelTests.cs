@@ -1,189 +1,211 @@
 using Moq;
 using ReqChecker.App.Services;
 using ReqChecker.App.ViewModels;
-using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 
 namespace ReqChecker.App.Tests.ViewModels;
 
-/// <summary>
-/// Unit tests for MainViewModel disposal behavior.
-/// Tests event subscription cleanup to prevent memory leaks.
-/// </summary>
 public class MainViewModelTests
 {
-    [Fact]
-    public void Constructor_ShouldInitializeWithProfile()
+    private static MainViewModel CreateViewModel(
+        Mock<IAppState>? mockAppState = null,
+        Mock<IPreferencesService>? mockPreferencesService = null,
+        Profile? profile = null)
     {
-        // Arrange
-        var mockPreferencesService = new Mock<IPreferencesService>();
-        var mockAppState = new Mock<IAppState>();
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
+        mockAppState ??= new Mock<IAppState>();
+        mockPreferencesService ??= new Mock<IPreferencesService>();
 
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
+        if (profile != null)
+        {
+            mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
+        }
 
-        // Act
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
+        return new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
+    }
 
-        // Assert - ViewModel is created and profile is loaded
-        Assert.NotNull(viewModel);
-        Assert.Equal(profile, viewModel.CurrentProfile);
+    private static Profile CreateProfileWithTests(string name, int testCount)
+    {
+        var tests = new List<TestDefinition>();
+        for (var i = 0; i < testCount; i++)
+        {
+            tests.Add(new TestDefinition
+            {
+                Id = $"test-{i}",
+                DisplayName = $"Test {i}",
+                Type = "HttpGet"
+            });
+        }
+
+        return new Profile
+        {
+            Name = name,
+            SchemaVersion = 2,
+            Tests = tests
+        };
     }
 
     [Fact]
-    public void Dispose_ShouldUnsubscribeFromProfileChangedEvent()
+    public void TestCount_ShouldReturnCount_WhenProfileLoaded()
     {
-        // Arrange
-        var mockPreferencesService = new Mock<IPreferencesService>();
+        var profile = CreateProfileWithTests("My Profile", 5);
+        var viewModel = CreateViewModel(profile: profile);
+
+        Assert.Equal(5, viewModel.TestCount);
+    }
+
+    [Fact]
+    public void TestCount_ShouldReturnZero_WhenNoProfile()
+    {
+        var viewModel = CreateViewModel();
+
+        Assert.Equal(0, viewModel.TestCount);
+    }
+
+    [Fact]
+    public void HasTests_ShouldReturnTrue_WhenProfileHasTests()
+    {
+        var profile = CreateProfileWithTests("My Profile", 3);
+        var viewModel = CreateViewModel(profile: profile);
+
+        Assert.True(viewModel.HasTests);
+    }
+
+    [Fact]
+    public void HasTests_ShouldReturnFalse_WhenNoProfile()
+    {
+        var viewModel = CreateViewModel();
+
+        Assert.False(viewModel.HasTests);
+    }
+
+    [Fact]
+    public void HasTests_ShouldReturnFalse_WhenProfileHasNoTests()
+    {
+        var profile = CreateProfileWithTests("Empty Profile", 0);
+        var viewModel = CreateViewModel(profile: profile);
+
+        Assert.False(viewModel.HasTests);
+    }
+
+    [Fact]
+    public void TestCount_ShouldUpdate_WhenProfileChanges()
+    {
         var mockAppState = new Mock<IAppState>();
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
+        var viewModel = CreateViewModel(mockAppState: mockAppState);
 
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
+        Assert.Equal(0, viewModel.TestCount);
 
-        // Act
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-        viewModel.Dispose();
+        // Simulate profile change via the CurrentProfileChanged event
+        var newProfile = CreateProfileWithTests("New Profile", 7);
+        mockAppState.SetupGet(x => x.CurrentProfile).Returns(newProfile);
+        mockAppState.Raise(x => x.CurrentProfileChanged += null, EventArgs.Empty);
 
-        // Assert - After dispose, event handler should not be invoked
-        // Note: This test verifies the Dispose method is called without throwing
-        Assert.NotNull(viewModel);
+        Assert.Equal(7, viewModel.TestCount);
+        Assert.True(viewModel.HasTests);
+    }
+
+    [Fact]
+    public void ProfileName_ShouldReturnName_WhenProfileLoaded()
+    {
+        var profile = CreateProfileWithTests("Production Tests", 1);
+        var viewModel = CreateViewModel(profile: profile);
+
+        Assert.Equal("Production Tests", viewModel.ProfileName);
+    }
+
+    [Fact]
+    public void ProfileName_ShouldReturnDefault_WhenNoProfile()
+    {
+        var viewModel = CreateViewModel();
+
+        Assert.Equal("No profile loaded", viewModel.ProfileName);
+    }
+
+    [Fact]
+    public void HasProfile_ShouldReturnTrue_WhenProfileLoaded()
+    {
+        var profile = CreateProfileWithTests("My Profile", 1);
+        var viewModel = CreateViewModel(profile: profile);
+
+        Assert.True(viewModel.HasProfile);
+    }
+
+    [Fact]
+    public void HasProfile_ShouldReturnFalse_WhenNoProfile()
+    {
+        var viewModel = CreateViewModel();
+
+        Assert.False(viewModel.HasProfile);
+    }
+
+    [Fact]
+    public void Dispose_ShouldNotThrow()
+    {
+        var viewModel = CreateViewModel();
+
+        var exception = Record.Exception(() => viewModel.Dispose());
+
+        Assert.Null(exception);
     }
 
     [Fact]
     public void Dispose_CanBeCalledMultipleTimes()
     {
-        // Arrange
-        var mockPreferencesService = new Mock<IPreferencesService>();
-        var mockAppState = new Mock<IAppState>();
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
+        var viewModel = CreateViewModel();
 
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns(profile);
-
-        // Act
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-
-        // Should not throw
         viewModel.Dispose();
         viewModel.Dispose();
         viewModel.Dispose();
 
-        // Assert - No exception thrown
         Assert.NotNull(viewModel);
-    }
-
-    [Fact]
-    public void CurrentProfile_WhenNull_ShouldShowNoProfileLoaded()
-    {
-        // Arrange
-        var mockPreferencesService = new Mock<IPreferencesService>();
-        var mockAppState = new Mock<IAppState>();
-
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
-
-        // Act
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-
-        // Assert - Initially no profile
-        Assert.False(viewModel.HasProfile);
-        Assert.Equal("No profile loaded", viewModel.ProfileName);
-    }
-
-    [Fact]
-    public void CurrentProfile_WhenSet_ShouldUpdateHasProfileAndProfileName()
-    {
-        // Arrange
-        var mockPreferencesService = new Mock<IPreferencesService>();
-        var mockAppState = new Mock<IAppState>();
-        var profile = new Profile { Name = "Test Profile", SchemaVersion = 2 };
-
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
-
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-
-        // Act - Initially no profile
-        Assert.False(viewModel.HasProfile);
-
-        // Simulate profile change
-        viewModel.CurrentProfile = profile;
-
-        // Assert
-        Assert.True(viewModel.HasProfile);
-        Assert.Equal("Test Profile", viewModel.ProfileName);
     }
 
     [Fact]
     public void IsSidebarExpanded_ShouldPersistToPreferencesService()
     {
-        // Arrange
         var mockPreferencesService = new Mock<IPreferencesService>();
         mockPreferencesService.SetupGet(x => x.SidebarExpanded).Returns(true);
 
-        var mockAppState = new Mock<IAppState>();
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
+        var viewModel = CreateViewModel(mockPreferencesService: mockPreferencesService);
 
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-
-        // Act
         viewModel.IsSidebarExpanded = false;
 
-        // Assert
         mockPreferencesService.VerifySet(x => x.SidebarExpanded = false, Times.Once);
     }
 
     [Fact]
     public void ThemeService_CanBeSet()
     {
-        // Arrange
         var mockPreferencesService = new Mock<IPreferencesService>();
-        var mockAppState = new Mock<IAppState>();
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
-
         var themeService = new ThemeService(mockPreferencesService.Object);
+        var viewModel = CreateViewModel(mockPreferencesService: mockPreferencesService);
 
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
-
-        // Act
         viewModel.ThemeService = themeService;
 
-        // Assert
         Assert.Equal(themeService, viewModel.ThemeService);
     }
 
     [Fact]
     public void ThemeLabel_WhenDarkTheme_ShouldShowLightMode()
     {
-        // Arrange
         var mockPreferencesService = new Mock<IPreferencesService>();
         mockPreferencesService.SetupGet(x => x.Theme).Returns(AppTheme.Dark);
-
-        var mockAppState = new Mock<IAppState>();
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
-
         var themeService = new ThemeService(mockPreferencesService.Object);
-
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
+        var viewModel = CreateViewModel(mockPreferencesService: mockPreferencesService);
         viewModel.ThemeService = themeService;
 
-        // Assert - Dark theme means clicking toggles to Light
         Assert.Equal("Light Mode", viewModel.ThemeLabel);
     }
 
     [Fact]
     public void ThemeLabel_WhenLightTheme_ShouldShowDarkMode()
     {
-        // Arrange
         var mockPreferencesService = new Mock<IPreferencesService>();
         mockPreferencesService.SetupGet(x => x.Theme).Returns(AppTheme.Light);
-
-        var mockAppState = new Mock<IAppState>();
-        mockAppState.SetupGet(x => x.CurrentProfile).Returns((Profile?)null);
-
         var themeService = new ThemeService(mockPreferencesService.Object);
-
-        var viewModel = new MainViewModel(mockPreferencesService.Object, mockAppState.Object);
+        var viewModel = CreateViewModel(mockPreferencesService: mockPreferencesService);
         viewModel.ThemeService = themeService;
 
-        // Assert - Light theme means clicking toggles to Dark
         Assert.Equal("Dark Mode", viewModel.ThemeLabel);
     }
 }

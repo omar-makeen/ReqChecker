@@ -39,9 +39,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T004 [P] [US2] Add `TestCount` (int) and `HasTests` (bool) observable properties to `MainViewModel`, synced from `IAppState.CurrentProfileChanged` event, computing from `CurrentProfile?.Tests.Count ?? 0` in `src/ReqChecker.App/ViewModels/MainViewModel.cs`
-- [ ] T005 [P] [US2] Add unit tests for `TestCount` and `HasTests` properties (returns count when profile loaded, 0 when null, updates on profile change) in `tests/ReqChecker.App.Tests/ViewModels/MainViewModelTests.cs`
-- [ ] T006 [US2] Add custom badge overlay to NavTests NavigationViewItem — small rounded Border with TextBlock bound to `TestCount`, visibility bound to `HasTests`, positioned as overlay in a Grid wrapping the nav item content, styled for both expanded and compact sidebar modes in `src/ReqChecker.App/Views/MainWindow.xaml`
+- [X] T004 [P] [US2] Add `TestCount` (int) and `HasTests` (bool) observable properties to `MainViewModel`, synced from `IAppState.CurrentProfileChanged` event, computing from `CurrentProfile?.Tests.Count ?? 0` in `src/ReqChecker.App/ViewModels/MainViewModel.cs`
+- [X] T005 [P] [US2] Add unit tests for `TestCount` and `HasTests` properties (returns count when profile loaded, 0 when null, updates on profile change) in `tests/ReqChecker.App.Tests/ViewModels/MainViewModelTests.cs`
+- [X] T006 [US2] Add custom badge overlay to NavTests NavigationViewItem — small rounded Border with TextBlock bound to `TestCount`, visibility bound to `HasTests`, positioned as overlay in a Grid wrapping the nav item content, styled for both expanded and compact sidebar modes in `src/ReqChecker.App/Views/MainWindow.xaml`
 
 **Checkpoint**: Badge shows test count on sidebar. Disappears when no profile. Works in expanded and compact modes.
 

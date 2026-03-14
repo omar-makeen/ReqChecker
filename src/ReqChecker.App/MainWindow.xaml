@@ -81,13 +81,34 @@
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
                         x:Name="NavTests"
-                        Content="Test Suite"
                         Tag="Tests"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Beaker24}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
+                        <ui:NavigationViewItem.Content>
+                            <Grid>
+                                <TextBlock Text="Test Suite" VerticalAlignment="Center"/>
+                                <Border
+                                    x:Name="TestCountBadge"
+                                    Background="{DynamicResource AccentPrimaryBrush}"
+                                    CornerRadius="8"
+                                    Padding="6,2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Margin="0,-2,-8,0"
+                                    Visibility="{Binding DataContext.HasTests, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock
+                                        Text="{Binding DataContext.TestCount, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        FontSize="10"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                        </ui:NavigationViewItem.Content>
                         <ui:NavigationViewItem.ToolTip>
                             <ToolTip Style="{StaticResource ModernToolTip}" Content="Configure and run tests"/>
                         </ui:NavigationViewItem.ToolTip>

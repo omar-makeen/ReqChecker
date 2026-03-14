@@ -34,6 +34,11 @@ public partial class MainViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private bool _isSidebarExpanded;
 
+    [ObservableProperty]
+    private int _testCount;
+
+    public bool HasTests => TestCount > 0;
+
     private PropertyChangedEventHandler? _themeHandler;
     private PropertyChangedEventHandler? _preferencesHandler;
 
@@ -45,6 +50,9 @@ public partial class MainViewModel : ObservableObject, IDisposable
 
         // Get current profile from shared state
         CurrentProfile = _appState.CurrentProfile;
+
+        // Initialize test count
+        UpdateTestCount();
 
         // Subscribe to profile changes
         _appState.CurrentProfileChanged += OnCurrentProfileChanged;
@@ -83,6 +91,11 @@ public partial class MainViewModel : ObservableObject, IDisposable
         CurrentProfile = _appState.CurrentProfile;
     }
 
+    private void UpdateTestCount()
+    {
+        TestCount = CurrentProfile?.Tests.Count ?? 0;
+    }
+
     /// <summary>
     /// Gets whether a profile is currently loaded.
     /// </summary>
@@ -109,12 +122,18 @@ public partial class MainViewModel : ObservableObject, IDisposable
     {
         OnPropertyChanged(nameof(HasProfile));
         OnPropertyChanged(nameof(ProfileName));
+        UpdateTestCount();
     }
 
     partial void OnIsSidebarExpandedChanged(bool value)
     {
         // Persist sidebar state
         _preferencesService.SidebarExpanded = value;
+    }
+
+    partial void OnTestCountChanged(int value)
+    {
+        OnPropertyChanged(nameof(HasTests));
     }
 
     partial void OnThemeServiceChanged(ThemeService? value)
