@@ -55,51 +55,81 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <Button x:Name="BackButton"
-                    Style="{StaticResource SecondaryButton}"
-                    Command="{Binding BackCommand}"
-                    TabIndex="0"
-                    Margin="0,0,16,0"
-                    ToolTip="Return to the test suite"
-                    ToolTipService.InitialShowDelay="400"
-                    ToolTipService.ShowOnDisabled="True">
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                    <TextBlock Text="Back to Tests"/>
-                </StackPanel>
-            </Button>
+                <!-- Gradient Accent Line -->
+                <Border Grid.Row="0" Height="4"
+                        Background="{DynamicResource AccentGradientHorizontal}"
+                        CornerRadius="2"/>
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <ui:SymbolIcon Symbol="Settings24"
-                               FontSize="24"
-                               Foreground="{DynamicResource AccentPrimary}"
-                               Margin="0,0,12,0"/>
-                <TextBlock Text="Test Configuration"
-                           Style="{DynamicResource TextH1}"
-                           Foreground="{DynamicResource TextPrimary}"/>
-            </StackPanel>
+                <!-- Header Content -->
+                <Grid Grid.Row="1" Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Save Changes Button in Header -->
-            <Button Grid.Column="2"
-                    Style="{StaticResource PrimaryButton}"
-                    Command="{Binding SaveCommand}"
-                    TabIndex="1"
-                    ToolTip="Save test configuration changes"
-                    ToolTipService.InitialShowDelay="400"
-                    ToolTipService.ShowOnDisabled="True">
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Symbol="Save24" FontSize="16" Margin="0,0,8,0"/>
-                    <TextBlock Text="Save Changes"/>
-                </StackPanel>
-            </Button>
-        </Grid>
+                    <!-- Back Button -->
+                    <Button x:Name="BackButton"
+                            Grid.Column="0"
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding BackCommand}"
+                            TabIndex="0"
+                            Margin="0,0,16,0"
+                            ToolTip="Return to the test suite"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="Back to Tests"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Icon Container -->
+                    <Border Grid.Column="1" Width="48" Height="48"
+                            Background="{DynamicResource AccentPrimary}"
+                            CornerRadius="12" Margin="0,0,16,0">
+                        <ui:SymbolIcon Symbol="Settings24"
+                                       FontSize="24"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Title + Subtitle -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="Test Configuration"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="Configure test parameters and settings"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- Save Changes Button -->
+                    <Button Grid.Column="3"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding SaveCommand}"
+                            TabIndex="1"
+                            ToolTip="Save test configuration changes"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Save24" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="Save Changes"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
 
         <!-- Test Configuration Content -->
         <ScrollViewer Grid.Row="1"
