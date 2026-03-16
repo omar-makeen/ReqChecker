@@ -210,6 +210,26 @@ public class NavigationService
     }
 
     /// <summary>
+    /// Navigates to schedules view.
+    /// </summary>
+    public void NavigateToSchedules()
+    {
+        Log.Information("NavigateToSchedules: Frame null={FrameNull}", _frame == null);
+        if (_frame == null)
+        {
+            Log.Error("Cannot navigate to Schedules: Frame not initialized");
+            return;
+        }
+        var viewModel = _serviceProvider.GetRequiredService<SchedulesViewModel>();
+        var createVm = _serviceProvider.GetRequiredService<CreateScheduleViewModel>();
+        TrackViewModel(viewModel);
+        var view = new Views.SchedulesView(viewModel, createVm);
+        var result = _frame.Navigate(view);
+        Log.Information("NavigateToSchedules: Navigate result={Result}", result);
+        RaiseNavigated("Schedules");
+    }
+
+    /// <summary>
     /// Navigates to settings view.
     /// </summary>
     public void NavigateToSettings()

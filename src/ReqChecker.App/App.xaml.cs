@@ -13,6 +13,7 @@ using ReqChecker.Infrastructure.Export;
 using ReqChecker.Infrastructure.History;
 using ReqChecker.Infrastructure.Logging;
 using ReqChecker.Infrastructure.Security;
+using ReqChecker.Infrastructure.Scheduling;
 using ReqChecker.App.ViewModels;
 using ReqChecker.App.Services;
 using ReqChecker.App.Views;
@@ -40,6 +41,19 @@ public partial class App : System.Windows.Application
 
         // Configure dependency injection
         ConfigureServices();
+    }
+
+    protected override void OnExit(System.Windows.ExitEventArgs e)
+    {
+        // Stop the scheduler gracefully
+        try
+        {
+            var scheduler = Services.GetService(typeof(ISchedulerService)) as ISchedulerService;
+            scheduler?.Stop();
+        }
+        catch { /* best-effort cleanup */ }
+
+        base.OnExit(e);
     }
 
     protected override async void OnStartup(System.Windows.StartupEventArgs e)
@@ -80,9 +94,29 @@ public partial class App : System.Windows.Application
             Log.Error(ex, "Failed to check for startup profile");
         }
 
+        // Start the background scheduler
+        var scheduler = Services.GetRequiredService<ISchedulerService>();
+        scheduler.Start();
+
         // Create and show main window AFTER theme is applied
         var mainWindow = new MainWindow();
         mainWindow.Show();
+
+        // Check for missed runs after window is shown
+        try
+        {
+            var missed = await scheduler.GetMissedRunsAsync();
+            if (missed.Count > 0)
+            {
+                var dialog = new Views.MissedRunsDialog(scheduler, missed);
+                dialog.Owner = mainWindow;
+                dialog.ShowDialog();
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Failed to check for missed runs on startup");
+        }
     }
 
     private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
@@ -216,6 +250,15 @@ public partial class App : System.Windows.Application
         services.AddSingleton<ThemeService>(sp =>
             new ThemeService(sp.GetRequiredService<IPreferencesService>()));
 
+        // Register scheduling services
+        services.AddSingleton<IToastNotificationService, ToastNotificationService>();
+        services.AddSingleton<ISchedulePersistenceService, SchedulePersistenceService>();
+        services.AddSingleton<ISchedulerService>(sp => new SchedulerService(
+            sp.GetRequiredService<ITestRunner>(),
+            sp.GetRequiredService<IProfileLoader>(),
+            sp.GetRequiredService<IHistoryService>(),
+            sp.GetRequiredService<ISchedulePersistenceService>()));
+
         // Register ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<ProfileSelectorViewModel>();
@@ -225,9 +268,19 @@ public partial class App : System.Windows.Application
         services.AddTransient<HistoryViewModel>();
         services.AddTransient<DiagnosticsViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<SchedulesViewModel>();
+        services.AddTransient<CreateScheduleViewModel>();
 
         // Build service provider
         Services = services.BuildServiceProvider();
+
+        // Wire toast notifications to scheduler events
+        var toastService = Services.GetRequiredService<IToastNotificationService>();
+        var schedulerForToasts = Services.GetRequiredService<ISchedulerService>();
+        schedulerForToasts.ScheduleRunStarted += (_, schedule) =>
+            toastService.ShowRunStarted(schedule.Name);
+        schedulerForToasts.ScheduleRunCompleted += (_, args) =>
+            toastService.ShowRunCompleted(args.Schedule.Name, args.PassCount, args.TotalCount, args.RunId);
 
         // Wire PromptForCredentials callback on SequentialTestRunner
         var testRunner = Services.GetRequiredService<ITestRunner>() as SequentialTestRunner;

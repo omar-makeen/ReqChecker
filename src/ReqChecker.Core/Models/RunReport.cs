@@ -49,4 +49,9 @@ public class RunReport
     /// Aggregate statistics.
     /// </summary>
     public RunSummary Summary { get; set; } = new();
+
+    /// <summary>
+    /// Name of the schedule that triggered this run, if any.
+    /// </summary>
+    public string? ScheduleName { get; set; }
 }

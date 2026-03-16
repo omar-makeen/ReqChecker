@@ -139,6 +139,19 @@
                         </ui:NavigationViewItem.ToolTip>
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem
+                        x:Name="NavSchedules"
+                        Content="Schedules"
+                        Tag="Schedules"
+                        Click="NavItem_Click"
+                        Icon="{ui:SymbolIcon CalendarClock24}"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.Placement="Right">
+                        <ui:NavigationViewItem.ToolTip>
+                            <ToolTip Style="{StaticResource ModernToolTip}" Content="Schedule automated test runs"/>
+                        </ui:NavigationViewItem.ToolTip>
+                    </ui:NavigationViewItem>
+                    <ui:NavigationViewItem
                         x:Name="NavDiagnostics"
                         Content="System Diagnostics"
                         Tag="Diagnostics"

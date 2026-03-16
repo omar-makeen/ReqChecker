@@ -3,6 +3,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Media.Animation;
 using ReqChecker.App.ViewModels;
 using ReqChecker.App.Services;
+using ReqChecker.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui.Controls;
 using Serilog;
@@ -17,7 +18,10 @@ public partial class MainWindow : FluentWindow
     private readonly MainViewModel _viewModel;
     private readonly NavigationService _navigationService;
     private readonly ThemeService _themeService;
+    private readonly ISchedulerService _schedulerService;
     private bool _isNavigating;
+    private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon? _taskbarIcon;
+    private System.Windows.Controls.MenuItem? _nextRunMenuItem;
 
     public MainWindow()
     {
@@ -27,6 +31,7 @@ public partial class MainWindow : FluentWindow
         _viewModel = App.Services.GetRequiredService<MainViewModel>();
         _navigationService = App.Services.GetRequiredService<NavigationService>();
         _themeService = App.Services.GetRequiredService<ThemeService>();
+        _schedulerService = App.Services.GetRequiredService<ISchedulerService>();
 
         // Initialize navigation with the content frame
         _navigationService.Initialize(ContentFrame);
@@ -42,10 +47,100 @@ public partial class MainWindow : FluentWindow
 
         // Navigate to test list by default with fade animation
         Loaded += OnWindowLoaded;
+        Closed += OnWindowClosed;
+    }
+
+    // ── Tray Icon ─────────────────────────────────────────────────────
+
+    private void InitializeTrayIcon()
+    {
+        // Build WPF context menu for the tray icon
+        var contextMenu = new System.Windows.Controls.ContextMenu();
+
+        var openItem = new System.Windows.Controls.MenuItem { Header = "Open ReqChecker" };
+        openItem.Click += (_, _) => RestoreWindow();
+        contextMenu.Items.Add(openItem);
+
+        _nextRunMenuItem = new System.Windows.Controls.MenuItem
+        {
+            Header = "No upcoming runs",
+            IsEnabled = false
+        };
+        contextMenu.Items.Add(_nextRunMenuItem);
+        contextMenu.Items.Add(new System.Windows.Controls.Separator());
+
+        var exitItem = new System.Windows.Controls.MenuItem { Header = "Exit" };
+        exitItem.Click += (_, _) => System.Windows.Application.Current.Shutdown();
+        contextMenu.Items.Add(exitItem);
+
+        // Create the TaskbarIcon (Hardcodet.Wpf.TaskbarNotification)
+        _taskbarIcon = new Hardcodet.Wpf.TaskbarNotification.TaskbarIcon
+        {
+            ToolTipText = "ReqChecker",
+            ContextMenu = contextMenu,
+            Visibility = Visibility.Collapsed
+        };
+
+        _taskbarIcon.TrayLeftMouseUp += (_, _) => RestoreWindow();
+
+        // Subscribe to scheduler to update next-run tooltip
+        _schedulerService.ScheduleRunCompleted += (_, _) => Dispatcher.InvokeAsync(UpdateNextRunMenuItem);
+    }
+
+    private void UpdateNextRunMenuItem()
+    {
+        if (_nextRunMenuItem == null) return;
+        var schedules = _schedulerService.GetSchedulesAsync().GetAwaiter().GetResult();
+        var next = schedules
+            .Where(s => s.NextRunTime.HasValue)
+            .OrderBy(s => s.NextRunTime)
+            .FirstOrDefault();
+
+        _nextRunMenuItem.Header = next?.NextRunTime.HasValue == true
+            ? $"Next: {next.Name} at {next.NextRunTime.Value:h:mm tt}"
+            : "No upcoming runs";
+    }
+
+    private void RestoreWindow()
+    {
+        Show();
+        WindowState = WindowState.Normal;
+        Activate();
+        if (_taskbarIcon != null)
+            _taskbarIcon.Visibility = Visibility.Collapsed;
+    }
+
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        if (_schedulerService.HasActiveSchedules)
+        {
+            e.Cancel = true;
+            Hide();
+            if (_taskbarIcon != null)
+            {
+                UpdateNextRunMenuItem();
+                _taskbarIcon.Visibility = Visibility.Visible;
+                _taskbarIcon.ShowBalloonTip("ReqChecker",
+                    "Active schedules will continue to run in the background.",
+                    Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+            }
+        }
+        else
+        {
+            base.OnClosing(e);
+        }
+    }
+
+    private void OnWindowClosed(object? sender, EventArgs e)
+    {
+        _taskbarIcon?.Dispose();
     }
 
     private void OnWindowLoaded(object sender, RoutedEventArgs e)
     {
+        // Initialize system tray icon
+        InitializeTrayIcon();
+
         // Apply window fade-in animation if not reduced motion
         if (!_themeService.IsReducedMotionEnabled)
         {
@@ -75,6 +170,7 @@ public partial class MainWindow : FluentWindow
         NavTests.IsActive = false;
         NavResults.IsActive = false;
         NavHistory.IsActive = false;
+        NavSchedules.IsActive = false;
         NavDiagnostics.IsActive = false;
         NavSettings.IsActive = false;
     }
@@ -100,6 +196,9 @@ public partial class MainWindow : FluentWindow
                 break;
             case "History":
                 NavHistory.IsActive = true;
+                break;
+            case "Schedules":
+                NavSchedules.IsActive = true;
                 break;
             case "Diagnostics":
                 NavDiagnostics.IsActive = true;
@@ -169,6 +268,7 @@ public partial class MainWindow : FluentWindow
                 "Tests" => "Test List",
                 "Results" => "Test Results",
                 "History" => "Test History",
+                "Schedules" => "Schedules",
                 "Diagnostics" => "Diagnostics",
                 "Settings" => "Settings",
                 _ => tag
@@ -187,6 +287,9 @@ public partial class MainWindow : FluentWindow
                     break;
                 case "History":
                     _navigationService.NavigateToHistory();
+                    break;
+                case "Schedules":
+                    _navigationService.NavigateToSchedules();
                     break;
                 case "Diagnostics":
                     _navigationService.NavigateToDiagnostics();

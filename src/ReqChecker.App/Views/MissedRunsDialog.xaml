@@ -1,0 +1,144 @@
+<Window x:Class="ReqChecker.App.Views.MissedRunsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Missed Scheduled Runs"
+        Height="480"
+        Width="560"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource BackgroundBase}">
+
+    <Window.Resources>
+        <Storyboard x:Key="EntranceAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.2"/>
+            <DoubleAnimation Storyboard.TargetName="ContentPanel"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                             From="20" To="0" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource EntranceAnimation}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid x:Name="ContentPanel" Margin="32">
+        <Grid.RenderTransform>
+            <TranslateTransform Y="0"/>
+        </Grid.RenderTransform>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <Border Background="#1AF59E0B"
+                    BorderBrush="#FFF59E0B"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Width="48" Height="48"
+                    Margin="0,0,16,0">
+                <ui:SymbolIcon Symbol="CalendarCancel24"
+                               FontSize="24"
+                               Foreground="#FFF59E0B"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Missed Scheduled Runs"
+                           FontSize="20" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimary}"/>
+                <TextBlock Text="The following schedules were due while the app was closed."
+                           Style="{DynamicResource TextCaption}"
+                           Foreground="{DynamicResource TextTertiary}"
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Missed runs list -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,16">
+            <ItemsControl x:Name="MissedRunsList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource BackgroundElevated}"
+                                BorderBrush="{DynamicResource BorderSubtle}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="16,12"
+                                Margin="0,0,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="14" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Style="{DynamicResource TextCaption}"
+                                               Foreground="{DynamicResource TextTertiary}"
+                                               Margin="0,4,0,0">
+                                        <Run Text="Profile: "/>
+                                        <Run Text="{Binding ProfileName}" FontWeight="Medium"
+                                             Foreground="{DynamicResource TextSecondary}"/>
+                                    </TextBlock>
+                                    <TextBlock Style="{DynamicResource TextCaption}"
+                                               Foreground="{DynamicResource TextTertiary}"
+                                               Margin="0,2,0,0">
+                                        <Run Text="Was due: "/>
+                                        <Run Text="{Binding NextRunTime, StringFormat='MMM d, yyyy h:mm tt'}"
+                                             FontWeight="Medium" Foreground="#FFF59E0B"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="DismissButton"
+                    Grid.Column="1"
+                    Style="{StaticResource GhostButton}"
+                    Content="Dismiss"
+                    MinWidth="100"
+                    IsCancel="True"
+                    Margin="0,0,8,0"
+                    ToolTip="Dismiss missed runs and recalculate next run times"
+                    ToolTipService.InitialShowDelay="400"/>
+
+            <Button x:Name="RunNowButton"
+                    Grid.Column="2"
+                    Style="{StaticResource PrimaryButton}"
+                    MinWidth="120"
+                    IsDefault="True"
+                    ToolTip="Run all missed schedules now"
+                    ToolTipService.InitialShowDelay="400">
+                <StackPanel Orientation="Horizontal" IsHitTestVisible="False">
+                    <ui:SymbolIcon Symbol="Play24" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Run All Now"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>
