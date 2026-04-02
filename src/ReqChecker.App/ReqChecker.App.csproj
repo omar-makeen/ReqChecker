@@ -40,6 +40,7 @@
     <EmbeddedResource Include="Profiles\sample-diagnostics.json" />
     <Resource Include="Resources\Images\reqchecker-logo.png" />
     <Resource Include="Resources\Icons\app-256.png" />
+    <SplashScreen Include="Resources\Images\splash.png" />
   </ItemGroup>
 
   <!--

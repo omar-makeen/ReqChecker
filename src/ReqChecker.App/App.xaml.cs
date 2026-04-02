@@ -61,6 +61,9 @@ public partial class App : System.Windows.Application
     {
         base.OnStartup(e);
 
+        var splash = new System.Windows.SplashScreen("Resources/Images/splash.png");
+        splash.Show(false, true);
+
         // Configure app state with logs path
         var appState = Services.GetRequiredService<IAppState>();
         appState.SetLogsPath(Path.Combine(AppDataPath, "Logs"));
@@ -102,6 +105,8 @@ public partial class App : System.Windows.Application
         // Create and show main window AFTER theme is applied
         var mainWindow = new MainWindow();
         mainWindow.Show();
+
+        splash.Close(System.TimeSpan.FromMilliseconds(400));
 
         // Check for missed runs after window is shown
         try
