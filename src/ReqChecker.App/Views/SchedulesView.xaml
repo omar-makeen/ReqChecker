@@ -354,7 +354,7 @@
                                                 <TextBlock Style="{DynamicResource TextCaption}"
                                                            Foreground="{DynamicResource TextTertiary}">
                                                     <Run Text="Next: "/>
-                                                    <Run Text="{Binding NextRunLabel}" FontWeight="Medium"
+                                                     <Run Text="{Binding NextRunLabel, Mode=OneWay}" FontWeight="Medium"
                                                          Foreground="{DynamicResource TextSecondary}"/>
                                                 </TextBlock>
                                             </StackPanel>
@@ -365,7 +365,7 @@
                                                 <TextBlock Style="{DynamicResource TextCaption}"
                                                            Foreground="{DynamicResource TextTertiary}">
                                                     <Run Text="Last: "/>
-                                                    <Run Text="{Binding LastRunLabel}" FontWeight="Medium"
+                                                     <Run Text="{Binding LastRunLabel, Mode=OneWay}" FontWeight="Medium"
                                                          Foreground="{DynamicResource TextSecondary}"/>
                                                 </TextBlock>
                                             </StackPanel>

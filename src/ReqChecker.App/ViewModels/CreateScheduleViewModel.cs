@@ -130,6 +130,16 @@ public partial class CreateScheduleViewModel : ObservableObject
     public CreateScheduleViewModel(ISchedulerService schedulerService)
     {
         _schedulerService = schedulerService;
+
+        // Subscribe to each DayOfWeekItem so CanSave re-evaluates when a day is toggled
+        foreach (var day in DaysOfWeek)
+        {
+            day.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(DayOfWeekItem.IsSelected))
+                    SaveCommand.NotifyCanExecuteChanged();
+            };
+        }
     }
 
     /// <summary>

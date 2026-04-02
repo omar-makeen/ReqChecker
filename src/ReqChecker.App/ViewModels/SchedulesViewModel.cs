@@ -12,10 +12,11 @@ namespace ReqChecker.App.ViewModels;
 /// <summary>
 /// ViewModel for the Schedules page. Manages the list of schedules and all CRUD operations.
 /// </summary>
-public partial class SchedulesViewModel : ObservableObject
+public partial class SchedulesViewModel : ObservableObject, IDisposable
 {
     private readonly ISchedulerService _schedulerService;
     private readonly NavigationService _navigationService;
+    private readonly EventHandler<ScheduleCompletedEventArgs> _runCompletedHandler;
 
     [ObservableProperty]
     private ObservableCollection<ScheduleItemViewModel> _schedules = new();
@@ -39,7 +40,13 @@ public partial class SchedulesViewModel : ObservableObject
         Schedules.CollectionChanged += (_, _) => OnPropertyChanged(nameof(IsEmpty));
 
         // Refresh when a scheduled run completes
-        _schedulerService.ScheduleRunCompleted += (_, _) => RefreshSchedulesOnUiThread();
+        _runCompletedHandler = (_, _) => RefreshSchedulesOnUiThread();
+        _schedulerService.ScheduleRunCompleted += _runCompletedHandler;
+    }
+
+    public void Dispose()
+    {
+        _schedulerService.ScheduleRunCompleted -= _runCompletedHandler;
     }
 
     // ── Load ──────────────────────────────────────────────────────────
@@ -105,16 +112,13 @@ public partial class SchedulesViewModel : ObservableObject
             if (item.Schedule.Status == ScheduleStatus.Active)
             {
                 await _schedulerService.PauseScheduleAsync(item.Schedule.Id);
-                item.Schedule.Status = ScheduleStatus.Paused;
-                item.Schedule.NextRunTime = null;
             }
             else if (item.Schedule.Status == ScheduleStatus.Paused)
             {
                 await _schedulerService.ResumeScheduleAsync(item.Schedule.Id);
-                item.Schedule.Status = ScheduleStatus.Active;
             }
 
-            item.Refresh();
+            await LoadSchedulesAsync();
             StatusMessage = null;
         }
         catch (Exception ex)

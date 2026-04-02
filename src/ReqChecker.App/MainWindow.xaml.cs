@@ -76,6 +76,8 @@ public partial class MainWindow : FluentWindow
         // Create the TaskbarIcon (Hardcodet.Wpf.TaskbarNotification)
         _taskbarIcon = new Hardcodet.Wpf.TaskbarNotification.TaskbarIcon
         {
+            IconSource = new System.Windows.Media.Imaging.BitmapImage(
+                new Uri("pack://application:,,,/Resources/Images/reqchecker-logo.png")),
             ToolTipText = "ReqChecker",
             ContextMenu = contextMenu,
             Visibility = Visibility.Collapsed
@@ -87,10 +89,10 @@ public partial class MainWindow : FluentWindow
         _schedulerService.ScheduleRunCompleted += (_, _) => Dispatcher.InvokeAsync(UpdateNextRunMenuItem);
     }
 
-    private void UpdateNextRunMenuItem()
+    private async void UpdateNextRunMenuItem()
     {
         if (_nextRunMenuItem == null) return;
-        var schedules = _schedulerService.GetSchedulesAsync().GetAwaiter().GetResult();
+        var schedules = await _schedulerService.GetSchedulesAsync();
         var next = schedules
             .Where(s => s.NextRunTime.HasValue)
             .OrderBy(s => s.NextRunTime)

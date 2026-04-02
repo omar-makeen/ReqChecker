@@ -1,6 +1,7 @@
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ReqChecker.App.ViewModels;
+using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using Serilog;
 using ProfileModel = ReqChecker.Core.Models.Profile;
@@ -221,9 +222,9 @@ public class NavigationService
             return;
         }
         var viewModel = _serviceProvider.GetRequiredService<SchedulesViewModel>();
-        var createVm = _serviceProvider.GetRequiredService<CreateScheduleViewModel>();
+        var schedulerService = _serviceProvider.GetRequiredService<ISchedulerService>();
         TrackViewModel(viewModel);
-        var view = new Views.SchedulesView(viewModel, createVm);
+        var view = new Views.SchedulesView(viewModel, schedulerService);
         var result = _frame.Navigate(view);
         Log.Information("NavigateToSchedules: Navigate result={Result}", result);
         RaiseNavigated("Schedules");

@@ -29,14 +29,9 @@ public class SchedulerService : ISchedulerService
     private readonly SemaphoreSlim _executionLock = new(1, 1);
     private string? _currentlyExecutingScheduleId;
 
-    public bool HasActiveSchedules
-    {
-        get
-        {
-            var schedules = _persistence.GetAllAsync().GetAwaiter().GetResult();
-            return schedules.Any(s => s.Status == ScheduleStatus.Active);
-        }
-    }
+    private bool _hasActiveSchedules;
+
+    public bool HasActiveSchedules => _hasActiveSchedules;
 
     public SchedulerService(
         ITestRunner testRunner,
@@ -53,10 +48,24 @@ public class SchedulerService : ISchedulerService
 
     // ── Lifecycle ─────────────────────────────────────────────────────
 
-    public void Start()
+    public async void Start()
     {
         Log.Information("SchedulerService: Starting with 15-second polling interval");
+        await RefreshHasActiveSchedulesAsync();
         _timer = new Timer(OnTimerElapsed, null, TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(15));
+    }
+
+    private async Task RefreshHasActiveSchedulesAsync()
+    {
+        try
+        {
+            var schedules = await _persistence.GetAllAsync();
+            _hasActiveSchedules = schedules.Any(s => s.Status == ScheduleStatus.Active);
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "SchedulerService: Failed to refresh active schedules cache");
+        }
     }
 
     public void Stop()
@@ -95,6 +104,7 @@ public class SchedulerService : ISchedulerService
         schedule.UpdatedAt = DateTime.UtcNow;
 
         await _persistence.SaveScheduleAsync(schedule);
+        await RefreshHasActiveSchedulesAsync();
         Log.Information("SchedulerService: Created schedule '{Name}' (Id={Id})", schedule.Name, schedule.Id);
         return schedule;
     }
@@ -120,6 +130,7 @@ public class SchedulerService : ISchedulerService
     public async Task DeleteScheduleAsync(string scheduleId)
     {
         await _persistence.DeleteScheduleAsync(scheduleId);
+        await RefreshHasActiveSchedulesAsync();
         Log.Information("SchedulerService: Deleted schedule Id={Id}", scheduleId);
     }
 
@@ -133,6 +144,7 @@ public class SchedulerService : ISchedulerService
         schedule.NextRunTime = null;
         schedule.UpdatedAt = DateTime.UtcNow;
         await _persistence.SaveScheduleAsync(schedule);
+        await RefreshHasActiveSchedulesAsync();
     }
 
     public async Task ResumeScheduleAsync(string scheduleId)
@@ -145,6 +157,7 @@ public class SchedulerService : ISchedulerService
         schedule.NextRunTime = _calculator.CalculateNextRunTime(schedule);
         schedule.UpdatedAt = DateTime.UtcNow;
         await _persistence.SaveScheduleAsync(schedule);
+        await RefreshHasActiveSchedulesAsync();
     }
 
     public async Task<List<Schedule>> GetMissedRunsAsync()
@@ -242,6 +255,10 @@ public class SchedulerService : ISchedulerService
         Log.Information("SchedulerService: Starting scheduled run for '{Name}'", schedule.Name);
         ScheduleRunStarted?.Invoke(this, schedule);
 
+        // Save the original credential callback so we can restore it after the scheduled run
+        var sequentialRunner = _testRunner as ReqChecker.Infrastructure.Execution.SequentialTestRunner;
+        var originalPrompt = sequentialRunner?.PromptForCredentials;
+
         try
         {
             // Load the profile associated with this schedule
@@ -267,7 +284,7 @@ public class SchedulerService : ISchedulerService
             var runSettings = new RunSettings();
 
             // Use no-op credential callback — scheduled runs are unattended
-            if (_testRunner is ReqChecker.Infrastructure.Execution.SequentialTestRunner sequentialRunner)
+            if (sequentialRunner != null)
             {
                 sequentialRunner.PromptForCredentials = (_, __, ___) =>
                     Task.FromResult<(string?, string?, bool)>((null, null, false));
@@ -313,6 +330,7 @@ public class SchedulerService : ISchedulerService
 
             schedule.UpdatedAt = DateTime.UtcNow;
             await _persistence.SaveScheduleAsync(schedule);
+            await RefreshHasActiveSchedulesAsync();
 
             // Save execution record
             var passCount = report.Summary?.Passed ?? report.Results.Count(r => r.Status == TestStatus.Pass);
@@ -336,6 +354,10 @@ public class SchedulerService : ISchedulerService
         }
         finally
         {
+            // Restore the original credential callback
+            if (sequentialRunner != null)
+                sequentialRunner.PromptForCredentials = originalPrompt;
+
             _currentlyExecutingScheduleId = null;
             _executionLock.Release();
         }

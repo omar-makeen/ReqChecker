@@ -12,17 +12,19 @@ namespace ReqChecker.App.Views;
 public partial class SchedulesView : Page
 {
     private readonly SchedulesViewModel _viewModel;
-    private readonly CreateScheduleViewModel _createVm;
+    private readonly ISchedulerService _schedulerService;
 
-    public SchedulesView(SchedulesViewModel viewModel, CreateScheduleViewModel createVm)
+    public SchedulesView(SchedulesViewModel viewModel, ISchedulerService schedulerService)
     {
         InitializeComponent();
         _viewModel = viewModel;
-        _createVm = createVm;
+        _schedulerService = schedulerService;
         DataContext = viewModel;
 
         _viewModel.CreateScheduleRequested += OnCreateScheduleRequested;
         _viewModel.EditScheduleRequested += OnEditScheduleRequested;
+
+        Unloaded += OnPageUnloaded;
     }
 
     private void OnPageLoaded(object sender, RoutedEventArgs e)
@@ -32,7 +34,8 @@ public partial class SchedulesView : Page
 
     private void OnCreateScheduleRequested(object? sender, EventArgs? e)
     {
-        var dialog = new CreateScheduleDialog(_createVm);
+        var vm = new CreateScheduleViewModel(_schedulerService);
+        var dialog = new CreateScheduleDialog(vm);
         dialog.Owner = Window.GetWindow(this);
         if (dialog.ShowDialog() == true)
             _ = _viewModel.LoadSchedulesAsync();
@@ -40,10 +43,20 @@ public partial class SchedulesView : Page
 
     private void OnEditScheduleRequested(object? sender, Schedule schedule)
     {
-        var dialog = new CreateScheduleDialog(_createVm);
+        var vm = new CreateScheduleViewModel(_schedulerService);
+        var dialog = new CreateScheduleDialog(vm);
         dialog.Owner = Window.GetWindow(this);
         dialog.LoadSchedule(schedule);
         if (dialog.ShowDialog() == true)
             _ = _viewModel.LoadSchedulesAsync();
+    }
+
+    private void OnPageUnloaded(object sender, RoutedEventArgs e)
+    {
+        _viewModel.CreateScheduleRequested -= OnCreateScheduleRequested;
+        _viewModel.EditScheduleRequested -= OnEditScheduleRequested;
+
+        if (_viewModel is IDisposable disposable)
+            disposable.Dispose();
     }
 }

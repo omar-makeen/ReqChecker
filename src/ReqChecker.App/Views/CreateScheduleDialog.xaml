@@ -135,11 +135,11 @@
                                Margin="0,0,0,6"/>
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Content="One-time"
-                                     IsChecked="{Binding IsOneTime}"
+                                     IsChecked="{Binding ScheduleType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ScheduleType.OneTime}}"
                                      TabIndex="3"
                                      Margin="0,0,24,0"/>
                         <RadioButton Content="Recurring"
-                                     IsChecked="{Binding IsRecurring}"
+                                     IsChecked="{Binding ScheduleType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ScheduleType.Recurring}}"
                                      TabIndex="4"/>
                     </StackPanel>
                 </StackPanel>
