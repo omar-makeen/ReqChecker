@@ -31,6 +31,13 @@ public interface IHistoryService
     Task ClearHistoryAsync();
 
     /// <summary>
+    /// Gets a specific run by ID.
+    /// </summary>
+    /// <param name="runId">The run ID to look up.</param>
+    /// <returns>The matching run report, or null if not found.</returns>
+    Task<RunReport?> GetRunByIdAsync(string runId);
+
+    /// <summary>
     /// Get storage statistics.
     /// </summary>
     /// <returns>Storage statistics.</returns>

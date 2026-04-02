@@ -251,6 +251,24 @@ public class HistoryService : IHistoryService
     }
     
     /// <summary>
+    /// Gets a specific run by ID.
+    /// </summary>
+    public async Task<RunReport?> GetRunByIdAsync(string runId)
+    {
+        await EnsureLoadedAsync();
+
+        await _lock.WaitAsync();
+        try
+        {
+            return _history.FirstOrDefault(r => r.RunId == runId);
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    /// <summary>
     /// Get storage statistics.
     /// </summary>
     public HistoryStats GetStats()

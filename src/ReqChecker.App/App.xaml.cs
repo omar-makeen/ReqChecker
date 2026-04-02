@@ -2,6 +2,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Serilog;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Infrastructure.Tests;
@@ -281,6 +282,51 @@ public partial class App : System.Windows.Application
             toastService.ShowRunStarted(schedule.Name);
         schedulerForToasts.ScheduleRunCompleted += (_, args) =>
             toastService.ShowRunCompleted(args.Schedule.Name, args.PassCount, args.TotalCount, args.RunId);
+
+        // Handle toast notification activation (user clicks "View Results")
+        ToastNotificationManagerCompat.OnActivated += toastArgs =>
+        {
+            ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+
+            var runId = args.Get("runId");
+            if (args.Get("action") == "viewResults" && !string.IsNullOrEmpty(runId))
+            {
+                Dispatcher.Invoke(async () =>
+                {
+                    try
+                    {
+                        if (Current.MainWindow is MainWindow mainWindow)
+                        {
+                            mainWindow.Show();
+                            mainWindow.WindowState = System.Windows.WindowState.Normal;
+                            mainWindow.Activate();
+                        }
+
+                        var historyService = Services.GetRequiredService<IHistoryService>();
+                        var report = await historyService.GetRunByIdAsync(runId);
+
+                        if (report != null)
+                        {
+                            var appState = Services.GetRequiredService<IAppState>();
+                            appState.SetLastRunReport(report);
+
+                            var navigationService = Services.GetRequiredService<NavigationService>();
+                            navigationService.NavigateToResults();
+                        }
+                        else
+                        {
+                            Log.Warning("Toast activation: run {RunId} not found, navigating to history", runId);
+                            var navigationService = Services.GetRequiredService<NavigationService>();
+                            navigationService.NavigateToHistory();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Failed to handle toast activation for run {RunId}", runId);
+                    }
+                });
+            }
+        };
 
         // Wire PromptForCredentials callback on SequentialTestRunner
         var testRunner = Services.GetRequiredService<ITestRunner>() as SequentialTestRunner;
