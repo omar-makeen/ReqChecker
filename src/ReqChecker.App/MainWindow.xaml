@@ -14,7 +14,8 @@
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="None"
         WindowCornerPreference="Round"
-        Background="{DynamicResource BackgroundBase}">
+        Background="{DynamicResource BackgroundBase}"
+        Icon="pack://application:,,,/Resources/Icons/app-256.png">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -33,7 +34,9 @@
             CanMaximize="True">
             <ui:TitleBar.Header>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
-                    <ui:SymbolIcon Symbol="Shield24" FontSize="18" Foreground="{DynamicResource AccentPrimaryBrush}"/>
+                    <Image Source="pack://application:,,,/Resources/Icons/app-256.png"
+                           Width="20" Height="20"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Text="ReqChecker"
                                Margin="8,0,0,0"
                                FontWeight="SemiBold"

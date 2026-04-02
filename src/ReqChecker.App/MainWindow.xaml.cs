@@ -77,7 +77,7 @@ public partial class MainWindow : FluentWindow
         _taskbarIcon = new Hardcodet.Wpf.TaskbarNotification.TaskbarIcon
         {
             IconSource = new System.Windows.Media.Imaging.BitmapImage(
-                new Uri("pack://application:,,,/Resources/Images/reqchecker-logo.png")),
+                new Uri("pack://application:,,,/Resources/Icons/app-256.png")),
             ToolTipText = "ReqChecker",
             ContextMenu = contextMenu,
             Visibility = Visibility.Collapsed

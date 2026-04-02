@@ -291,7 +291,7 @@ public partial class App : System.Windows.Application
             var runId = args.Get("runId");
             if (args.Get("action") == "viewResults" && !string.IsNullOrEmpty(runId))
             {
-                Dispatcher.Invoke(async () =>
+                _ = Dispatcher.InvokeAsync(async () =>
                 {
                     try
                     {

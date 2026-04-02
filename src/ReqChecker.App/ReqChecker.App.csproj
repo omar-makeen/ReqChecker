@@ -21,8 +21,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <!-- ApplicationIcon>Resources\Icons\app.ico</ApplicationIcon> -->
-    <!-- TODO: Add app.ico file to Resources/Icons/ directory -->
+    <ApplicationIcon>Resources\Icons\app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
@@ -40,6 +39,7 @@
     <EmbeddedResource Include="Profiles\default-profile.json.sig" />
     <EmbeddedResource Include="Profiles\sample-diagnostics.json" />
     <Resource Include="Resources\Images\reqchecker-logo.png" />
+    <Resource Include="Resources\Icons\app-256.png" />
   </ItemGroup>
 
   <!--

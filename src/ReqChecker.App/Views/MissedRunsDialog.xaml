@@ -91,14 +91,14 @@
                                                Foreground="{DynamicResource TextTertiary}"
                                                Margin="0,4,0,0">
                                         <Run Text="Profile: "/>
-                                        <Run Text="{Binding ProfileName}" FontWeight="Medium"
+                                        <Run Text="{Binding ProfileName, Mode=OneWay}" FontWeight="Medium"
                                              Foreground="{DynamicResource TextSecondary}"/>
                                     </TextBlock>
                                     <TextBlock Style="{DynamicResource TextCaption}"
                                                Foreground="{DynamicResource TextTertiary}"
                                                Margin="0,2,0,0">
                                         <Run Text="Was due: "/>
-                                        <Run Text="{Binding NextRunTime, StringFormat='MMM d, yyyy h:mm tt'}"
+                                        <Run Text="{Binding NextRunTime, Mode=OneWay, StringFormat='MMM d, yyyy h:mm tt'}"
                                              FontWeight="Medium" Foreground="#FFF59E0B"/>
                                     </TextBlock>
                                 </StackPanel>

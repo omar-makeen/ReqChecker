@@ -364,7 +364,7 @@
                                                                        Margin="0,0,6,0"/>
                                                         <TextBlock FontSize="12" Foreground="{DynamicResource TextSecondary}">
                                                             <Run Text="MAC: "/>
-                                                            <Run Text="{Binding MacAddress}" FontFamily="Cascadia Code, Consolas"/>
+                                                            <Run Text="{Binding MacAddress, Mode=OneWay}" FontFamily="Cascadia Code, Consolas"/>
                                                         </TextBlock>
                                                     </StackPanel>
 

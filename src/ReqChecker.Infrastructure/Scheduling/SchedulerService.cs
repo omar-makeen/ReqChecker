@@ -31,7 +31,7 @@ public class SchedulerService : ISchedulerService
 
     private bool _hasActiveSchedules;
 
-    public bool HasActiveSchedules => _hasActiveSchedules;
+    public bool HasActiveSchedules => Volatile.Read(ref _hasActiveSchedules);
 
     public SchedulerService(
         ITestRunner testRunner,
@@ -60,7 +60,7 @@ public class SchedulerService : ISchedulerService
         try
         {
             var schedules = await _persistence.GetAllAsync();
-            _hasActiveSchedules = schedules.Any(s => s.Status == ScheduleStatus.Active);
+            Volatile.Write(ref _hasActiveSchedules, schedules.Any(s => s.Status == ScheduleStatus.Active));
         }
         catch (Exception ex)
         {

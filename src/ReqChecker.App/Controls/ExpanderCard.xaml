@@ -135,7 +135,7 @@
                                 <TextBlock Style="{DynamicResource TextCaption}"
                                            Foreground="{DynamicResource TextTertiary}">
                                     <Run Text="Duration: "/>
-                                    <Run Text="{Binding TestDuration, ElementName=Root, Converter={StaticResource DurationFormatConverter}}"/>
+                                    <Run Text="{Binding TestDuration, Mode=OneWay, ElementName=Root, Converter={StaticResource DurationFormatConverter}}"/>
                                 </TextBlock>
                                 <!-- Retry count (only shown when > 1) -->
                                 <TextBlock Style="{DynamicResource TextCaption}"
@@ -143,7 +143,7 @@
                                            Margin="0,4,0,0"
                                            Visibility="{Binding AttemptCount, ElementName=Root, Converter={StaticResource RetryCountVisibilityConverter}}">
                                     <Run Text="Retries: "/>
-                                    <Run Text="{Binding AttemptCount, ElementName=Root}"/>
+                                    <Run Text="{Binding AttemptCount, Mode=OneWay, ElementName=Root}"/>
                                 </TextBlock>
                             </StackPanel>
                         </Grid>
