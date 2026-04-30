@@ -5,6 +5,7 @@ using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.ProfileManagement;
 using ReqChecker.App.Services;
+using System.IO;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -134,7 +135,19 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
 
             Profiles.Clear();
             Items.Clear();
-            foreach (var (profile, filePath) in loadedItems.OrderBy(x => x.profile.Name))
+
+            // Sort priority: active first → recommended → other bundled → user. Alphabetical within each rank.
+            // Computed from a snapshot of the active profile id so the order is stable across the loop.
+            var activeId = _appState.CurrentProfile?.Id;
+            int Rank(Profile p) =>
+                p.Id == activeId ? 0
+                : IsRecommendedProfile(p) ? 1
+                : p.Source == ProfileSource.Bundled ? 2
+                : 3;
+
+            foreach (var (profile, filePath) in loadedItems
+                .OrderBy(x => Rank(x.profile))
+                .ThenBy(x => x.profile.Name))
             {
                 Profiles.Add(profile);
 
@@ -318,6 +331,63 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         SelectedProfile = profile;
         _appState.SetCurrentProfile(profile);
         _navigationService.NavigateToTestList();
+    }
+
+    /// <summary>
+    /// Deletes a user-source profile after confirming with the user. Bundled profiles are never deletable.
+    /// If the deleted profile is the active one, IAppState.CurrentProfile is cleared.
+    /// </summary>
+    [RelayCommand]
+    private void DeleteProfile(ProfileListItemViewModel? item)
+    {
+        if (item == null || item.SourceFilePath == null)
+        {
+            return;
+        }
+
+        var message = item.IsActive
+            ? $"'{item.Name}' is your current profile. Deleting it will clear your selection. Continue?"
+            : $"Delete '{item.Name}'? This cannot be undone.";
+
+        if (!_dialogService.ShowConfirmationDialog("Delete profile", message))
+        {
+            return;
+        }
+
+        try
+        {
+            _profileStorageService.DeleteProfile(Path.GetFileName(item.SourceFilePath));
+        }
+        catch (Exception ex)
+        {
+            HasError = true;
+            ErrorMessage = $"Failed to delete profile: {ex.Message}";
+            Log.Error(ex, "Failed to delete profile: {FilePath}", item.SourceFilePath);
+            return;
+        }
+
+        if (item.IsActive)
+        {
+            _appState.ClearCurrentProfile();
+        }
+
+        Profiles.Remove(item.Profile);
+        Items.Remove(item);
+    }
+
+    /// <summary>
+    /// Opens the folder containing a user-source profile in Explorer. No-op for bundled profiles.
+    /// </summary>
+    [RelayCommand]
+    private void OpenFileLocation(ProfileListItemViewModel? item)
+    {
+        if (item == null || item.SourceFilePath == null)
+        {
+            return;
+        }
+
+        var folder = Path.GetDirectoryName(item.SourceFilePath) ?? _profileStorageService.GetUserProfilesDirectory();
+        _dialogService.OpenInExplorer(folder);
     }
 
     /// <summary>

@@ -886,4 +886,294 @@ public class ProfileSelectorViewModelTests
 
         Assert.Equal(initialActiveState, vm.Items[0].IsActive);
     }
+
+    private static ProfileSelectorViewModel CreateViewModelForRowActions(
+        out Mock<IAppState> mockAppState,
+        out Mock<DialogService> mockDialogService,
+        out Mock<IProfileStorageService> mockProfileStorageService,
+        string filePath,
+        Profile profile,
+        Profile? currentProfile = null)
+    {
+        // Write a temp file at the given path so ProfileListItemViewModel captures a real mtime.
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+        File.WriteAllText(filePath, "{}");
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        mockAppState = new Mock<IAppState>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
+
+        mockProfileLoader.Setup(x => x.LoadFromFileAsync(filePath))
+            .ReturnsAsync(profile);
+        mockProfileValidator.Setup(x => x.ValidateAsync(It.IsAny<Profile>()))
+            .ReturnsAsync(new List<string>());
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(new[] { filePath });
+        mockProfileStorageService.Setup(x => x.GetUserProfilesDirectory())
+            .Returns(Path.GetDirectoryName(filePath)!);
+
+        if (currentProfile != null)
+        {
+            mockAppState.Setup(x => x.CurrentProfile).Returns(currentProfile);
+        }
+
+        return new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldNoOp_WhenItemIsNull()
+    {
+        var vm = CreateViewModelForItemsTests(out _, out _);
+
+        vm.DeleteProfileCommand.Execute(null);
+
+        Assert.False(vm.HasError);
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldNoOp_WhenSourceFilePathIsNull()
+    {
+        // A bundled-source row has no SourceFilePath, so DeleteProfile must be a no-op
+        // (no confirmation prompt, no storage call, no error).
+        var bundled = new Profile { Id = "p1", Name = "Bundled Profile", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out _, out _, bundledProfiles: new List<Profile> { bundled });
+
+        var item = vm.Items.First();
+        Assert.Null(item.SourceFilePath);
+
+        vm.DeleteProfileCommand.Execute(item);
+
+        Assert.False(vm.HasError);
+        Assert.Contains(item, vm.Items);
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldNoOp_WhenUserDeclinesConfirmation()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "ReqCheckerTests_" + Guid.NewGuid());
+        var filePath = Path.Combine(tempDir, "user.json");
+        var profile = new Profile { Id = "p1", Name = "User Profile", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForRowActions(out _, out var mockDialogService, out var mockStorage,
+            filePath, profile);
+
+        try
+        {
+            mockDialogService.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(false);
+
+            var item = vm.Items.First();
+            vm.DeleteProfileCommand.Execute(item);
+
+            mockStorage.Verify(x => x.DeleteProfile(It.IsAny<string>()), Times.Never);
+            Assert.Contains(item, vm.Items);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldCallStorageWithFileName_AndRemoveFromCollections_WhenConfirmed()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "ReqCheckerTests_" + Guid.NewGuid());
+        var filePath = Path.Combine(tempDir, "user.json");
+        var profile = new Profile { Id = "p1", Name = "User Profile", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForRowActions(out _, out var mockDialogService, out var mockStorage,
+            filePath, profile);
+
+        try
+        {
+            mockDialogService.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
+
+            var item = vm.Items.First();
+            vm.DeleteProfileCommand.Execute(item);
+
+            mockStorage.Verify(x => x.DeleteProfile("user.json"), Times.Once);
+            Assert.DoesNotContain(item, vm.Items);
+            Assert.DoesNotContain(profile, vm.Profiles);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldClearAppStateCurrentProfile_WhenDeletingActiveProfile()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "ReqCheckerTests_" + Guid.NewGuid());
+        var filePath = Path.Combine(tempDir, "user.json");
+        var profile = new Profile { Id = "p1", Name = "User Profile", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForRowActions(out var mockAppState, out var mockDialogService, out _,
+            filePath, profile, currentProfile: profile);
+
+        try
+        {
+            mockDialogService.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
+
+            var item = vm.Items.First();
+            Assert.True(item.IsActive);
+
+            vm.DeleteProfileCommand.Execute(item);
+
+            mockAppState.Verify(x => x.ClearCurrentProfile(), Times.Once);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void DeleteProfile_ShouldNotMutateCollections_WhenStorageServiceThrows()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "ReqCheckerTests_" + Guid.NewGuid());
+        var filePath = Path.Combine(tempDir, "user.json");
+        var profile = new Profile { Id = "p1", Name = "User Profile", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForRowActions(out _, out var mockDialogService, out var mockStorage,
+            filePath, profile);
+
+        try
+        {
+            mockDialogService.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
+            mockStorage.Setup(x => x.DeleteProfile(It.IsAny<string>()))
+                .Throws(new IOException("Boom"));
+
+            var item = vm.Items.First();
+            vm.DeleteProfileCommand.Execute(item);
+
+            Assert.True(vm.HasError);
+            Assert.Contains("Failed to delete profile", vm.ErrorMessage);
+            Assert.Contains(item, vm.Items);
+            Assert.Contains(profile, vm.Profiles);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void OpenFileLocation_ShouldCallDialogServiceOpenInExplorer_WithProfileFolder()
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), "ReqCheckerTests_" + Guid.NewGuid());
+        var filePath = Path.Combine(tempDir, "user.json");
+        var profile = new Profile { Id = "p1", Name = "User Profile", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForRowActions(out _, out var mockDialogService, out _,
+            filePath, profile);
+
+        try
+        {
+            var item = vm.Items.First();
+            vm.OpenFileLocationCommand.Execute(item);
+
+            mockDialogService.Verify(x => x.OpenInExplorer(tempDir), Times.Once);
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir)) Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadProfiles_SortsRecommendedBeforeOtherBundled_RegardlessOfName()
+    {
+        // Recommended profile has a name that sorts AFTER another bundled profile alphabetically.
+        // The rank-then-name sort must put Recommended first anyway.
+        var alphaBundled = new Profile
+        {
+            Id = "alpha-bundled",
+            Name = "Alpha Bundled Profile",
+            SchemaVersion = 3,
+            Source = ProfileSource.Bundled,
+            Tests = new List<TestDefinition>()
+        };
+        var recommendedBundled = new Profile
+        {
+            Id = ProfileSelectorViewModel.DefaultProfileId,
+            Name = "Zulu Default",
+            SchemaVersion = 3,
+            Source = ProfileSource.Bundled,
+            Tests = new List<TestDefinition>()
+        };
+        var vm = CreateViewModelForItemsTests(out _, out _,
+            bundledProfiles: new List<Profile> { alphaBundled, recommendedBundled });
+
+        var alphaIndex = vm.Items.ToList().FindIndex(i => i.Profile.Id == "alpha-bundled");
+        var recommendedIndex = vm.Items.ToList().FindIndex(i => i.Profile.Id == ProfileSelectorViewModel.DefaultProfileId);
+
+        Assert.True(recommendedIndex >= 0, "Recommended item must be present");
+        Assert.True(alphaIndex >= 0, "Alpha item must be present");
+        Assert.True(recommendedIndex < alphaIndex,
+            $"Recommended should come before alpha-bundled, got recommendedIndex={recommendedIndex}, alphaIndex={alphaIndex}");
+    }
+
+    [Fact]
+    public void LoadProfiles_PinsActiveProfileAboveRecommended()
+    {
+        // Active profile is a non-recommended bundled. It must rank above the recommended one.
+        var recommendedBundled = new Profile
+        {
+            Id = ProfileSelectorViewModel.DefaultProfileId,
+            Name = "Default",
+            SchemaVersion = 3,
+            Source = ProfileSource.Bundled,
+            Tests = new List<TestDefinition>()
+        };
+        var someBundled = new Profile
+        {
+            Id = "active-bundled",
+            Name = "Some Other",
+            SchemaVersion = 3,
+            Source = ProfileSource.Bundled,
+            Tests = new List<TestDefinition>()
+        };
+        var vm = CreateViewModelForItemsTests(out _, out _,
+            bundledProfiles: new List<Profile> { recommendedBundled, someBundled },
+            currentProfile: someBundled);
+
+        var activeIndex = vm.Items.ToList().FindIndex(i => i.Profile.Id == "active-bundled");
+        var recommendedIndex = vm.Items.ToList().FindIndex(i => i.Profile.Id == ProfileSelectorViewModel.DefaultProfileId);
+
+        Assert.True(activeIndex >= 0, "Active item must be present");
+        Assert.True(recommendedIndex >= 0, "Recommended item must be present");
+        Assert.True(activeIndex < recommendedIndex,
+            $"Active should come before recommended, got activeIndex={activeIndex}, recommendedIndex={recommendedIndex}");
+    }
+
+    [Fact]
+    public void OpenFileLocation_ShouldNoOp_WhenItemIsNullOrBundled()
+    {
+        var bundled = new Profile { Id = "b1", Name = "Bundled", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out _, out _, bundledProfiles: new List<Profile> { bundled });
+        var bundledItem = vm.Items.First();
+        Assert.Null(bundledItem.SourceFilePath);
+
+        // Cast to access the private DialogService mock indirectly via the page VM's behavior.
+        // We can't observe DialogService here without rebuilding the VM. The contract is:
+        // OpenFileLocation must return without throwing for null and for bundled rows.
+        var ex1 = Record.Exception(() => vm.OpenFileLocationCommand.Execute(null));
+        var ex2 = Record.Exception(() => vm.OpenFileLocationCommand.Execute(bundledItem));
+
+        Assert.Null(ex1);
+        Assert.Null(ex2);
+    }
 }

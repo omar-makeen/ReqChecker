@@ -46,6 +46,13 @@ public class AppState : IAppState
     }
 
     /// <inheritdoc />
+    public void ClearCurrentProfile()
+    {
+        CurrentProfile = null;
+        CurrentProfileChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <inheritdoc />
     public void SetSelectedTestIds(IReadOnlyList<string>? testIds)
     {
         SelectedTestIds = testIds;
@@ -101,6 +108,11 @@ public interface IAppState
     /// Sets the current profile.
     /// </summary>
     void SetCurrentProfile(Profile profile);
+
+    /// <summary>
+    /// Clears the current profile selection. Fires CurrentProfileChanged.
+    /// </summary>
+    void ClearCurrentProfile();
 
     /// <summary>
     /// Sets the selected test IDs for the next run. Null means "run all".

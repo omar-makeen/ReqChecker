@@ -17,6 +17,12 @@ public partial class ProfileListItemViewModel : ObservableObject
     public bool IsRecommended { get; }
     public string AccessibleName { get; }
 
+    /// <summary>
+    /// Absolute path to the underlying JSON file for user-source profiles. Null for bundled profiles.
+    /// Drives row-action visibility (delete / open file location are hidden for bundled rows).
+    /// </summary>
+    public string? SourceFilePath { get; }
+
     [ObservableProperty]
     private bool _isActive;
 
@@ -24,6 +30,7 @@ public partial class ProfileListItemViewModel : ObservableObject
     {
         Profile = profile;
         Name = profile.Name;
+        SourceFilePath = sourceFilePath;
         SourceLabel = profile.Source == ProfileSource.Bundled ? "Bundled" : "User";
         IsRecommended = isRecommended;
         AccessibleName = isRecommended ? $"{profile.Name} (recommended)" : profile.Name;

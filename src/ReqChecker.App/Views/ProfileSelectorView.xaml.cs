@@ -44,6 +44,36 @@ public partial class ProfileSelectorView
         }
     }
 
+    private void Kebab_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn || btn.ContextMenu == null)
+            return;
+
+        btn.ContextMenu.PlacementTarget = btn;
+        btn.ContextMenu.IsOpen = true;
+        e.Handled = true;
+    }
+
+    private void OpenFileLocationMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi &&
+            mi.DataContext is ProfileListItemViewModel item &&
+            DataContext is ProfileSelectorViewModel vm)
+        {
+            vm.OpenFileLocationCommand.Execute(item);
+        }
+    }
+
+    private void DeleteProfileMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi &&
+            mi.DataContext is ProfileListItemViewModel item &&
+            DataContext is ProfileSelectorViewModel vm)
+        {
+            vm.DeleteProfileCommand.Execute(item);
+        }
+    }
+
     private void DismissBanner_Click(object sender, RoutedEventArgs e)
     {
         if (WelcomeBanner.Visibility != Visibility.Visible)

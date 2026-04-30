@@ -350,10 +350,11 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <!-- Top row: Name + Recommended badge -->
+                                <!-- Top row: Name + Recommended badge + kebab actions -->
                                 <Grid Grid.Row="0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
@@ -375,6 +376,40 @@
                                                    FontWeight="Medium"
                                                    Foreground="White"/>
                                     </Border>
+
+                                    <!-- Row actions kebab — user-source rows only -->
+                                    <Button Grid.Column="2"
+                                            Style="{StaticResource GhostButton}"
+                                            Click="Kebab_Click"
+                                            Tag="{Binding}"
+                                            Visibility="{Binding SourceFilePath, Converter={StaticResource NullToVisibilityConverter}}"
+                                            Margin="8,0,0,0"
+                                            Padding="6"
+                                            VerticalAlignment="Center"
+                                            ToolTip="More actions"
+                                            ToolTipService.InitialShowDelay="400"
+                                            AutomationProperties.Name="Profile actions">
+                                        <ui:SymbolIcon Symbol="MoreVertical24" FontSize="16"/>
+                                        <Button.ContextMenu>
+                                            <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                                <MenuItem Header="Open file location"
+                                                          Click="OpenFileLocationMenuItem_Click">
+                                                    <MenuItem.Icon>
+                                                        <ui:SymbolIcon Symbol="FolderOpen24" FontSize="14"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator/>
+                                                <MenuItem Header="Delete"
+                                                          Click="DeleteProfileMenuItem_Click"
+                                                          Foreground="{DynamicResource StatusFail}">
+                                                    <MenuItem.Icon>
+                                                        <ui:SymbolIcon Symbol="Delete24" FontSize="14"
+                                                                       Foreground="{DynamicResource StatusFail}"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                    </Button>
                                 </Grid>
 
                                 <!-- Bottom row: metadata segments -->
