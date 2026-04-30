@@ -1176,4 +1176,165 @@ public class ProfileSelectorViewModelTests
         Assert.Null(ex1);
         Assert.Null(ex2);
     }
+
+    private static (ProfileSelectorViewModel vm, Mock<DialogService> dialog, Mock<IProfileStorageService> storage)
+        CreateViewModelForImportCollisionTests(
+            Profile bundledLoaded,
+            Profile fileBeingImported,
+            string sourceFilePath = "C:\\import\\incoming.json",
+            string destPath = "C:\\dest\\incoming.json")
+    {
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var dialog = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var storage = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
+
+        // Bundled-load path: returns the pre-existing profile (so it lands in Profiles before import runs).
+        mockProfileLoader.Setup(x => x.LoadFromStreamAsync(It.IsAny<Stream>()))
+            .ReturnsAsync(bundledLoaded);
+        // File-load path (the import): returns the colliding-id profile.
+        mockProfileLoader.Setup(x => x.LoadFromFileAsync(sourceFilePath))
+            .ReturnsAsync(fileBeingImported);
+        mockProfileValidator.Setup(x => x.ValidateAsync(It.IsAny<Profile>()))
+            .ReturnsAsync(new List<string>());
+        storage.Setup(x => x.GetProfileFilePaths()).Returns(Array.Empty<string>());
+        storage.Setup(x => x.CopyProfileToUserDirectory(sourceFilePath, true)).Returns(destPath);
+        storage.Setup(x => x.SaveProfileWithRegeneratedIdAsync(sourceFilePath, It.IsAny<string>()))
+            .ReturnsAsync(destPath);
+        dialog.Setup(x => x.OpenProfileFileDialog()).Returns(sourceFilePath);
+
+        var vm = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            dialog.Object,
+            mockNavigationService.Object,
+            storage.Object,
+            mockPreferencesService.Object);
+
+        return (vm, dialog, storage);
+    }
+
+    [Fact]
+    public async Task ImportProfileAsync_NoCollision_UsesCopyProfileToUserDirectory()
+    {
+        // Bundled has id=A, file being imported has id=B. No collision -> normal copy path.
+        var bundled = new Profile { Id = "id-A", Name = "Bundled A", SchemaVersion = 3, Source = ProfileSource.Bundled, Tests = new List<TestDefinition>() };
+        var imported = new Profile { Id = "id-B", Name = "Imported B", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var (vm, dialog, storage) = CreateViewModelForImportCollisionTests(bundled, imported);
+
+        await vm.ImportProfileCommand.ExecuteAsync(null);
+
+        storage.Verify(x => x.CopyProfileToUserDirectory(It.IsAny<string>(), true), Times.Once);
+        storage.Verify(x => x.SaveProfileWithRegeneratedIdAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        dialog.Verify(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        Assert.Contains(vm.Profiles, p => p.Id == "id-B");
+    }
+
+    [Fact]
+    public async Task ImportProfileAsync_BundledIdCollision_UserCancels_AbortsImport()
+    {
+        var bundled = new Profile { Id = "shared-id", Name = "Bundled Original", SchemaVersion = 3, Source = ProfileSource.Bundled, Tests = new List<TestDefinition>() };
+        var imported = new Profile { Id = "shared-id", Name = "User Copy", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var (vm, dialog, storage) = CreateViewModelForImportCollisionTests(bundled, imported);
+
+        dialog.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+
+        await vm.ImportProfileCommand.ExecuteAsync(null);
+
+        dialog.Verify(x => x.ShowConfirmationDialog("Profile ID conflict", It.IsAny<string>()), Times.Once);
+        storage.Verify(x => x.CopyProfileToUserDirectory(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        storage.Verify(x => x.SaveProfileWithRegeneratedIdAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        // The colliding User Copy must NOT have been added.
+        Assert.DoesNotContain(vm.Profiles, p => p.Name == "User Copy");
+        Assert.False(vm.HasError);
+    }
+
+    [Fact]
+    public async Task ImportProfileAsync_BundledIdCollision_UserConfirms_RegeneratesId()
+    {
+        var bundled = new Profile { Id = "shared-id", Name = "Bundled Original", SchemaVersion = 3, Source = ProfileSource.Bundled, Tests = new List<TestDefinition>() };
+        var imported = new Profile { Id = "shared-id", Name = "User Copy", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var (vm, dialog, storage) = CreateViewModelForImportCollisionTests(bundled, imported);
+
+        dialog.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+
+        await vm.ImportProfileCommand.ExecuteAsync(null);
+
+        // Storage write went through the regenerated-id path, not plain copy.
+        storage.Verify(x => x.SaveProfileWithRegeneratedIdAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        storage.Verify(x => x.CopyProfileToUserDirectory(It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+
+        // Imported profile is now in the list with a NEW id (not "shared-id").
+        var userCopy = vm.Profiles.FirstOrDefault(p => p.Name == "User Copy");
+        Assert.NotNull(userCopy);
+        Assert.NotEqual("shared-id", userCopy.Id);
+        Assert.True(Guid.TryParse(userCopy.Id, out _), "Regenerated id should be a parseable GUID");
+
+        // Original bundled profile still has its original id.
+        var stillBundled = vm.Profiles.FirstOrDefault(p => p.Name == "Bundled Original");
+        Assert.NotNull(stillBundled);
+        Assert.Equal("shared-id", stillBundled.Id);
+    }
+
+    [Fact]
+    public async Task ImportProfileAsync_UserToUserIdCollision_DetectedSameAsBundled()
+    {
+        // First user-imported profile (no collision) lands in Profiles via normal copy.
+        // Second import has the same id as the first user profile -> collision must be detected
+        // (proves the check covers User-vs-User, not just Bundled-vs-User).
+        var firstUser = new Profile { Id = "shared-id", Name = "First User", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+        var secondUser = new Profile { Id = "shared-id", Name = "Second User", SchemaVersion = 3, Source = ProfileSource.UserProvided, Tests = new List<TestDefinition>() };
+
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var dialog = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var storage = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
+
+        // Pretend the first user profile was already on disk at construction time.
+        storage.Setup(x => x.GetProfileFilePaths())
+            .Returns(new[] { "C:\\users\\first.json" });
+        mockProfileLoader.Setup(x => x.LoadFromFileAsync("C:\\users\\first.json"))
+            .ReturnsAsync(firstUser);
+        // The import dialog returns a different file path for the second one.
+        dialog.Setup(x => x.OpenProfileFileDialog()).Returns("C:\\import\\second.json");
+        mockProfileLoader.Setup(x => x.LoadFromFileAsync("C:\\import\\second.json"))
+            .ReturnsAsync(secondUser);
+        mockProfileValidator.Setup(x => x.ValidateAsync(It.IsAny<Profile>()))
+            .ReturnsAsync(new List<string>());
+        storage.Setup(x => x.SaveProfileWithRegeneratedIdAsync("C:\\import\\second.json", It.IsAny<string>()))
+            .ReturnsAsync("C:\\dest\\second.json");
+        // User confirms.
+        dialog.Setup(x => x.ShowConfirmationDialog(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+
+        var vm = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            dialog.Object,
+            mockNavigationService.Object,
+            storage.Object,
+            mockPreferencesService.Object);
+
+        await vm.ImportProfileCommand.ExecuteAsync(null);
+
+        // Confirmation should have been shown (collision detected against the User-source profile).
+        dialog.Verify(x => x.ShowConfirmationDialog("Profile ID conflict", It.IsAny<string>()), Times.Once);
+        storage.Verify(x => x.SaveProfileWithRegeneratedIdAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        var secondCopy = vm.Profiles.FirstOrDefault(p => p.Name == "Second User");
+        Assert.NotNull(secondCopy);
+        Assert.NotEqual("shared-id", secondCopy.Id);
+    }
 }

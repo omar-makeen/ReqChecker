@@ -1,6 +1,8 @@
 using ReqChecker.Core.Interfaces;
 using Serilog;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace ReqChecker.Infrastructure.Profile;
 
@@ -149,5 +151,68 @@ public class ProfileStorageService : IProfileStorageService
 
         var filePath = Path.Combine(_profilesPath, fileName);
         return File.Exists(filePath);
+    }
+
+    /// <inheritdoc />
+    public async Task<string> SaveProfileWithRegeneratedIdAsync(string sourcePath, string newId)
+    {
+        if (string.IsNullOrEmpty(sourcePath))
+        {
+            throw new ArgumentException("Source path cannot be null or empty.", nameof(sourcePath));
+        }
+
+        if (!File.Exists(sourcePath))
+        {
+            throw new FileNotFoundException("Source file not found.", sourcePath);
+        }
+
+        if (string.IsNullOrEmpty(newId))
+        {
+            throw new ArgumentException("New ID cannot be null or empty.", nameof(newId));
+        }
+
+        EnsureUserProfilesDirectory();
+
+        var json = await File.ReadAllTextAsync(sourcePath);
+        var node = JsonNode.Parse(json);
+        if (node is JsonObject obj)
+        {
+            // Remove any existing 'id' key (case-insensitive) so the canonical "id" is the only one.
+            foreach (var key in obj.Select(kvp => kvp.Key).ToList())
+            {
+                if (string.Equals(key, "id", StringComparison.OrdinalIgnoreCase))
+                {
+                    obj.Remove(key);
+                }
+            }
+            obj["id"] = newId;
+        }
+
+        // Filename = original-base + short-id suffix, so the new copy never overwrites an
+        // existing user file (e.g., when the colliding profile was itself imported under the
+        // same source filename). The 8-hex-char suffix is derived from the regenerated GUID.
+        var originalBase = Path.GetFileNameWithoutExtension(sourcePath);
+        if (string.IsNullOrEmpty(originalBase))
+        {
+            originalBase = "profile";
+        }
+        var hexId = newId.Replace("-", string.Empty);
+        var shortId = hexId.Substring(0, Math.Min(8, hexId.Length));
+
+        var destPath = Path.Combine(_profilesPath, $"{originalBase}-{shortId}.json");
+        // Defensive: if a file at this path somehow already exists, append -2, -3, … to find
+        // a free slot. Avoids any silent overwrite.
+        var dedupeIndex = 2;
+        while (File.Exists(destPath))
+        {
+            destPath = Path.Combine(_profilesPath, $"{originalBase}-{shortId}-{dedupeIndex}.json");
+            dedupeIndex++;
+        }
+
+        var serialized = node?.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) ?? json;
+        await File.WriteAllTextAsync(destPath, serialized);
+
+        Log.Information("Saved profile with regenerated ID to user directory: {DestPath}", destPath);
+        return destPath;
     }
 }

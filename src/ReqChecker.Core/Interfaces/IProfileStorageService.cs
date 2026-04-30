@@ -42,4 +42,15 @@ public interface IProfileStorageService
     /// <param name="fileName">The file name to check.</param>
     /// <returns>True if the file exists, false otherwise.</returns>
     bool ProfileExists(string fileName);
+
+    /// <summary>
+    /// Reads the JSON at <paramref name="sourcePath"/>, replaces its top-level "id" field
+    /// with <paramref name="newId"/> (case-insensitive match preserved), and writes the
+    /// result to the user profiles directory using the source file's name. Used to resolve
+    /// profile-ID collisions at import time without modifying the user's original source file.
+    /// </summary>
+    /// <param name="sourcePath">Absolute path to the source JSON file.</param>
+    /// <param name="newId">The new GUID to write into the file's id field.</param>
+    /// <returns>The absolute destination path inside the user profiles directory.</returns>
+    Task<string> SaveProfileWithRegeneratedIdAsync(string sourcePath, string newId);
 }
