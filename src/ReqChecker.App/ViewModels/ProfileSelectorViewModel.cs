@@ -294,8 +294,26 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
                 profile = await _profileMigrator.MigrateAsync(profile);
             }
 
-            // Copy to user profiles directory
-            var destPath = _profileStorageService.CopyProfileToUserDirectory(filePath, overwrite: true);
+            // Detect ID collision against any already-loaded profile (bundled or user). If the
+            // user wants to keep both, regenerate the ID and persist with the new value so the
+            // next reload doesn't recreate the duplicate.
+            var collidingProfile = Profiles.FirstOrDefault(p => p.Id == profile.Id);
+            string destPath;
+            if (collidingProfile != null)
+            {
+                var message = $"A profile with this ID already exists ('{collidingProfile.Name}'). Import as a separate copy with a new ID?";
+                if (!_dialogService.ShowConfirmationDialog("Profile ID conflict", message))
+                {
+                    return;
+                }
+
+                profile.Id = Guid.NewGuid().ToString();
+                destPath = await _profileStorageService.SaveProfileWithRegeneratedIdAsync(filePath, profile.Id);
+            }
+            else
+            {
+                destPath = _profileStorageService.CopyProfileToUserDirectory(filePath, overwrite: true);
+            }
 
             // Add to profiles list
             Profiles.Add(profile);
