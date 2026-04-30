@@ -10,7 +10,7 @@
       FocusManager.FocusedElement="{Binding ElementName=RefreshButton}">
 
     <Page.Resources>
-        <converters:ProfileRecommendedConverter x:Key="ProfileRecommendedConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
         <!-- Banner dismiss animation -->
         <Storyboard x:Key="BannerDismissStoryboard">
@@ -30,12 +30,47 @@
             </DoubleAnimation>
         </Storyboard>
 
-        <!-- Staggered entrance animation for profile cards -->
-        <Style x:Key="AnimatedProfileCard" TargetType="Border">
+        <Style x:Key="ProfileRowChrome" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="0"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform Y="-1"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
+                                              BlurRadius="15"
+                                              ShadowDepth="0"
+                                              Opacity="0.3"
+                                              Direction="0"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AnimatedProfileRow" TargetType="Border" BasedOn="{StaticResource ProfileRowChrome}">
             <Setter Property="Opacity" Value="0"/>
             <Setter Property="RenderTransform">
                 <Setter.Value>
-                    <TranslateTransform Y="20"/>
+                    <TranslateTransform Y="8"/>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
@@ -44,14 +79,14 @@
                         <Storyboard>
                             <DoubleAnimation Storyboard.TargetProperty="Opacity"
                                              From="0" To="1"
-                                             Duration="0:0:0.3">
+                                             Duration="0:0:0.25">
                                 <DoubleAnimation.EasingFunction>
                                     <CubicEase EasingMode="EaseOut"/>
                                 </DoubleAnimation.EasingFunction>
                             </DoubleAnimation>
                             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             From="20" To="0"
-                                             Duration="0:0:0.3">
+                                             From="8" To="0"
+                                             Duration="0:0:0.25">
                                 <DoubleAnimation.EasingFunction>
                                     <CubicEase EasingMode="EaseOut"/>
                                 </DoubleAnimation.EasingFunction>
@@ -59,6 +94,18 @@
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ProfileRowStatic" TargetType="Border" BasedOn="{StaticResource ProfileRowChrome}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform Y="0"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </Page.Resources>
@@ -156,63 +203,50 @@
                 <TranslateTransform Y="0"/>
             </Border.RenderTransform>
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- Gradient Accent Line -->
-                <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
-                        CornerRadius="2"/>
+                <!-- Icon Container -->
+                <Border Grid.Column="0" Width="48" Height="48"
+                        Background="{DynamicResource AccentPrimary}"
+                        CornerRadius="12" Margin="0,0,16,0">
+                    <ui:SymbolIcon Symbol="Lightbulb24"
+                                   FontSize="24"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                </Border>
 
-                <!-- Banner Content -->
-                <Grid Grid.Row="1" Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                <!-- Text Content -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="Welcome to ReqChecker"
+                               FontSize="20" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimary}"/>
+                    <TextBlock Text="Verify your environment meets requirements. Select a profile below to define which checks to run."
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               Margin="0,4,0,0"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
 
-                    <!-- Icon Container -->
-                    <Border Grid.Column="0" Width="48" Height="48"
-                            Background="{DynamicResource AccentPrimary}"
-                            CornerRadius="12" Margin="0,0,16,0">
-                        <ui:SymbolIcon Symbol="Lightbulb24"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Text Content -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Welcome to ReqChecker"
-                                   FontSize="20" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimary}"/>
-                        <TextBlock Text="Verify your environment meets requirements. Select a profile below to define which checks to run."
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,4,0,0"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-
-                    <!-- Dismiss Button -->
-                    <Button Grid.Column="2"
-                            Style="{StaticResource GhostButton}"
-                            Command="{Binding DismissWelcomeBannerCommand}"
-                            Click="DismissBanner_Click"
-                            TabIndex="3"
-                            Width="40" Height="40"
-                            Padding="0"
-                            VerticalAlignment="Top"
-                            ToolTip="Dismiss welcome banner"
-                            ToolTipService.InitialShowDelay="400"
-                            ToolTipService.ShowOnDisabled="True">
-                        <ui:SymbolIcon Symbol="DismissCircle24" FontSize="20"
-                                       Foreground="{DynamicResource TextSecondary}"/>
-                    </Button>
-                </Grid>
+                <!-- Dismiss Button -->
+                <Button Grid.Column="2"
+                        Style="{StaticResource GhostButton}"
+                        Command="{Binding DismissWelcomeBannerCommand}"
+                        Click="DismissBanner_Click"
+                        TabIndex="3"
+                        Width="40" Height="40"
+                        Padding="0"
+                        VerticalAlignment="Top"
+                        ToolTip="Dismiss welcome banner"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.ShowOnDisabled="True">
+                    <ui:SymbolIcon Symbol="DismissCircle24" FontSize="20"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                </Button>
             </Grid>
         </Border>
 
@@ -245,9 +279,9 @@
                                    Foreground="{DynamicResource StatusFail}"
                                    Margin="0,0,12,0"/>
                     <TextBlock Text="{Binding ErrorMessage}"
-                               Foreground="{DynamicResource StatusFail}"
-                               VerticalAlignment="Center"
-                               TextWrapping="Wrap"/>
+                                Foreground="{DynamicResource StatusFail}"
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap"/>
                 </StackPanel>
 
                 <Button Grid.Column="1"
@@ -261,206 +295,194 @@
             </Grid>
         </Border>
 
-        <!-- Profile List -->
-        <ScrollViewer Grid.Row="3"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-                <!-- Profiles Grid -->
-                <ItemsControl ItemsSource="{Binding Profiles}"
-                              Visibility="{Binding Profiles.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=Invert}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Style="{StaticResource AnimatedProfileCard}"
-                                    Width="320"
-                                    Margin="0,0,16,16"
-                                    Cursor="Hand">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                  CommandParameter="{Binding}"/>
-                                </Border.InputBindings>
+        <!-- Profile List Area -->
+        <Grid Grid.Row="3">
+            <!-- Virtualized Profile List (T006/T007) -->
+            <ListBox x:Name="ProfileListBox"
+                     ItemsSource="{Binding Items}"
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                     SelectionMode="Single"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
+                     VirtualizingPanel.ScrollUnit="Pixel"
+                     AutomationProperties.Name="Profiles list"
+                     KeyDown="ProfileListBox_KeyDown"
+                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0,0,0,12"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisualStyle}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <!-- DynamicResource required: code-behind swaps this resource for reduced-motion -->
+                        <Border x:Name="RowChrome" Padding="16" Cursor="Hand"
+                                Tag="{Binding Profile}"
+                                MouseLeftButtonUp="Row_MouseLeftButtonUp"
+                                ToolTip="{Binding Name}"
+                                ToolTipService.InitialShowDelay="400"
+                                AutomationProperties.Name="{Binding AccessibleName}"
+                                Style="{DynamicResource AnimatedProfileRow}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                                <Border Background="{DynamicResource BackgroundSurface}"
-                                        BorderBrush="{DynamicResource BorderDefault}"
-                                        BorderThickness="1"
-                                        CornerRadius="12"
-                                        ClipToBounds="True">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
-                                                </Trigger>
-                                                <DataTrigger Binding="{Binding Id, Converter={StaticResource ProfileRecommendedConverter}}" Value="Visible">
-                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
-                                                    <Setter Property="BorderThickness" Value="2"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
+                                <!-- Top row: Name + Recommended badge -->
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Name}"
+                                               FontSize="15" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimary}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"/>
 
-                                        <!-- Gradient Header Strip -->
-                                        <Border Grid.Row="0"
-                                                Height="6"
-                                                Background="{DynamicResource AccentGradientHorizontal}"/>
+                                    <!-- Recommended Badge -->
+                                    <Border Grid.Column="1"
+                                            Style="{StaticResource RecommendedBadge}"
+                                            Visibility="{Binding IsRecommended, Converter={StaticResource BoolToVisibilityConverter}}"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="Recommended"
+                                                   FontSize="11"
+                                                   FontWeight="Medium"
+                                                   Foreground="White"/>
+                                    </Border>
+                                </Grid>
 
-                                        <!-- Card Content -->
-                                        <StackPanel Grid.Row="1" Margin="20,16,20,20">
-                                            <!-- Profile Name and Source Badge -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                                <!-- Bottom row: metadata segments -->
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
+                                    <!-- Source chip -->
+                                    <Border BorderBrush="{DynamicResource BorderSubtle}"
+                                            BorderThickness="1"
+                                            Background="Transparent"
+                                            CornerRadius="4"
+                                            Padding="8,2">
+                                        <TextBlock Text="{Binding SourceLabel}"
+                                                   FontSize="11" FontWeight="Medium"
+                                                   Foreground="{DynamicResource TextSecondary}"/>
+                                    </Border>
 
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding Name}"
-                                                           Style="{DynamicResource TextH3}"
-                                                           Foreground="{DynamicResource TextPrimary}"
-                                                           FontWeight="SemiBold"
-                                                           TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text=" · " Foreground="{DynamicResource TextTertiary}" VerticalAlignment="Center" Margin="6,0"/>
 
-                                                <!-- Recommended Badge -->
-                                                <Border Grid.Column="1"
-                                                        Style="{StaticResource RecommendedBadge}"
-                                                        Visibility="{Binding Id, Converter={StaticResource ProfileRecommendedConverter}}"
-                                                        Margin="0,0,8,0">
-                                                    <TextBlock Text="Recommended"
-                                                               FontSize="11"
-                                                               FontWeight="Medium"
-                                                               Foreground="White"/>
-                                                </Border>
+                                    <!-- Test count -->
+                                    <TextBlock Text="{Binding TestCountLabel}"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextSecondary}"
+                                               VerticalAlignment="Center"/>
 
-                                                <Border Grid.Column="2"
-                                                        Background="{DynamicResource AccentSecondary}"
-                                                        CornerRadius="10"
-                                                        Padding="10,4">
-                                                    <TextBlock Text="{Binding Source}"
-                                                               FontSize="11"
-                                                               FontWeight="SemiBold"
-                                                               Foreground="White"/>
-                                                </Border>
-                                            </Grid>
+                                    <!-- Schema version -->
+                                    <TextBlock Text=" · " Foreground="{DynamicResource TextTertiary}" VerticalAlignment="Center" Margin="6,0"
+                                               Visibility="{Binding SchemaVersionLabel, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding SchemaVersionLabel}"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextSecondary}"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding SchemaVersionLabel, Converter={StaticResource NullToVisibilityConverter}}"/>
 
-                                            <!-- Profile Details -->
-                                            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
-                                                <ui:SymbolIcon Symbol="Beaker24"
-                                                               FontSize="14"
-                                                               Foreground="{DynamicResource TextTertiary}"
-                                                               Margin="0,0,6,0"/>
-                                                <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
-                                                    <Run Text="{Binding Tests.Count, Mode=OneWay}"/>
-                                                    <Run Text="tests"/>
-                                                </TextBlock>
+                                    <!-- Modified date -->
+                                    <TextBlock Text=" · " Foreground="{DynamicResource TextTertiary}" VerticalAlignment="Center" Margin="6,0"
+                                               Visibility="{Binding ModifiedLabel, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding ModifiedLabel}"
+                                               FontSize="13"
+                                               Foreground="{DynamicResource TextSecondary}"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding ModifiedLabel, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
-                                                <Border Width="1"
-                                                        Height="14"
-                                                        Background="{DynamicResource BorderSubtle}"
-                                                        Margin="16,0"/>
-
-                                                <ui:SymbolIcon Symbol="Code24"
-                                                               FontSize="14"
-                                                               Foreground="{DynamicResource TextTertiary}"
-                                                               Margin="0,0,6,0"/>
-                                                <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="13">
-                                                    <Run Text="v"/>
-                                                    <Run Text="{Binding SchemaVersion, Mode=OneWay}"/>
-                                                </TextBlock>
-                                            </StackPanel>
-
-                                             <!-- Select Button -->
-                                             <Button Style="{StaticResource SecondaryButtonSmall}"
-                                                     Content="Select Profile"
-                                                     Command="{Binding DataContext.SelectProfileCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                     CommandParameter="{Binding}"
-                                                     HorizontalAlignment="Stretch"
-                                                     Margin="0,20,0,0"
-                                                     TabIndex="10"
-                                                     ToolTip="Load this profile and view its tests"
-                                                     ToolTipService.InitialShowDelay="400"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <!-- Empty State -->
-                <Border Visibility="{Binding Profiles.Count, Converter={StaticResource CountToVisibilityConverter}}"
-                        Background="{DynamicResource BackgroundSurface}"
-                        BorderBrush="{DynamicResource BorderSubtle}"
-                        BorderThickness="1"
-                        CornerRadius="12"
-                        Padding="48"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Margin="0,48,0,0">
-                    <StackPanel HorizontalAlignment="Center">
-                        <!-- Icon Composition -->
-                        <Grid Width="80" Height="80" Margin="0,0,0,24">
-                            <Ellipse Fill="{DynamicResource BackgroundElevated}"
-                                     Width="80" Height="80"/>
-                            <ui:SymbolIcon Symbol="Folder24"
-                                           FontSize="36"
-                                           Foreground="{DynamicResource TextTertiary}"
+            <!-- Empty State -->
+            <Border Visibility="{Binding Items.Count, Converter={StaticResource CountToVisibilityConverter}}"
+                    Background="{DynamicResource BackgroundSurface}"
+                    BorderBrush="{DynamicResource BorderSubtle}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="48"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0,48,0,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <!-- Icon Composition -->
+                    <Grid Width="80" Height="80" Margin="0,0,0,24">
+                        <Ellipse Fill="{DynamicResource BackgroundElevated}"
+                                 Width="80" Height="80"/>
+                        <ui:SymbolIcon Symbol="Folder24"
+                                       FontSize="36"
+                                       Foreground="{DynamicResource TextTertiary}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        <Border Background="{DynamicResource AccentPrimary}"
+                                CornerRadius="12"
+                                Width="24" Height="24"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,4,4">
+                            <ui:SymbolIcon Symbol="Add24"
+                                           FontSize="14"
+                                           Foreground="White"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>
-                            <Border Background="{DynamicResource AccentPrimary}"
-                                    CornerRadius="12"
-                                    Width="24" Height="24"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Margin="0,0,4,4">
-                                <ui:SymbolIcon Symbol="Add24"
-                                               FontSize="14"
-                                               Foreground="White"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                            </Border>
-                        </Grid>
+                        </Border>
+                    </Grid>
 
-                        <TextBlock Text="No profiles found"
-                                   Style="{DynamicResource TextH3}"
-                                   Foreground="{DynamicResource TextPrimary}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
+                    <TextBlock Text="No profiles found"
+                               Style="{DynamicResource TextH3}"
+                               Foreground="{DynamicResource TextPrimary}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,8"/>
 
-                        <TextBlock Text="Import a profile to get started with testing"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+                    <TextBlock Text="Import a profile to get started with testing"
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
 
-                <!-- Loading Indicator -->
-                <Border Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                    <StackPanel HorizontalAlignment="Center">
-                        <ui:ProgressRing IsIndeterminate="True"
-                                         Width="48" Height="48"/>
-                        <TextBlock Text="Loading profiles..."
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,16,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </ScrollViewer>
+            <!-- Loading Indicator -->
+            <Border Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <ui:ProgressRing IsIndeterminate="True"
+                                     Width="48" Height="48"/>
+                    <TextBlock Text="Loading profiles..."
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               HorizontalAlignment="Center"
+                               Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

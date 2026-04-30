@@ -72,6 +72,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-30
 - N/A (UI-only) (066-standardize-back-buttons)
 - C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0 (existing), CommunityToolkit.Mvvm 8.4.0 (existing), Microsoft.Toolkit.Uwp.Notifications (new — toast notifications) (067-scheduled-test-runs)
 - `%APPDATA%/ReqChecker/schedules.json` (JSON via System.Text.Json with source generation) (067-scheduled-test-runs)
+- C# 12 / .NET 8.0-windows (`net8.0-windows` TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2 (all existing — no new packages) (068-profile-list-redesign)
+- N/A (UI-only feature; profile data continues to be loaded from embedded resources for bundled profiles and from `%APPDATA%/ReqChecker/profiles/*.json` for user profiles via existing `IProfileStorageService`) (068-profile-list-redesign)
 
 - C# 12 / .NET 8.0 LTS (001-reqchecker-desktop-app)
 
@@ -91,9 +93,9 @@ tests/
 C# 12 / .NET 8.0 LTS: Follow standard conventions
 
 ## Recent Changes
+- 068-profile-list-redesign: Added C# 12 / .NET 8.0-windows (`net8.0-windows` TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0, Microsoft.Extensions.DependencyInjection 10.0.2 (all existing — no new packages)
 - 067-scheduled-test-runs: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0 (existing), CommunityToolkit.Mvvm 8.4.0 (existing), Microsoft.Toolkit.Uwp.Notifications (new — toast notifications)
 - 066-standardize-back-buttons: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
-- 065-fix-run-button-style: Added C# 12 / .NET 8.0-windows (net8.0-windows TFM) + WPF-UI 4.2.0, CommunityToolkit.Mvvm 8.4.0
 
 
 

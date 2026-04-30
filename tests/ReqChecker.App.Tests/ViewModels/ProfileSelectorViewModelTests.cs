@@ -1,6 +1,7 @@
 using Moq;
 using ReqChecker.App.Services;
 using ReqChecker.App.ViewModels;
+using ReqChecker.Core.Enums;
 using ReqChecker.Core.Interfaces;
 using ReqChecker.Core.Models;
 using ReqChecker.Infrastructure.ProfileManagement;
@@ -561,10 +562,53 @@ public class ProfileSelectorViewModelTests
             mockProfileStorageService.Object,
             mockPreferencesService.Object);
 
-        var profile = new Profile { Id = "00000001-0000-0000-0000-000000000001", Name = "Default Profile" };
+        var profile = new Profile
+        {
+            Id = "00000001-0000-0000-0000-000000000001",
+            Name = "Default Profile",
+            Source = ProfileSource.Bundled
+        };
 
         // Act & Assert
         Assert.True(viewModel.IsRecommendedProfile(profile));
+    }
+
+    [Fact]
+    public void IsRecommendedProfile_ShouldReturnFalse_ForUserSourceProfileWithDefaultId()
+    {
+        // A user-imported profile that happens to share the bundled default's ID
+        // must NOT be flagged as Recommended (regression guard for the duplicate-badge bug).
+        var mockPreferencesService = CreateMockPreferencesService();
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockAppState = new Mock<IAppState>();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        var mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(Array.Empty<string>());
+
+        var viewModel = new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+
+        var profile = new Profile
+        {
+            Id = "00000001-0000-0000-0000-000000000001",
+            Name = "User Copy of Default",
+            Source = ProfileSource.UserProvided
+        };
+
+        Assert.False(viewModel.IsRecommendedProfile(profile));
     }
 
     [Fact]
@@ -700,5 +744,146 @@ public class ProfileSelectorViewModelTests
 
         // Assert - no change should be detected since we unsubscribed
         Assert.False(showWelcomeBannerChanged, "ShowWelcomeBanner PropertyChanged should NOT have been raised after disposal");
+    }
+
+    private static ProfileSelectorViewModel CreateViewModelForItemsTests(
+        out Mock<IAppState> mockAppState,
+        out Mock<NavigationService> mockNavigationService,
+        List<Profile>? bundledProfiles = null,
+        string[]? userProfilePaths = null,
+        Profile? currentProfile = null)
+    {
+        var mockProfileLoader = new Mock<IProfileLoader>();
+        var mockProfileValidator = new Mock<IProfileValidator>();
+        var migrationPipeline = CreateMigrationPipeline();
+        var mockDialogService = new Mock<DialogService>();
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        mockAppState = new Mock<IAppState>();
+        mockNavigationService = new Mock<NavigationService>(mockServiceProvider.Object);
+        var mockProfileStorageService = new Mock<IProfileStorageService>();
+        var mockPreferencesService = CreateMockPreferencesService();
+
+        var allProfiles = bundledProfiles ?? new List<Profile>();
+        mockProfileLoader.Setup(x => x.LoadFromStreamAsync(It.IsAny<Stream>()))
+            .ReturnsAsync((Stream s) =>
+            {
+                if (allProfiles.Count > 0)
+                {
+                    var p = allProfiles[0];
+                    allProfiles.RemoveAt(0);
+                    return p;
+                }
+                return new Profile { Name = "Fallback", SchemaVersion = 3 };
+            });
+        mockProfileValidator.Setup(x => x.ValidateAsync(It.IsAny<Profile>()))
+            .ReturnsAsync(new List<string>());
+
+        var paths = userProfilePaths ?? Array.Empty<string>();
+        mockProfileStorageService.Setup(x => x.GetProfileFilePaths())
+            .Returns(paths);
+
+        if (currentProfile != null)
+        {
+            mockAppState.Setup(x => x.CurrentProfile).Returns(currentProfile);
+        }
+
+        return new ProfileSelectorViewModel(
+            mockProfileLoader.Object,
+            mockProfileValidator.Object,
+            migrationPipeline,
+            mockAppState.Object,
+            mockDialogService.Object,
+            mockNavigationService.Object,
+            mockProfileStorageService.Object,
+            mockPreferencesService.Object);
+    }
+
+    [Fact]
+    public void LoadProfiles_PopulatesItemsCollection()
+    {
+        var profile = new Profile { Id = "p1", Name = "Test Profile", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out _, out _, bundledProfiles: new List<Profile> { profile });
+
+        Assert.NotEmpty(vm.Items);
+        var item = vm.Items.FirstOrDefault(i => i.Name == "Test Profile");
+        Assert.NotNull(item);
+        Assert.Equal("Test Profile", item.Name);
+        Assert.Equal("p1", item.Profile.Id);
+    }
+
+    [Fact]
+    public void LoadProfiles_SetsSelectedItem_WhenAppStateHasCurrentProfile()
+    {
+        var profile = new Profile { Id = "p1", Name = "Test Profile", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out _, out _, bundledProfiles: new List<Profile> { profile }, currentProfile: profile);
+
+        Assert.NotNull(vm.SelectedItem);
+        Assert.Equal("p1", vm.SelectedItem.Profile.Id);
+        Assert.True(vm.SelectedItem.IsActive);
+    }
+
+    [Fact]
+    public void OnCurrentProfileChanged_UpdatesIsActiveForMatchingItem()
+    {
+        var profile1 = new Profile { Id = "p1", Name = "Profile 1", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var profile2 = new Profile { Id = "p2", Name = "Profile 2", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out var mockAppState, out _, bundledProfiles: new List<Profile> { profile1, profile2 });
+
+        var handler = mockAppState.Invocations.FirstOrDefault(i => i.Method.Name == "add_CurrentProfileChanged");
+        Assert.NotNull(handler);
+
+        mockAppState.Setup(x => x.CurrentProfile).Returns(profile1);
+
+        mockAppState.Raise(x => x.CurrentProfileChanged += null, EventArgs.Empty);
+
+        Assert.True(vm.Items.First(i => i.Profile.Id == "p1").IsActive);
+        Assert.False(vm.Items.First(i => i.Profile.Id == "p2").IsActive);
+    }
+
+    [Fact]
+    public void OnCurrentProfileChanged_ClearsIsActiveForOtherItems()
+    {
+        var profile1 = new Profile { Id = "p1", Name = "Profile 1", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var profile2 = new Profile { Id = "p2", Name = "Profile 2", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out var mockAppState, out _, bundledProfiles: new List<Profile> { profile1, profile2 });
+
+        mockAppState.Setup(x => x.CurrentProfile).Returns(profile1);
+        mockAppState.Raise(x => x.CurrentProfileChanged += null, EventArgs.Empty);
+
+        Assert.True(vm.Items.First(i => i.Profile.Id == "p1").IsActive);
+
+        mockAppState.Setup(x => x.CurrentProfile).Returns(profile2);
+        mockAppState.Raise(x => x.CurrentProfileChanged += null, EventArgs.Empty);
+
+        Assert.False(vm.Items.First(i => i.Profile.Id == "p1").IsActive);
+        Assert.True(vm.Items.First(i => i.Profile.Id == "p2").IsActive);
+    }
+
+    [Fact]
+    public void SelectingItemThatEqualsCurrentProfile_DoesNotRefireNavigation()
+    {
+        var profile = new Profile { Id = "p1", Name = "Profile 1", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out var mockAppState, out _, bundledProfiles: new List<Profile> { profile });
+
+        mockAppState.Setup(x => x.CurrentProfile).Returns(profile);
+
+        vm.SelectProfileCommand.Execute(profile);
+
+        mockAppState.Verify(x => x.SetCurrentProfile(It.IsAny<Profile>()), Times.Never);
+    }
+
+    [Fact]
+    public void Dispose_UnsubscribesFromCurrentProfileChanged()
+    {
+        var profile = new Profile { Id = "p1", Name = "Profile 1", SchemaVersion = 3, Tests = new List<TestDefinition>() };
+        var vm = CreateViewModelForItemsTests(out var mockAppState, out _, bundledProfiles: new List<Profile> { profile });
+
+        vm.Dispose();
+
+        var initialActiveState = vm.Items[0].IsActive;
+        mockAppState.Setup(x => x.CurrentProfile).Returns(profile);
+        mockAppState.Raise(x => x.CurrentProfileChanged += null, EventArgs.Empty);
+
+        Assert.Equal(initialActiveState, vm.Items[0].IsActive);
     }
 }
