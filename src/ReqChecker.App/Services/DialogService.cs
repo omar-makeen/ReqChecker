@@ -1,5 +1,8 @@
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using Serilog;
 
 namespace ReqChecker.App.Services;
 
@@ -65,5 +68,30 @@ public class DialogService
     {
         var result = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
         return result == MessageBoxResult.Yes;
+    }
+
+    /// <summary>
+    /// Opens the given folder path in Windows Explorer (or the OS default file browser).
+    /// </summary>
+    /// <param name="path">Absolute folder path. Silently returns if the path is empty or does not exist.</param>
+    public virtual void OpenInExplorer(string path)
+    {
+        if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+        {
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "Failed to open path in Explorer: {Path}", path);
+        }
     }
 }
