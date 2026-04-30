@@ -46,6 +46,11 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private bool _hasError;
 
+    public ObservableCollection<ProfileListItemViewModel> Items { get; } = new();
+
+    [ObservableProperty]
+    private ProfileListItemViewModel? _selectedItem;
+
     public bool ShowWelcomeBanner => !_preferencesService.HasSeenOnboarding;
 
     public ProfileSelectorViewModel(
@@ -68,6 +73,7 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         _preferencesService = preferencesService;
 
         _preferencesService.PropertyChanged += OnPreferencesPropertyChanged;
+        _appState.CurrentProfileChanged += OnCurrentProfileChanged;
 
         _ = LoadProfilesAsync();
     }
@@ -80,9 +86,27 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         }
     }
 
+    private void OnCurrentProfileChanged(object? sender, EventArgs e)
+    {
+        var currentProfile = _appState.CurrentProfile;
+        foreach (var item in Items)
+        {
+            item.IsActive = currentProfile != null && item.Profile.Id == currentProfile.Id;
+        }
+
+        if (currentProfile != null)
+        {
+            SelectedItem = Items.FirstOrDefault(i => i.Profile.Id == currentProfile.Id);
+        }
+        else
+        {
+            SelectedItem = null;
+        }
+    }
+
     public bool IsRecommendedProfile(Profile profile)
     {
-        return profile.Id == DefaultProfileId;
+        return profile.Id == DefaultProfileId && profile.Source == ProfileSource.Bundled;
     }
 
     /// <summary>
@@ -97,20 +121,35 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
 
         try
         {
-            var loadedProfiles = new List<Profile>();
+            var loadedItems = new List<(Profile profile, string? filePath)>();
 
-            // Load bundled profiles from embedded resources
             var bundledProfiles = await LoadBundledProfilesAsync();
-            loadedProfiles.AddRange(bundledProfiles);
+            foreach (var profile in bundledProfiles)
+            {
+                loadedItems.Add((profile, null));
+            }
 
-            // Load user profiles from AppData
-            var userProfiles = await LoadUserProfilesAsync();
-            loadedProfiles.AddRange(userProfiles);
+            var userProfileData = await LoadUserProfilesWithPathsAsync();
+            loadedItems.AddRange(userProfileData.Select(t => (t.profile, (string?)t.filePath)));
 
             Profiles.Clear();
-            foreach (var profile in loadedProfiles.OrderBy(p => p.Name))
+            Items.Clear();
+            foreach (var (profile, filePath) in loadedItems.OrderBy(x => x.profile.Name))
             {
                 Profiles.Add(profile);
+
+                Items.Add(new ProfileListItemViewModel(profile, filePath, IsRecommendedProfile(profile)));
+            }
+
+            var currentProfile = _appState.CurrentProfile;
+            if (currentProfile != null)
+            {
+                var match = Items.FirstOrDefault(i => i.Profile.Id == currentProfile.Id);
+                if (match != null)
+                {
+                    match.IsActive = true;
+                    SelectedItem = match;
+                }
             }
         }
         catch (Exception ex)
@@ -170,12 +209,9 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         return profiles;
     }
 
-    /// <summary>
-    /// Loads user profiles from AppData directory.
-    /// </summary>
-    private async Task<List<Profile>> LoadUserProfilesAsync()
+    private async Task<List<(Profile profile, string filePath)>> LoadUserProfilesWithPathsAsync()
     {
-        var profiles = new List<Profile>();
+        var results = new List<(Profile profile, string filePath)>();
         var filePaths = _profileStorageService.GetProfileFilePaths();
 
         foreach (var filePath in filePaths)
@@ -185,20 +221,18 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
                 var profile = await _profileLoader.LoadFromFileAsync(filePath);
                 profile.Source = ProfileSource.UserProvided;
 
-                // Validate profile
                 var validationErrors = await _profileValidator.ValidateAsync(profile);
                 if (validationErrors.Any())
                 {
-                    continue; // Skip invalid user profiles
+                    continue;
                 }
 
-                // Migrate if needed
                 if (_profileMigrator.NeedsMigration(profile))
                 {
                     profile = await _profileMigrator.MigrateAsync(profile);
                 }
 
-                profiles.Add(profile);
+                results.Add((profile, filePath));
             }
             catch (Exception ex)
             {
@@ -206,7 +240,7 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
             }
         }
 
-        return profiles;
+        return results;
     }
 
     /// <summary>
@@ -248,10 +282,13 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
             }
 
             // Copy to user profiles directory
-            _profileStorageService.CopyProfileToUserDirectory(filePath, overwrite: true);
+            var destPath = _profileStorageService.CopyProfileToUserDirectory(filePath, overwrite: true);
 
             // Add to profiles list
             Profiles.Add(profile);
+
+            // Add to bound items list
+            Items.Add(new ProfileListItemViewModel(profile, destPath, IsRecommendedProfile(profile)));
         }
         catch (Exception ex)
         {
@@ -264,13 +301,15 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         }
     }
 
-    /// <summary>
-    /// Navigates to test list with selected profile.
-    /// </summary>
     [RelayCommand]
     private void SelectProfile(Profile? profile)
     {
         if (profile == null)
+        {
+            return;
+        }
+
+        if (_appState.CurrentProfile != null && _appState.CurrentProfile.Id == profile.Id)
         {
             return;
         }
@@ -308,6 +347,7 @@ public partial class ProfileSelectorViewModel : ObservableObject, IDisposable
         }
 
         _preferencesService.PropertyChanged -= OnPreferencesPropertyChanged;
+        _appState.CurrentProfileChanged -= OnCurrentProfileChanged;
         _disposed = true;
     }
 }
