@@ -392,8 +392,10 @@
 
                 <!-- Test Results List -->
                 <ScrollViewer Grid.Row="1"
+                              x:Name="CompletedTestsScrollViewer"
                               VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
+                              HorizontalScrollBarVisibility="Disabled"
+                              ScrollChanged="OnCompletedTestsScrollChanged">
                     <ItemsControl ItemsSource="{Binding TestResults}"
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
