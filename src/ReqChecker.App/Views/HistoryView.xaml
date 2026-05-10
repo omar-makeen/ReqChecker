@@ -61,9 +61,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Gradient Accent Line -->
+                <!-- Accent Line -->
                 <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
+                        Background="{DynamicResource AccentPrimary}"
                         CornerRadius="2"/>
 
                 <!-- Header Content -->

@@ -24,7 +24,7 @@
                               Direction="0"
                               BlurRadius="0"
                               Opacity="0"
-                              Color="{Binding AccentColor, ElementName=Root, FallbackValue=#00d9ff}"/>
+                               Color="{Binding AccentColor, ElementName=Root, FallbackValue={StaticResource ElevationShadowColor}}"/>
         </Border.Effect>
         <Border.Triggers>
             <!-- Hover animation -->

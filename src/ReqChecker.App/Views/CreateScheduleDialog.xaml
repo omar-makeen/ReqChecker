@@ -55,7 +55,7 @@
 
             <!-- Header -->
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,24">
-                <Border Background="{DynamicResource AccentGradientHorizontal}"
+                <Border Background="{DynamicResource AccentPrimary}"
                         CornerRadius="12"
                         Width="48" Height="48"
                         Margin="0,0,16,0">

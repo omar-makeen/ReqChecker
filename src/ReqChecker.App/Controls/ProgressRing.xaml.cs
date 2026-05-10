@@ -7,7 +7,7 @@ using System.Windows.Shapes;
 namespace ReqChecker.App.Controls;
 
 /// <summary>
-/// A premium progress ring control with gradient stroke and percentage display.
+/// A progress ring control with accent stroke and percentage display.
 /// Supports both determinate (with Progress value) and indeterminate modes.
 /// </summary>
 public partial class ProgressRing : UserControl

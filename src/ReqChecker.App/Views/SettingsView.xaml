@@ -50,9 +50,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Gradient Accent Line -->
+                <!-- Accent Line -->
                 <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
+                        Background="{DynamicResource AccentPrimary}"
                         CornerRadius="2"/>
 
                 <!-- Header Content -->
@@ -123,7 +123,7 @@
                                     BorderBrush="Transparent"
                                     Padding="16">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
                                 </Border.Effect>
                                 <Border.Triggers>
                                     <EventTrigger RoutedEvent="MouseEnter">
@@ -182,7 +182,7 @@
                                     BorderBrush="Transparent"
                                     Padding="16">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
                                 </Border.Effect>
                                 <Border.Triggers>
                                     <EventTrigger RoutedEvent="MouseEnter">
@@ -241,7 +241,7 @@
                             Background="{DynamicResource BackgroundElevated}"
                             Padding="16">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
                         </Border.Effect>
                         <StackPanel>
                             <TextBlock Text="ReqChecker" 
@@ -273,7 +273,7 @@
                             Background="{DynamicResource BackgroundElevated}"
                             Padding="16">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationGlowColor}"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
                         </Border.Effect>
                         <StackPanel>
                             <TextBlock Text="Reset all settings to their default values" 

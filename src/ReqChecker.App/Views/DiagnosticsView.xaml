@@ -57,9 +57,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Gradient Accent Line -->
+                <!-- Accent Line -->
                 <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
+                        Background="{DynamicResource AccentPrimary}"
                         CornerRadius="2"/>
 
                 <!-- Header Content -->
@@ -220,7 +220,7 @@
                         <StackPanel>
                             <!-- Section Header -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                                <Border Background="{DynamicResource AccentSecondary}"
+                                 <Border Background="{DynamicResource AccentPrimary}"
                                         CornerRadius="6"
                                         Width="32" Height="32"
                                         Margin="0,0,12,0">
@@ -373,7 +373,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                                                    <Border Background="{DynamicResource AccentPrimary}"
+                                                                   <Border Background="{DynamicResource AccentPrimary}"
                                                                             Width="6" Height="6"
                                                                             CornerRadius="3"
                                                                             Margin="0,0,8,0"

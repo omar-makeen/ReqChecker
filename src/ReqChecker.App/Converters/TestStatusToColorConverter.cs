@@ -1,6 +1,8 @@
 using ReqChecker.Core.Enums;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace ReqChecker.App.Converters;
 
@@ -14,16 +16,28 @@ public class TestStatusToColorConverter : IValueConverter
     {
         if (value is TestStatus status)
         {
-            return status switch
+            var isGlow = parameter?.ToString() == "GlowColor";
+            var color = status switch
             {
-                TestStatus.Pass => new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(76, 175, 80)),   // #4CAF50
-                TestStatus.Fail => new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(220, 53, 69)),     // #DC3545
-                TestStatus.Skipped => new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(107, 114, 128)), // #6B7280
-                _ => new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray)
+                TestStatus.Pass => isGlow
+                    ? (Color)Application.Current.FindResource("StatusPassGlowColor")
+                    : (Color)Application.Current.FindResource("StatusPassColor"),
+                TestStatus.Fail => isGlow
+                    ? (Color)Application.Current.FindResource("StatusFailGlowColor")
+                    : (Color)Application.Current.FindResource("StatusFailColor"),
+                TestStatus.Skipped => isGlow
+                    ? (Color)Application.Current.FindResource("StatusSkipGlowColor")
+                    : (Color)Application.Current.FindResource("StatusSkipColor"),
+                _ => (Color)Application.Current.FindResource("StatusInfoColor")
             };
+
+            if (targetType == typeof(Color) || targetType == typeof(Color?))
+                return color;
+
+            return new SolidColorBrush(color);
         }
 
-        return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+        return new SolidColorBrush(Colors.Gray);
     }
 
     /// <inheritdoc/>

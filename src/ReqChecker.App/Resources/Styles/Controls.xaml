@@ -14,7 +14,7 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{DynamicResource AccentGradientHorizontal}"/>
+        <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
@@ -433,7 +433,7 @@
         </Setter>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource ElevationGlowColor}"
+                <DropShadowEffect Color="{DynamicResource ElevationShadowColor}"
                                   BlurRadius="10"
                                   ShadowDepth="0"
                                   Opacity="1"
@@ -447,7 +447,7 @@
         <Setter Property="Background" Value="{DynamicResource BackgroundElevated}"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource ElevationGlowHoverColor}"
+                <DropShadowEffect Color="{DynamicResource ElevationShadowHoverColor}"
                                   BlurRadius="20"
                                   ShadowDepth="0"
                                   Opacity="1"
@@ -465,7 +465,7 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource BorderStrong}"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect Color="{DynamicResource ElevationGlowHoverColor}"
+                        <DropShadowEffect Color="{DynamicResource ElevationShadowHoverColor}"
                                           BlurRadius="20"
                                           ShadowDepth="0"
                                           Opacity="1"
@@ -508,12 +508,12 @@
 
     <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->
     <Style x:Key="PromptAtRunIndicator" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource AccentSecondary}"/>
+        <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource AccentSecondaryColor}"
+                <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
                                   BlurRadius="8"
                                   ShadowDepth="0"
                                   Opacity="0.3"
@@ -567,7 +567,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border BorderBrush="{DynamicResource AccentSecondary}"
+                    <Border BorderBrush="{DynamicResource AccentPrimary}"
                             BorderThickness="2"
                             CornerRadius="4"
                             Margin="-2"/>
@@ -804,7 +804,7 @@
 
     <Style x:Key="NavItemActiveIndicator" TargetType="Border">
         <Setter Property="Width" Value="3"/>
-        <Setter Property="Background" Value="{DynamicResource AccentGradient}"/>
+        <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Height" Value="24"/>
@@ -911,7 +911,7 @@
                                     VerticalAlignment="Bottom"
                                     Margin="0,0,0,-8"
                                     CornerRadius="1"
-                                    Background="{DynamicResource AccentGradientHorizontal}"
+                                     Background="{DynamicResource AccentPrimary}"
                                     Visibility="Collapsed"/>
                         </Grid>
                     </Border>
@@ -950,7 +950,7 @@
                             CornerRadius="8"
                             SnapsToDevicePixels="True">
                         <Border.Effect>
-                            <DropShadowEffect Color="{DynamicResource ElevationGlowColor}"
+                            <DropShadowEffect Color="{DynamicResource ElevationShadowColor}"
                                               BlurRadius="10"
                                               ShadowDepth="0"
                                               Opacity="1"
@@ -1052,7 +1052,7 @@
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="True">
                         <Border.Effect>
-                            <DropShadowEffect Color="{DynamicResource ElevationGlowModalColor}"
+                            <DropShadowEffect Color="{DynamicResource ElevationShadowModalColor}"
                                               BlurRadius="20"
                                               ShadowDepth="0"
                                               Opacity="1"
@@ -1142,7 +1142,7 @@
     <!-- CHECKBOX STYLES                              -->
     <!-- ============================================ -->
 
-    <!-- AccentCheckBox - Premium checkbox with accent color -->
+    <!-- AccentCheckBox - Checkbox with accent color -->
     <Style x:Key="AccentCheckBox" TargetType="CheckBox">
         <Setter Property="Width" Value="18"/>
         <Setter Property="Height" Value="18"/>

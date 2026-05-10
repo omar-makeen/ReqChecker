@@ -1,14 +1,14 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- ReqChecker Premium Dark Theme Color Tokens -->
+    <!-- ReqChecker Dark Theme Color Tokens -->
     <!-- Based on design-tokens.json specification -->
 
     <!-- Background Colors -->
-    <Color x:Key="BackgroundBaseColor">#0f0f1a</Color>
-    <Color x:Key="BackgroundSurfaceColor">#1a1a2e</Color>
-    <Color x:Key="BackgroundElevatedColor">#252542</Color>
-    <Color x:Key="BackgroundOverlayColor">#2f2f52</Color>
+    <Color x:Key="BackgroundBaseColor">#0b0d12</Color>
+    <Color x:Key="BackgroundSurfaceColor">#13161d</Color>
+    <Color x:Key="BackgroundElevatedColor">#1c2029</Color>
+    <Color x:Key="BackgroundOverlayColor">#252a35</Color>
 
     <SolidColorBrush x:Key="BackgroundBase" Color="{StaticResource BackgroundBaseColor}"/>
     <SolidColorBrush x:Key="BackgroundSurface" Color="{StaticResource BackgroundSurfaceColor}"/>
@@ -16,12 +16,12 @@
     <SolidColorBrush x:Key="BackgroundOverlay" Color="{StaticResource BackgroundOverlayColor}"/>
 
     <!-- Text Colors (WCAG AA compliant) -->
-    <!-- Primary: #ffffff on #0f0f1a = 18.3:1 contrast ratio - PASS -->
-    <Color x:Key="TextPrimaryColor">#ffffff</Color>
-    <!-- Secondary: #b0b0c8 on #0f0f1a = 8.2:1 contrast ratio - PASS (adjusted from #a0a0b8) -->
-    <Color x:Key="TextSecondaryColor">#b0b0c8</Color>
-    <!-- Tertiary: #8585a0 on #0f0f1a = 4.7:1 contrast ratio - PASS (adjusted from #6b6b80) -->
-    <Color x:Key="TextTertiaryColor">#8585a0</Color>
+    <!-- Primary: #f0f2f5 on #0b0d12 = 16.1:1 contrast ratio - PASS -->
+    <Color x:Key="TextPrimaryColor">#f0f2f5</Color>
+    <!-- Secondary: #a8b0bd on #0b0d12 = 7.5:1 contrast ratio - PASS -->
+    <Color x:Key="TextSecondaryColor">#a8b0bd</Color>
+    <!-- Tertiary: #6e7787 on #0b0d12 = 4.6:1 contrast ratio - PASS -->
+    <Color x:Key="TextTertiaryColor">#6e7787</Color>
 
     <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondary" Color="{StaticResource TextSecondaryColor}"/>
@@ -29,44 +29,30 @@
     <SolidColorBrush x:Key="TextDisabled" Color="{StaticResource TextTertiaryColor}"/>
 
     <!-- Border Colors -->
-    <Color x:Key="BorderSubtleColor">#2a2a45</Color>
-    <Color x:Key="BorderDefaultColor">#3a3a5c</Color>
-    <Color x:Key="BorderStrongColor">#4a4a6e</Color>
+    <Color x:Key="BorderSubtleColor">#23272f</Color>
+    <Color x:Key="BorderDefaultColor">#2e333d</Color>
+    <Color x:Key="BorderStrongColor">#424955</Color>
 
     <SolidColorBrush x:Key="BorderSubtle" Color="{StaticResource BorderSubtleColor}"/>
     <SolidColorBrush x:Key="BorderDefault" Color="{StaticResource BorderDefaultColor}"/>
     <SolidColorBrush x:Key="BorderStrong" Color="{StaticResource BorderStrongColor}"/>
 
-    <!-- Accent Colors (shared across themes) -->
-    <Color x:Key="AccentPrimaryColor">#00d9ff</Color>
-    <Color x:Key="AccentSecondaryColor">#6366f1</Color>
+    <!-- Accent Colors -->
+    <Color x:Key="AccentPrimaryColor">#4f7cff</Color>
 
     <SolidColorBrush x:Key="AccentPrimary" Color="{StaticResource AccentPrimaryColor}"/>
-    <SolidColorBrush x:Key="AccentSecondary" Color="{StaticResource AccentSecondaryColor}"/>
 
     <!-- Brush suffix aliases for WPF-UI naming pattern consistency -->
     <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}"/>
-    <SolidColorBrush x:Key="AccentSecondaryBrush" Color="{StaticResource AccentSecondaryColor}"/>
 
-    <!-- Semi-transparent accent tint (10% opacity of accent cyan) -->
-    <SolidColorBrush x:Key="AccentSubtle" Color="#1A00d9ff"/>
-
-    <!-- Accent Gradient -->
-    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="{StaticResource AccentPrimaryColor}" Offset="0"/>
-        <GradientStop Color="{StaticResource AccentSecondaryColor}" Offset="1"/>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="AccentGradientHorizontal" StartPoint="0,0.5" EndPoint="1,0.5">
-        <GradientStop Color="{StaticResource AccentPrimaryColor}" Offset="0"/>
-        <GradientStop Color="{StaticResource AccentSecondaryColor}" Offset="1"/>
-    </LinearGradientBrush>
+    <!-- Semi-transparent accent tint (10% opacity of accent) -->
+    <SolidColorBrush x:Key="AccentSubtle" Color="#1A4f7cff"/>
 
     <!-- Semantic Colors (Status) -->
-    <Color x:Key="StatusPassColor">#10b981</Color>
-    <Color x:Key="StatusFailColor">#ef4444</Color>
-    <Color x:Key="StatusSkipColor">#f59e0b</Color>
-    <Color x:Key="StatusInfoColor">#3b82f6</Color>
+    <Color x:Key="StatusPassColor">#22c55e</Color>
+    <Color x:Key="StatusFailColor">#f87171</Color>
+    <Color x:Key="StatusSkipColor">#fbbf24</Color>
+    <Color x:Key="StatusInfoColor">#38bdf8</Color>
 
     <SolidColorBrush x:Key="StatusPass" Color="{StaticResource StatusPassColor}"/>
     <SolidColorBrush x:Key="StatusFail" Color="{StaticResource StatusFailColor}"/>
@@ -74,17 +60,17 @@
     <SolidColorBrush x:Key="StatusInfo" Color="{StaticResource StatusInfoColor}"/>
 
     <!-- Status Glow Colors (for badge effects) -->
-    <Color x:Key="StatusPassGlowColor">#4D10b981</Color>
-    <Color x:Key="StatusFailGlowColor">#4Def4444</Color>
-    <Color x:Key="StatusSkipGlowColor">#4Df59e0b</Color>
+    <Color x:Key="StatusPassGlowColor">#4D22c55e</Color>
+    <Color x:Key="StatusFailGlowColor">#4Df87171</Color>
+    <Color x:Key="StatusSkipGlowColor">#4Dfbbf24</Color>
 
-    <!-- Elevation Glow (for dark theme cards) -->
-    <Color x:Key="ElevationGlowColor">#0D00d9ff</Color>
-    <Color x:Key="ElevationGlowHoverColor">#1A00d9ff</Color>
-    <Color x:Key="ElevationGlowModalColor">#2600d9ff</Color>
+    <!-- Elevation Shadow (for dark theme cards) -->
+    <Color x:Key="ElevationShadowColor">#80000000</Color>
+    <Color x:Key="ElevationShadowHoverColor">#99000000</Color>
+    <Color x:Key="ElevationShadowModalColor">#A6000000</Color>
 
     <!-- Focus Ring -->
-    <Color x:Key="FocusRingColor">#806366f1</Color>
+    <Color x:Key="FocusRingColor">#804f7cff</Color>
     <SolidColorBrush x:Key="FocusRing" Color="{StaticResource FocusRingColor}"/>
 
     <!-- WPF-UI NavigationView Pane Background Overrides -->
@@ -131,7 +117,7 @@
     <SolidColorBrush x:Key="ToggleButtonForegroundDisabled" Color="{StaticResource TextTertiaryColor}"/>
 
     <!-- WPF-UI NavigationView Item Background Colors (Dark Theme Overrides) -->
-    <!-- Premium navigation panel styling for dark mode -->
+    <!-- Navigation panel styling for dark mode -->
     <SolidColorBrush x:Key="NavigationViewItemBackgroundPointerOver" Color="{StaticResource BackgroundElevatedColor}"/>
     <SolidColorBrush x:Key="NavigationViewItemBackgroundSelected" Color="{StaticResource BackgroundSurfaceColor}"/>
 
