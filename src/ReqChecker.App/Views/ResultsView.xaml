@@ -54,37 +54,7 @@
             </DoubleAnimation>
         </Storyboard>
 
-        <!-- Staggered entrance animation for result items -->
-        <Style x:Key="AnimatedResultItem" TargetType="controls:ExpanderCard">
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TranslateTransform Y="20"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0" To="1"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             From="20" To="0"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
+
     </Page.Resources>
 
     <Page.InputBindings>
@@ -101,164 +71,126 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="{StaticResource SpacingHeaderToBody}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- Accent Line -->
-                <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentPrimary}"
-                        CornerRadius="2"/>
+            <Button x:Name="BackToTestsButton"
+                    Grid.Column="0"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding NavigateToTestListCommand}"
+                    Margin="0,0,16,0"
+                    VerticalAlignment="Center"
+                    ToolTip="Return to the test suite"
+                    ToolTipService.InitialShowDelay="400"
+                    ToolTipService.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Back to Tests"/>
+                </StackPanel>
+            </Button>
 
-                <!-- Header Content -->
-                <Grid Grid.Row="1" Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Text="Results Dashboard"
+                       Style="{StaticResource PageTitleStyle}"/>
 
-                    <!-- Back Button -->
-                    <Button x:Name="BackToTestsButton"
-                            Grid.Column="0"
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Style="{StaticResource PrimaryButton}"
+                        Command="{Binding RerunFailedTestsCommand}"
+                        Visibility="{Binding HasFailedTests, Converter={StaticResource BoolToVisibilityConverter}}"
+                        TabIndex="2"
+                        ToolTip="Re-execute only the tests that failed or were skipped due to dependencies"
+                        ToolTipService.InitialShowDelay="400"
+                        Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="ArrowRepeatAll24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Re-run Failed"/>
+                    </StackPanel>
+                </Button>
+
+                <Grid>
+                    <Button x:Name="ExportDropdownButton"
                             Style="{StaticResource SecondaryButton}"
-                            Command="{Binding NavigateToTestListCommand}"
-                            Margin="0,0,16,0"
-                            VerticalAlignment="Center"
-                            ToolTip="Return to the test suite"
-                            ToolTipService.InitialShowDelay="400"
-                            ToolTipService.ShowOnDisabled="True">
+                            Command="{Binding ToggleExportMenuCommand}"
+                            IsEnabled="{Binding CanExportNow}"
+                            TabIndex="3"
+                            ToolTip="Save test results in PDF, CSV, or JSON format"
+                            ToolTipService.InitialShowDelay="400">
                         <StackPanel Orientation="Horizontal">
-                            <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                            <TextBlock Text="Back to Tests"/>
+                            <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock Text="Export"/>
+                            <ui:SymbolIcon Symbol="ChevronDown20" FontSize="12" Margin="4,0,0,0"
+                                           Foreground="{DynamicResource TextSecondary}"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Icon Container -->
-                    <Border Grid.Column="1" Width="48" Height="48"
-                            Background="{DynamicResource AccentPrimary}"
-                            CornerRadius="12" Margin="0,0,16,0">
-                        <ui:SymbolIcon Symbol="Poll24"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <TextBlock Text="Results Dashboard"
-                                   FontSize="24" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimary}"/>
-                        <TextBlock Text="View test execution results"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-
-                     <!-- Action Buttons -->
-                     <StackPanel Grid.Column="3" Orientation="Horizontal">
-                         <Button Style="{StaticResource PrimaryButton}"
-                                 Command="{Binding RerunFailedTestsCommand}"
-                                 Visibility="{Binding HasFailedTests, Converter={StaticResource BoolToVisibilityConverter}}"
-                                 TabIndex="2"
-                                 ToolTip="Re-execute only the tests that failed or were skipped due to dependencies"
-                                 ToolTipService.InitialShowDelay="400"
-                                 Margin="0,0,8,0">
-                             <StackPanel Orientation="Horizontal">
-                                 <ui:SymbolIcon Symbol="ArrowRepeatAll24" FontSize="16" Margin="0,0,8,0"/>
-                                 <TextBlock Text="Re-run Failed"/>
-                             </StackPanel>
-                         </Button>
-
-                         <!-- Export Dropdown -->
-                         <Grid>
-                             <Button x:Name="ExportDropdownButton"
-                                     Style="{StaticResource SecondaryButton}"
-                                     Command="{Binding ToggleExportMenuCommand}"
-                                     IsEnabled="{Binding CanExportNow}"
-                                     TabIndex="3"
-                                     ToolTip="Save test results in PDF, CSV, or JSON format"
-                                     ToolTipService.InitialShowDelay="400">
-                                 <StackPanel Orientation="Horizontal">
-                                     <ui:SymbolIcon Symbol="ArrowDownload24" FontSize="16" Margin="0,0,8,0"/>
-                                     <TextBlock Text="Export"/>
-                                     <ui:SymbolIcon Symbol="ChevronDown20" FontSize="12" Margin="4,0,0,0"
-                                                    Foreground="{DynamicResource TextSecondary}"/>
-                                 </StackPanel>
-                             </Button>
-
-                            <Popup x:Name="ExportPopup"
-                                   PlacementTarget="{Binding ElementName=ExportDropdownButton}"
-                                   Placement="Bottom"
-                                   StaysOpen="False"
-                                   AllowsTransparency="True"
-                                   PopupAnimation="None"
-                                   IsOpen="{Binding IsExportMenuOpen, Mode=TwoWay}"
-                                   Opened="ExportPopup_Opened">
-                                <Border x:Name="PopupBorder"
-                                        Background="{DynamicResource BackgroundElevated}"
-                                        BorderBrush="{DynamicResource BorderDefault}"
-                                        BorderThickness="1"
-                                        CornerRadius="8"
-                                        Padding="4"
-                                        Margin="8"
-                                        MinWidth="180"
-                                        Opacity="0"
-                                        RenderTransformOrigin="0.5,0"
-                                        PreviewKeyDown="ExportPopup_PreviewKeyDown">
-                                    <Border.RenderTransform>
-                                        <TranslateTransform x:Name="PopupTranslate" Y="4"/>
-                                    </Border.RenderTransform>
-                                    <Border.Effect>
-                                        <DropShadowEffect Color="{DynamicResource ElevationShadowHoverColor}"
-                                                          BlurRadius="20"
-                                                          ShadowDepth="0"
-                                                          Opacity="1"/>
-                                    </Border.Effect>
-                                    <StackPanel x:Name="ExportMenuItems">
-                                        <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToPdfCommand}"
-                                                ToolTip="Export results as a formatted PDF document"
-                                                ToolTipService.InitialShowDelay="400"
-                                                ToolTipService.ShowOnDisabled="True">
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:SymbolIcon Symbol="Document24" FontSize="16" Margin="0,0,10,0"/>
-                                                <TextBlock Text="PDF Document"/>
-                                            </StackPanel>
-                                        </Button>
-                                        <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToCsvCommand}"
-                                                ToolTip="Export results as a CSV spreadsheet for analysis"
-                                                ToolTipService.InitialShowDelay="400"
-                                                ToolTipService.ShowOnDisabled="True">
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,10,0"/>
-                                                <TextBlock Text="CSV Spreadsheet"/>
-                                            </StackPanel>
-                                        </Button>
-                                        <Button Style="{StaticResource ExportMenuItemButton}"
-                                                Command="{Binding ExportToJsonCommand}"
-                                                ToolTip="Export results as JSON data for integration"
-                                                ToolTipService.InitialShowDelay="400"
-                                                ToolTipService.ShowOnDisabled="True">
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:SymbolIcon Symbol="Code24" FontSize="16" Margin="0,0,10,0"/>
-                                                <TextBlock Text="JSON Data"/>
-                                            </StackPanel>
-                                        </Button>
+                   <Popup x:Name="ExportPopup"
+                           PlacementTarget="{Binding ElementName=ExportDropdownButton}"
+                           Placement="Bottom"
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           PopupAnimation="None"
+                           IsOpen="{Binding IsExportMenuOpen, Mode=TwoWay}"
+                           Opened="ExportPopup_Opened">
+                        <Border x:Name="PopupBorder"
+                                Background="{DynamicResource BackgroundElevated}"
+                                BorderBrush="{DynamicResource BorderDefault}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="4"
+                                Margin="8"
+                                MinWidth="180"
+                                Opacity="0"
+                                RenderTransformOrigin="0.5,0"
+                                PreviewKeyDown="ExportPopup_PreviewKeyDown">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="PopupTranslate" Y="4"/>
+                            </Border.RenderTransform>
+                            <Border.Effect>
+                                <DropShadowEffect Color="{DynamicResource ElevationShadowHoverColor}"
+                                                  BlurRadius="20"
+                                                  ShadowDepth="0"
+                                                  Opacity="1"/>
+                            </Border.Effect>
+                            <StackPanel x:Name="ExportMenuItems">
+                                <Button Style="{StaticResource ExportMenuItemButton}"
+                                        Command="{Binding ExportToPdfCommand}"
+                                        ToolTip="Export results as a formatted PDF document"
+                                        ToolTipService.InitialShowDelay="400"
+                                        ToolTipService.ShowOnDisabled="True">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Document24" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="PDF Document"/>
                                     </StackPanel>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource ExportMenuItemButton}"
+                                        Command="{Binding ExportToCsvCommand}"
+                                        ToolTip="Export results as a CSV spreadsheet for analysis"
+                                        ToolTipService.InitialShowDelay="400"
+                                        ToolTipService.ShowOnDisabled="True">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Table24" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="CSV Spreadsheet"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource ExportMenuItemButton}"
+                                        Command="{Binding ExportToJsonCommand}"
+                                        ToolTip="Export results as JSON data for integration"
+                                        ToolTipService.InitialShowDelay="400"
+                                        ToolTipService.ShowOnDisabled="True">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Code24" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="JSON Data"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                 </Grid>
-            </Grid>
-        </Border>
+            </StackPanel>
+        </Grid>
 
         <!-- Status Message -->
         <Border Grid.Row="1"
@@ -506,8 +438,7 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <controls:ExpanderCard Style="{StaticResource AnimatedResultItem}"
-                                           Title="{Binding DisplayName}"
+                    <controls:ExpanderCard Title="{Binding DisplayName}"
                                            Subtitle="{Binding Duration, Converter={StaticResource DurationFormatConverter}}"
                                            Status="{Binding Status}"
                                            TestDuration="{Binding Duration}"

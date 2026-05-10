@@ -43,60 +43,16 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <!-- Accent Line -->
-                <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentPrimary}"
-                        CornerRadius="2"/>
-
-                <!-- Header Content -->
-                <Grid Grid.Row="1" Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Icon Container -->
-                    <Border Grid.Column="0" Width="48" Height="48"
-                            Background="{DynamicResource AccentPrimary}"
-                            CornerRadius="12" Margin="0,0,16,0">
-                        <ui:SymbolIcon Symbol="Settings24"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Settings"
-                                   FontSize="24" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimary}"/>
-                        <TextBlock Text="Customize your application preferences"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-        </Border>
+        <TextBlock Grid.Row="0" Text="Settings"
+                   Style="{StaticResource PageTitleStyle}"
+                   Margin="{StaticResource SpacingHeaderToBody}"/>
 
         <!-- Content -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
             <StackPanel>
                 <!-- Appearance Section -->
-                <StackPanel Margin="0,0,0,24">
-                    <!-- Section Header -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <ui:SymbolIcon Symbol="PaintBrush24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
-                        <TextBlock Text="Appearance" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
-                    </StackPanel>
+                <StackPanel Margin="{StaticResource SpacingSectionSection}">
+                    <TextBlock Text="Appearance" Style="{StaticResource SectionHeadingStyle}"/>
 
                     <!-- Theme Cards Grid -->
                     <Grid>
@@ -228,67 +184,37 @@
                 </StackPanel>
 
                 <!-- About Section -->
-                <StackPanel Margin="0,0,0,24">
-                    <!-- Section Header -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <ui:SymbolIcon Symbol="Info24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
-                        <TextBlock Text="About" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
-                    </StackPanel>
+                <StackPanel Margin="{StaticResource SpacingSectionSection}">
+                    <TextBlock Text="About" Style="{StaticResource SectionHeadingStyle}"/>
 
-                    <!-- About Card -->
-                    <Border Style="{StaticResource AnimatedSettingsCard}"
-                            CornerRadius="12"
-                            Background="{DynamicResource BackgroundElevated}"
-                            Padding="16">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
-                        </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="ReqChecker" 
-                                       Style="{DynamicResource TextH2}" 
-                                       Foreground="{DynamicResource TextPrimary}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                <TextBlock Text="Version " 
-                                           Style="{DynamicResource TextCaption}" 
-                                           Foreground="{DynamicResource TextSecondary}"/>
-                                <TextBlock Text="{Binding AppVersion}" 
-                                           Style="{DynamicResource TextCaption}" 
-                                           Foreground="{DynamicResource TextSecondary}"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                    <TextBlock Text="ReqChecker"
+                               Style="{DynamicResource TextH2}"
+                               Foreground="{DynamicResource TextPrimary}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Version "
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding AppVersion}"
+                                   Style="{DynamicResource TextCaption}"
+                                   Foreground="{DynamicResource TextSecondary}"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Reset Section -->
-                <StackPanel Margin="0,0,0,24">
-                    <!-- Section Header -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <ui:SymbolIcon Symbol="ArrowReset24" FontSize="20" Foreground="{DynamicResource TextSecondary}" Margin="0,0,8,0"/>
-                        <TextBlock Text="Reset" Style="{DynamicResource TextH2}" Foreground="{DynamicResource TextPrimary}"/>
-                    </StackPanel>
+                <StackPanel Margin="{StaticResource SpacingSectionSection}">
+                    <TextBlock Text="Reset" Style="{StaticResource SectionHeadingStyle}"/>
 
-                    <!-- Reset Card -->
-                    <Border Style="{StaticResource AnimatedSettingsCard}"
-                            CornerRadius="12"
-                            Background="{DynamicResource BackgroundElevated}"
-                            Padding="16">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.3" Color="{DynamicResource ElevationShadowColor}"/>
-                        </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="Reset all settings to their default values" 
-                                       Style="{DynamicResource TextBody}" 
-                                       Foreground="{DynamicResource TextSecondary}"
-                                       Margin="0,0,0,12"/>
-                            <Button Style="{StaticResource SecondaryButton}"
-                                    Content="Reset to Defaults"
-                                    Command="{Binding ResetToDefaultsCommand}"
-                                    TabIndex="3"
-                                    ToolTip="Restore all settings to their original values"
-                                    ToolTipService.InitialShowDelay="400"
-                                    ToolTipService.ShowOnDisabled="True"/>
-                        </StackPanel>
-                    </Border>
+                    <TextBlock Text="Reset all settings to their default values"
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               Margin="0,0,0,12"/>
+                    <Button Style="{StaticResource SecondaryButton}"
+                            Content="Reset to Defaults"
+                            Command="{Binding ResetToDefaultsCommand}"
+                            TabIndex="3"
+                            ToolTip="Restore all settings to their original values"
+                            ToolTipService.InitialShowDelay="400"
+                            ToolTipService.ShowOnDisabled="True"/>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

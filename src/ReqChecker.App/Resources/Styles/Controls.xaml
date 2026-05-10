@@ -496,32 +496,6 @@
         </Setter>
     </Style>
 
-    <!-- Parameter Group Card - For grouped form sections -->
-    <Style x:Key="ParameterGroupCard" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource BackgroundSurface}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderSubtle}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="12"/>
-        <Setter Property="Padding" Value="16"/>
-        <Setter Property="Margin" Value="0,0,0,12"/>
-    </Style>
-
-    <!-- Prompt At Run Indicator - For parameters that will be prompted during execution -->
-    <Style x:Key="PromptAtRunIndicator" TargetType="Border">
-        <Setter Property="Background" Value="{DynamicResource AccentPrimary}"/>
-        <Setter Property="CornerRadius" Value="6"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
-                                  BlurRadius="8"
-                                  ShadowDepth="0"
-                                  Opacity="0.3"
-                                  Direction="0"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!-- ============================================ -->
     <!-- DIAGNOSTICS CARD STYLES                      -->
     <!-- ============================================ -->
@@ -1107,36 +1081,6 @@
     <!-- ============================================ -->
     <!-- PAGE HEADER STYLES                           -->
     <!-- ============================================ -->
-
-    <!-- Animated Page Header - Fade + translateY entrance animation (300ms, CubicEase) -->
-    <Style x:Key="AnimatedPageHeader" TargetType="Border">
-        <Setter Property="Opacity" Value="0"/>
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <TranslateTransform Y="20"/>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <EventTrigger RoutedEvent="Loaded">
-                <BeginStoryboard>
-                    <Storyboard>
-                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                         From="0" To="1" Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <CubicEase EasingMode="EaseOut"/>
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                         From="20" To="0" Duration="0:0:0.3">
-                            <DoubleAnimation.EasingFunction>
-                                <CubicEase EasingMode="EaseOut"/>
-                            </DoubleAnimation.EasingFunction>
-                        </DoubleAnimation>
-                    </Storyboard>
-                </BeginStoryboard>
-            </EventTrigger>
-        </Style.Triggers>
-    </Style>
 
     <!-- ============================================ -->
     <!-- CHECKBOX STYLES                              -->

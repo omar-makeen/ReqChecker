@@ -20,33 +20,10 @@
         <converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
-        <!-- Entrance animation -->
-        <Storyboard x:Key="EntranceAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="0" To="1"
-                             Duration="0:0:0.2"/>
-            <DoubleAnimation Storyboard.TargetName="ContentPanel"
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                             From="20" To="0"
-                             Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
     </Window.Resources>
-
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard Storyboard="{StaticResource EntranceAnimation}"/>
-        </EventTrigger>
-    </Window.Triggers>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid x:Name="ContentPanel" Margin="32">
-            <Grid.RenderTransform>
-                <TranslateTransform Y="0"/>
-            </Grid.RenderTransform>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -54,26 +31,10 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,24">
-                <Border Background="{DynamicResource AccentPrimary}"
-                        CornerRadius="12"
-                        Width="48" Height="48"
-                        Margin="0,0,16,0">
-                    <ui:SymbolIcon Symbol="CalendarClock24"
-                                   FontSize="24"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-                </Border>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="{Binding SaveButtonText, StringFormat='{}{0} Schedule'}"
-                               FontSize="20" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextPrimary}"/>
-                    <TextBlock Text="Configure when to run tests automatically"
-                               Style="{DynamicResource TextCaption}"
-                               Foreground="{DynamicResource TextTertiary}"
-                               Margin="0,4,0,0"/>
-                </StackPanel>
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="{Binding SaveButtonText, StringFormat='{}{0} Schedule'}"
+                           FontSize="20" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimary}"/>
             </StackPanel>
 
             <!-- Form -->
