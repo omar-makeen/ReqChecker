@@ -22,8 +22,7 @@
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Missed Scheduled Runs"
-                       FontSize="20" FontWeight="SemiBold"
-                       Foreground="{DynamicResource TextPrimary}"/>
+                       Style="{StaticResource H2TextStyle}"/>
             <TextBlock Text="The following schedules were due while the app was closed."
                        Style="{DynamicResource TextCaption}"
                        Foreground="{DynamicResource TextTertiary}"

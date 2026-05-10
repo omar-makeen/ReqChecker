@@ -74,7 +74,7 @@
                                Style="{StaticResource SectionHeadingStyle}"/>
 
                     <!-- Test Name (Locked) -->
-                    <Grid Margin="0,0,0,12">
+                    <Grid Margin="{StaticResource SpacingFieldField}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
@@ -88,7 +88,7 @@
                     </Grid>
 
                     <!-- Test Type (Locked) -->
-                    <Grid Margin="0,0,0,12">
+                    <Grid Margin="{StaticResource SpacingFieldField}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
@@ -122,7 +122,7 @@
                                Style="{StaticResource SectionHeadingStyle}"/>
 
                     <!-- Timeout -->
-                    <Grid Margin="0,0,0,12">
+                    <Grid Margin="{StaticResource SpacingFieldField}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
@@ -168,7 +168,7 @@
                     <ItemsControl ItemsSource="{Binding Parameters}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,0,0,12"
+                                <Grid Margin="{StaticResource SpacingFieldField}"
                                       Visibility="{Binding Policy, Converter={StaticResource FieldPolicyToVisibilityConverter}}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="120"/>
@@ -225,17 +225,10 @@
                             CornerRadius="8"
                             Padding="24"
                             HorizontalAlignment="Center">
-                        <StackPanel HorizontalAlignment="Center">
-                            <ui:SymbolIcon Symbol="DocumentBulletList24"
-                                           FontSize="32"
-                                           Foreground="{DynamicResource TextTertiary}"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,0,0,12"/>
-                            <TextBlock Text="No parameters defined for this test"
-                                       Style="{DynamicResource TextBody}"
-                                       Foreground="{DynamicResource TextTertiary}"
-                                       HorizontalAlignment="Center"/>
-                        </StackPanel>
+                        <TextBlock Text="No parameters defined for this test"
+                                   Style="{DynamicResource TextBody}"
+                                   Foreground="{DynamicResource TextTertiary}"
+                                   HorizontalAlignment="Center"/>
                     </Border>
                 </StackPanel>
             </StackPanel>

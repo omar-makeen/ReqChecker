@@ -207,7 +207,7 @@
                     <TextBlock Text="Reset all settings to their default values"
                                Style="{DynamicResource TextBody}"
                                Foreground="{DynamicResource TextSecondary}"
-                               Margin="0,0,0,12"/>
+                               Margin="{StaticResource SpacingFieldField}"/>
                     <Button Style="{StaticResource SecondaryButton}"
                             Content="Reset to Defaults"
                             Command="{Binding ResetToDefaultsCommand}"

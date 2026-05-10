@@ -62,10 +62,19 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <TextBlock Text="{Binding HeaderSubtitle}"
-                           Style="{DynamicResource TextBody}"
-                           Foreground="{DynamicResource TextSecondary}"
-                           Margin="0,4,0,0"/>
+                <TextBlock Foreground="{DynamicResource TextSecondary}"
+                           Margin="0,2,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource BodyTextStyle}">
+                            <Setter Property="Text" Value="{Binding HeaderSubtitle}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HeaderSubtitle}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -134,12 +143,6 @@
                                        Label="{Binding ProgressLabel}"
                                        ShowPercentage="True"
                                        HorizontalAlignment="Center">
-                    <controls:ProgressRing.Effect>
-                         <DropShadowEffect Color="{DynamicResource ElevationShadowColor}"
-                                          BlurRadius="15"
-                                          ShadowDepth="0"
-                                          Opacity="0.3"/>
-                    </controls:ProgressRing.Effect>
                 </controls:ProgressRing>
 
                 <!-- Card Area - Both cards occupy same row to prevent layout shift -->
@@ -308,22 +311,13 @@
 
                 <!-- List Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
-                    <ui:SymbolIcon Symbol="TaskListLtr24"
-                                   FontSize="20"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,0,8,0"/>
                     <TextBlock Text="Completed Tests"
                                Style="{DynamicResource TextH3}"
                                Foreground="{DynamicResource TextPrimary}"/>
-                    <Border Background="{DynamicResource BackgroundElevated}"
-                            CornerRadius="10"
-                            Padding="8,2"
-                            Margin="12,0,0,0"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="{Binding TestResults.Count}"
-                                   Style="{DynamicResource TextCaption}"
-                                   Foreground="{DynamicResource TextSecondary}"/>
-                    </Border>
+                    <TextBlock Text="{Binding TestResults.Count, StringFormat=' · {0}'}"
+                               Style="{DynamicResource TextBody}"
+                               Foreground="{DynamicResource TextSecondary}"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Test Results List -->
