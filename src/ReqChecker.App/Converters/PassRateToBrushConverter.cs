@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -19,39 +20,28 @@ public class PassRateToBrushConverter : IValueConverter
             byte alpha;
             string? mode = parameter as string;
 
-            // Determine opacity based on mode
             if (mode == "Background")
             {
-                alpha = 0x33; // 20% opacity
-            }
-            else // Default to Foreground
-            {
-                alpha = 0xFF; // Full opacity
-            }
-
-            // Determine color based on pass rate thresholds
-            byte r, g, b;
-            if (passRate >= 80)
-            {
-                // Green: #10b981
-                r = 0x10; g = 0xb9; b = 0x81;
-            }
-            else if (passRate >= 50)
-            {
-                // Amber: #f59e0b
-                r = 0xf5; g = 0x9e; b = 0x0b;
+                alpha = 0x33;
             }
             else
             {
-                // Red: #ef4444
-                r = 0xef; g = 0x44; b = 0x44;
+                alpha = 0xFF;
             }
 
-            var brush = new SolidColorBrush(Color.FromArgb(alpha, r, g, b));
+            var baseColor = passRate switch
+            {
+                >= 80 => (Color)Application.Current.FindResource("StatusPassColor"),
+                >= 50 => (Color)Application.Current.FindResource("StatusSkipColor"),
+                _ => (Color)Application.Current.FindResource("StatusFailColor")
+            };
+
+            var color = Color.FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
+            var brush = new SolidColorBrush(color);
             brush.Freeze();
             return brush;
         }
-        var defaultBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x99, 0x99, 0x99)); // Default gray
+        var defaultBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x99, 0x99, 0x99));
         defaultBrush.Freeze();
         return defaultBrush;
     }

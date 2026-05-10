@@ -9,11 +9,6 @@
              Width="120"
              Height="120">
     <UserControl.Resources>
-        <!-- Gradient brush for progress stroke -->
-        <LinearGradientBrush x:Key="ProgressGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#00d9ff" Offset="0"/>
-            <GradientStop Color="#6366f1" Offset="1"/>
-        </LinearGradientBrush>
     </UserControl.Resources>
 
     <Grid>
@@ -30,7 +25,7 @@
                 Width="{Binding ActualWidth, ElementName=Root}"
                 Height="{Binding ActualHeight, ElementName=Root}">
             <Path x:Name="ProgressArc"
-                  Stroke="{StaticResource ProgressGradient}"
+                  Stroke="{DynamicResource AccentPrimary}"
                   StrokeThickness="8"
                   StrokeStartLineCap="Round"
                   StrokeEndLineCap="Round">
@@ -52,7 +47,7 @@
         <Ellipse x:Name="IndeterminateRing"
                  Width="{Binding ActualWidth, ElementName=Root}"
                  Height="{Binding ActualHeight, ElementName=Root}"
-                 Stroke="{StaticResource ProgressGradient}"
+                 Stroke="{DynamicResource AccentPrimary}"
                  StrokeThickness="8"
                  StrokeDashArray="1.5, 3"
                  Visibility="Collapsed"

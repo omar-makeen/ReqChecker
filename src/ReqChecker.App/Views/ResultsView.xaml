@@ -108,9 +108,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Gradient Accent Line -->
+                <!-- Accent Line -->
                 <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
+                        Background="{DynamicResource AccentPrimary}"
                         CornerRadius="2"/>
 
                 <!-- Header Content -->
@@ -215,7 +215,7 @@
                                         <TranslateTransform x:Name="PopupTranslate" Y="4"/>
                                     </Border.RenderTransform>
                                     <Border.Effect>
-                                        <DropShadowEffect Color="{DynamicResource ElevationGlowHoverColor}"
+                                        <DropShadowEffect Color="{DynamicResource ElevationShadowHoverColor}"
                                                           BlurRadius="20"
                                                           ShadowDepth="0"
                                                           Opacity="1"/>

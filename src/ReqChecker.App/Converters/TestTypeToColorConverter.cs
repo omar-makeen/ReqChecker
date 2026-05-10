@@ -24,7 +24,7 @@ public class TestTypeToColorConverter : IValueConverter
                 "FileExists" or "DirectoryExists" or "DiskSpace" =>
                     Application.Current.FindResource("StatusSkip") as SolidColorBrush ?? FallbackBrush,
                 "ProcessList" or "RegistryRead" or "WindowsService" or "OsVersion" or "InstalledSoftware" or "EnvironmentVariable" =>
-                    Application.Current.FindResource("AccentSecondary") as SolidColorBrush ?? FallbackBrush,
+                    Application.Current.FindResource("AccentPrimary") as SolidColorBrush ?? FallbackBrush,
                 _ => Application.Current.FindResource("TextTertiary") as SolidColorBrush ?? FallbackBrush
             };
         }

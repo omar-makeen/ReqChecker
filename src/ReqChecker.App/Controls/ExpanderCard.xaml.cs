@@ -180,10 +180,10 @@ public partial class ExpanderCard : UserControl
     {
         StatusBrush = Status switch
         {
-            TestStatus.Pass => new SolidColorBrush(Color.FromRgb(16, 185, 129)),    // Green
-            TestStatus.Fail => new SolidColorBrush(Color.FromRgb(239, 68, 68)),     // Red
-            TestStatus.Skipped => new SolidColorBrush(Color.FromRgb(245, 158, 11)), // Amber
-            _ => new SolidColorBrush(Color.FromRgb(107, 114, 128))                  // Gray
+            TestStatus.Pass => new SolidColorBrush((Color)Application.Current.FindResource("StatusPassColor")),
+            TestStatus.Fail => new SolidColorBrush((Color)Application.Current.FindResource("StatusFailColor")),
+            TestStatus.Skipped => new SolidColorBrush((Color)Application.Current.FindResource("StatusSkipColor")),
+            _ => new SolidColorBrush((Color)Application.Current.FindResource("StatusInfoColor"))
         };
     }
 

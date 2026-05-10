@@ -142,9 +142,9 @@ public partial class DonutChart : UserControl
 
         var segments = new List<(int value, Color color)>
         {
-            (Passed, Color.FromRgb(16, 185, 129)),   // Green
-            (Failed, Color.FromRgb(239, 68, 68)),    // Red
-            (Skipped, Color.FromRgb(245, 158, 11))   // Amber
+            (Passed, (Color)Application.Current.FindResource("StatusPassColor")),
+            (Failed, (Color)Application.Current.FindResource("StatusFailColor")),
+            (Skipped, (Color)Application.Current.FindResource("StatusSkipColor"))
         };
 
         var startAngle = -90.0; // Start from top

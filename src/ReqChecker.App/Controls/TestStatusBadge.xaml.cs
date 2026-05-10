@@ -100,10 +100,10 @@ public partial class TestStatusBadge : Border
 
         glowEffect.Color = Status switch
         {
-            TestStatus.Pass => Color.FromRgb(16, 185, 129),   // Green
-            TestStatus.Fail => Color.FromRgb(239, 68, 68),    // Red
-            TestStatus.Skipped => Color.FromRgb(245, 158, 11),  // Amber
-            _ => Color.FromRgb(107, 114, 128)                   // Gray
+            TestStatus.Pass => (Color)Application.Current.FindResource("StatusPassGlowColor"),
+            TestStatus.Fail => (Color)Application.Current.FindResource("StatusFailGlowColor"),
+            TestStatus.Skipped => (Color)Application.Current.FindResource("StatusSkipGlowColor"),
+            _ => (Color)Application.Current.FindResource("TextTertiaryColor")
         };
     }
 

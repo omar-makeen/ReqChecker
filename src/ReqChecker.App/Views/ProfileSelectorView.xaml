@@ -55,7 +55,7 @@
                     <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
                     <Setter Property="Effect">
                         <Setter.Value>
-                            <DropShadowEffect Color="{DynamicResource AccentPrimaryColor}"
+                            <DropShadowEffect Color="{DynamicResource ElevationShadowColor}"
                                               BlurRadius="15"
                                               ShadowDepth="0"
                                               Opacity="0.3"
@@ -126,9 +126,9 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Gradient Accent Line -->
+                <!-- Accent Line -->
                 <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentGradientHorizontal}"
+                        Background="{DynamicResource AccentPrimary}"
                         CornerRadius="2"/>
 
                 <!-- Header Content -->
