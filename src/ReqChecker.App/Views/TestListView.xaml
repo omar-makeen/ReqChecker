@@ -11,38 +11,6 @@
       FocusManager.FocusedElement="{Binding ElementName=RunAllTestsButton}">
 
     <Page.Resources>
-        <!-- Staggered entrance animation for test cards -->
-        <Style x:Key="AnimatedTestCard" TargetType="Border">
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TranslateTransform X="30"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0" To="1"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                             From="30" To="0"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- Test type to icon converter logic via DataTriggers -->
         <Style x:Key="TestTypeIcon" TargetType="ui:SymbolIcon">
             <Setter Property="Symbol" Value="Beaker24"/>
@@ -64,94 +32,56 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,16">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="{StaticResource SpacingHeaderToBody}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- Accent Line -->
-                <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentPrimary}"
-                        CornerRadius="2"/>
+            <TextBlock Grid.Column="0" Text="Test Suite"
+                       Style="{StaticResource PageTitleStyle}"/>
 
-                <!-- Header Content -->
-                <Grid Grid.Row="1" Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Border Background="{DynamicResource AccentSubtle}"
+                        CornerRadius="12"
+                        Padding="10,6"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Foreground="{DynamicResource AccentPrimaryBrush}" FontWeight="SemiBold"
+                               Text="{Binding TestCountDisplay}"/>
+                </Border>
 
-                    <!-- Icon Container -->
-                    <Border Grid.Column="0" Width="48" Height="48"
-                            Background="{DynamicResource AccentPrimary}"
-                            CornerRadius="12" Margin="0,0,16,0">
-                        <ui:SymbolIcon Symbol="Beaker24"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="Test Suite"
-                                   FontSize="24" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimary}"/>
-                        <TextBlock Text="Run diagnostics and verify requirements"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
-
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <!-- Enhanced Count Badge -->
-                        <Border Background="{DynamicResource AccentSubtle}"
-                                CornerRadius="12"
-                                Padding="10,6"
-                                Margin="0,0,12,0"
-                                VerticalAlignment="Center"
-                                Visibility="{Binding CurrentProfile, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Foreground="{DynamicResource AccentPrimaryBrush}" FontWeight="SemiBold"
-                                       Text="{Binding TestCountDisplay}"/>
-                        </Border>
-
-                         <!-- Run All Tests Button -->
-                         <Button x:Name="RunAllTestsButton"
-                                 Style="{StaticResource PrimaryButtonLarge}"
-                                 Command="{Binding RunAllTestsCommand}"
-                                 IsEnabled="{Binding HasSelectedTests}"
-                                 TabIndex="1"
-                                 ToolTipService.InitialShowDelay="400"
-                                 ToolTipService.ShowOnDisabled="True">
-                              <Button.ToolTip>
-                                  <ToolTip Style="{StaticResource ModernToolTip}">
-                                      <TextBlock>
-                                          <TextBlock.Style>
-                                              <Style TargetType="TextBlock">
-                                                  <Setter Property="Text" Value="Execute all selected tests and view results"/>
-                                                  <Style.Triggers>
-                                                      <DataTrigger Binding="{Binding HasSelectedTests}" Value="False">
-                                                          <Setter Property="Text" Value="Select at least one test to run"/>
-                                                      </DataTrigger>
-                                                  </Style.Triggers>
-                                              </Style>
-                                          </TextBlock.Style>
-                                      </TextBlock>
-                                  </ToolTip>
-                              </Button.ToolTip>
-                             <StackPanel Orientation="Horizontal">
-                                 <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
-                                 <TextBlock Text="{Binding RunButtonLabel}"/>
-                             </StackPanel>
-                         </Button>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-        </Border>
+                <Button x:Name="RunAllTestsButton"
+                        Style="{StaticResource PrimaryButtonLarge}"
+                        Command="{Binding RunAllTestsCommand}"
+                        IsEnabled="{Binding HasSelectedTests}"
+                        TabIndex="1"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.ShowOnDisabled="True">
+                     <Button.ToolTip>
+                         <ToolTip Style="{StaticResource ModernToolTip}">
+                             <TextBlock>
+                                 <TextBlock.Style>
+                                     <Style TargetType="TextBlock">
+                                         <Setter Property="Text" Value="Execute all selected tests and view results"/>
+                                         <Style.Triggers>
+                                             <DataTrigger Binding="{Binding HasSelectedTests}" Value="False">
+                                                 <Setter Property="Text" Value="Select at least one test to run"/>
+                                             </DataTrigger>
+                                         </Style.Triggers>
+                                     </Style>
+                                 </TextBlock.Style>
+                             </TextBlock>
+                         </ToolTip>
+                     </Button.ToolTip>
+                     <StackPanel Orientation="Horizontal">
+                         <ui:SymbolIcon Symbol="Play24" FontSize="18" Margin="0,0,8,0"/>
+                         <TextBlock Text="{Binding RunButtonLabel}"/>
+                     </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <!-- Validation Error Banner -->
         <Border Grid.Row="1"
@@ -410,7 +340,7 @@
                     <Border Cursor="Hand"
                             AutomationProperties.Name="{Binding Test.DisplayName}">
                         <Border.Style>
-                            <Style TargetType="Border" BasedOn="{StaticResource AnimatedTestCard}">
+                            <Style TargetType="Border">
                                 <Setter Property="Opacity" Value="1"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsSelected}" Value="False">

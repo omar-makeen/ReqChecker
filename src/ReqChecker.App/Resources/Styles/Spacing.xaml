@@ -38,6 +38,12 @@
     <Thickness x:Key="SpacingBaseVertical">0,16</Thickness>
     <Thickness x:Key="SpacingLgVertical">0,24</Thickness>
 
+    <!-- Semantic Spacing Tokens -->
+    <Thickness x:Key="SpacingLabelField">0,0,0,4</Thickness>
+    <Thickness x:Key="SpacingFieldField">0,0,0,16</Thickness>
+    <Thickness x:Key="SpacingSectionSection">0,0,0,32</Thickness>
+    <Thickness x:Key="SpacingHeaderToBody">0,0,0,24</Thickness>
+
     <!-- Border Radius Values -->
     <CornerRadius x:Key="RadiusSm">4</CornerRadius>
     <CornerRadius x:Key="RadiusMd">8</CornerRadius>

@@ -66,6 +66,17 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
+    <!-- Section Heading: 20px SemiBold (based on H2, with heading-to-first-field margin) -->
+    <Style x:Key="SectionHeadingStyle" TargetType="TextBlock" BasedOn="{StaticResource H2TextStyle}">
+        <Setter Property="Margin" Value="0,0,0,16"/>
+    </Style>
+
+    <!-- Page Title: 24px SemiBold (based on H1, for use in page headers) -->
+    <Style x:Key="PageTitleStyle" TargetType="TextBlock" BasedOn="{StaticResource H1TextStyle}">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+    </Style>
+
     <!-- Body: 14px Regular -->
     <Style x:Key="BodyTextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource FontFamilyPrimary}"/>

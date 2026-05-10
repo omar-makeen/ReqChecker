@@ -12,30 +12,7 @@
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource BackgroundBase}">
 
-    <Window.Resources>
-        <Storyboard x:Key="EntranceAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                             From="0" To="1" Duration="0:0:0.2"/>
-            <DoubleAnimation Storyboard.TargetName="ContentPanel"
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                             From="20" To="0" Duration="0:0:0.3">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-    </Window.Resources>
-
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard Storyboard="{StaticResource EntranceAnimation}"/>
-        </EventTrigger>
-    </Window.Triggers>
-
     <Grid x:Name="ContentPanel" Margin="32">
-        <Grid.RenderTransform>
-            <TranslateTransform Y="0"/>
-        </Grid.RenderTransform>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -43,28 +20,13 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-            <Border Background="#1AF59E0B"
-                    BorderBrush="#FFF59E0B"
-                    BorderThickness="1"
-                    CornerRadius="12"
-                    Width="48" Height="48"
-                    Margin="0,0,16,0">
-                <ui:SymbolIcon Symbol="CalendarCancel24"
-                               FontSize="24"
-                               Foreground="#FFF59E0B"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-            </Border>
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Missed Scheduled Runs"
-                           FontSize="20" FontWeight="SemiBold"
-                           Foreground="{DynamicResource TextPrimary}"/>
-                <TextBlock Text="The following schedules were due while the app was closed."
-                           Style="{DynamicResource TextCaption}"
-                           Foreground="{DynamicResource TextTertiary}"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Missed Scheduled Runs"
+                       Style="{StaticResource H2TextStyle}"/>
+            <TextBlock Text="The following schedules were due while the app was closed."
+                       Style="{DynamicResource TextCaption}"
+                       Foreground="{DynamicResource TextTertiary}"
+                       Margin="0,4,0,0"/>
         </StackPanel>
 
         <!-- Missed runs list -->

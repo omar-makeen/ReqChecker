@@ -11,39 +11,7 @@
        FocusManager.FocusedElement="{Binding ElementName=BackToTestsButton}"
        Loaded="OnPageLoaded">
 
-    <Page.Resources>
-        <!-- Staggered entrance animation for history items -->
-        <Style x:Key="AnimatedHistoryItem" TargetType="Border">
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TranslateTransform Y="20"/>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0" To="1"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             From="20" To="0"
-                                             Duration="0:0:0.3">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase EasingMode="EaseOut"/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-    </Page.Resources>
+
 
     <Grid Margin="32">
         <Grid.RowDefinitions>
@@ -54,82 +22,45 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" Style="{StaticResource AnimatedPageHeader}" Margin="0,0,0,24">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="{StaticResource SpacingHeaderToBody}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- Accent Line -->
-                <Border Grid.Row="0" Height="4"
-                        Background="{DynamicResource AccentPrimary}"
-                        CornerRadius="2"/>
+            <Button x:Name="BackToTestsButton"
+                    Grid.Column="0"
+                    Style="{StaticResource SecondaryButton}"
+                    Command="{Binding NavigateToTestListCommand}"
+                    Margin="0,0,16,0"
+                    VerticalAlignment="Center"
+                    ToolTip="Return to the test suite"
+                    ToolTipService.InitialShowDelay="400"
+                    ToolTipService.ShowOnDisabled="True">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
+                    <TextBlock Text="Back to Tests"/>
+                </StackPanel>
+            </Button>
 
-                <!-- Header Content -->
-                <Grid Grid.Row="1" Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Text="Test History"
+                       Style="{StaticResource PageTitleStyle}"/>
 
-                    <!-- Back Button -->
-                    <Button x:Name="BackToTestsButton"
-                            Grid.Column="0"
-                            Style="{StaticResource SecondaryButton}"
-                            Command="{Binding NavigateToTestListCommand}"
-                            Margin="0,0,16,0"
-                            VerticalAlignment="Center"
-                            ToolTip="Return to the test suite"
-                            ToolTipService.InitialShowDelay="400"
-                            ToolTipService.ShowOnDisabled="True">
-                        <StackPanel Orientation="Horizontal">
-                            <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="16" Margin="0,0,8,0"/>
-                            <TextBlock Text="Back to Tests"/>
-                        </StackPanel>
-                    </Button>
-
-                    <!-- Icon Container -->
-                    <Border Grid.Column="1" Width="48" Height="48"
-                            Background="{DynamicResource AccentPrimary}"
-                            CornerRadius="12" Margin="0,0,16,0">
-                        <ui:SymbolIcon Symbol="History24"
-                                       FontSize="24"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Title + Subtitle -->
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <TextBlock Text="Test History"
-                                   FontSize="24" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextPrimary}"/>
-                        <TextBlock Text="View past test runs and trends"
-                                   Style="{DynamicResource TextBody}"
-                                   Foreground="{DynamicResource TextSecondary}"
-                                   Margin="0,4,0,0"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Style="{StaticResource SecondaryButton}"
+                        Command="{Binding ClearAllCommand}"
+                        Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}"
+                        ToolTip="Delete all test history records"
+                        ToolTipService.InitialShowDelay="400"
+                        ToolTipService.ShowOnDisabled="True">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Symbol="Delete24" FontSize="16" Margin="0,0,8,0"/>
+                        <TextBlock Text="Clear All"/>
                     </StackPanel>
-
-                    <!-- Action Buttons -->
-                    <StackPanel Grid.Column="3" Orientation="Horizontal">
-                        <Button Style="{StaticResource SecondaryButton}"
-                                Command="{Binding ClearAllCommand}"
-                                Visibility="{Binding IsHistoryEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverse, FallbackValue=Collapsed}"
-                                ToolTip="Delete all test history records"
-                                ToolTipService.InitialShowDelay="400"
-                                ToolTipService.ShowOnDisabled="True">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:SymbolIcon Symbol="Delete24" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="Clear All"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </Grid>
-        </Border>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <!-- Status Message -->
         <Border Grid.Row="1"

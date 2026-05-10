@@ -75,6 +75,7 @@
                         Tag="Profiles"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Folder24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -87,6 +88,7 @@
                         Tag="Tests"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Beaker24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -121,6 +123,7 @@
                         Tag="Results"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Poll24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -134,6 +137,7 @@
                         Tag="History"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon History24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -147,6 +151,7 @@
                         Tag="Schedules"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon CalendarClock24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -160,6 +165,7 @@
                         Tag="Diagnostics"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Stethoscope24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
@@ -176,6 +182,7 @@
                         Tag="Settings"
                         Click="NavItem_Click"
                         Icon="{ui:SymbolIcon Settings24}"
+                        Style="{StaticResource NavigationViewItemStyle}"
                         ToolTipService.ShowOnDisabled="True"
                         ToolTipService.InitialShowDelay="400"
                         ToolTipService.Placement="Right">
